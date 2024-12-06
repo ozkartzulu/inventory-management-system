@@ -1,0 +1,14 @@
+.header {
+    margin-bottom: 60px;
+}
+.container {
+    max-width: 1300px;
+    margin: 0 auto;
+}
+.content {
+    display: flex;
+    align-items: center;
+    nav {
+        margin-left: auto;
+    }
+}
