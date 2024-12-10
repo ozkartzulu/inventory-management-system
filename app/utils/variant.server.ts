@@ -54,7 +54,7 @@ export async function getAllVariants() {
 	
 }
 
-export async function getVariantsByIdCategory(idCategory: number) {
+export async function getVariantsByIdCategory(idCategory: number | undefined) {
 	try {
 		const variants = await prisma.variant.findMany({
 			where: {
@@ -62,14 +62,14 @@ export async function getVariantsByIdCategory(idCategory: number) {
 			}
 		})
 
-		if(!variants) {
-			return json(
-				{
-					error: `Ocurrió un error al recuperar variantes dado categoria: ${idCategory}.`,
-				},
-				{ status: 400 },
-			);
-		}
+		// if(!variants) {
+		// 	return json(
+		// 		{
+		// 			error: `Ocurrió un error al recuperar variantes dado categoria: ${idCategory}.`,
+		// 		},
+		// 		{ status: 400 },
+		// 	);
+		// }
 
 		return variants;
 	} catch (error) {

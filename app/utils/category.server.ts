@@ -36,14 +36,14 @@ export async function getAllCategories() {
   try {
     const categories = await prisma.category.findMany();
 
-    if(!categories) {
-      return json(
-        {
-          error: `Ocurrió un error al recuperar todas las categorías.`,
-        },
-        { status: 400 },
-      );
-    }
+    // if(!categories) {
+    //   return json(
+    //     {
+    //       error: `Ocurrió un error al recuperar todas las categorías.`,
+    //     },
+    //     { status: 400 },
+    //   );
+    // }
 
     return categories;
   } catch (error) {

@@ -1,12 +1,23 @@
 
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import { Product } from "@prisma/client";
+import { Category, Product } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { requireUserId } from "~/utils/auth.server";
 import { getAllProducts } from "~/utils/product.server";
 import ItemProduct from "~/components/item-product";
 
+
+type ProductCategory = {
+    id: number;
+    name: string;
+    description: string;
+    number: number;
+    url: string;
+    madeinId: number;
+    categoryId: number;
+    category: Category;
+}
 
 export const loader: LoaderFunction = async ({ request }) => {
     const products = await getAllProducts();
@@ -17,11 +28,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 }
 
 export default function Productos() {
-    const products:[Product] = useLoaderData();
+    const products:[ProductCategory] = useLoaderData();
+    // console.log(products);
+    
     const [searchTerm, setSearchTerm] = useState('');
     return (
-        <div className="container">
-            <h2 className='text-3xl text-indigo-900 font-bold text-center mb-5'>Lista de Productos</h2>
+        <div className="container max-w-screen-xl m-auto">
+            <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Lista de Productos</h2>
             <div className='flex gap-5 mb-3'>
                 <input 
                     type="text"
@@ -42,7 +55,7 @@ export default function Productos() {
                             <th className='p-2'>Operaciones</th>
                         </tr>
                     </thead>
-                    <tbody className='border-l border-r'>
+                    <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-thin'>
                         { products?.filter( (product) => {
                             if(searchTerm == ''){
                                 return product

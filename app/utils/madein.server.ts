@@ -3,6 +3,7 @@ import { prisma } from './prisma.server';
 import { redirect, json, createCookieSessionStorage  } from '@remix-run/node';
 import { createUser } from './user.server';
 import bcrypt from 'bcryptjs';
+import { Model } from '@prisma/client';
 
 
 export async function registerMadeins(model: registerMadein) {
@@ -35,14 +36,14 @@ export async function getAllMadeins() {
   try {
     const models = await prisma.madein.findMany();
 
-    if(!models) {
-      return json(
-        {
-          error: `Ocurrió un error al recuperar todas los fabricados.`,
-        },
-        { status: 400 },
-      );
-    }
+    // if(!models) {
+    //   return json(
+    //     {
+    //       error: `Ocurrió un error al recuperar todas los fabricados.`,
+    //     },
+    //     { status: 400 },
+    //   );
+    // }
 
     return models;
   } catch (error) {

@@ -52,7 +52,7 @@ export async function getAllBrands() {
   }
 }
 
-export async function getBrandsByIdCategory(idCategory: number) {
+export async function getBrandsByIdCategory(idCategory: number | undefined) {
 	try {
 		const models = await prisma.brand.findMany({
 			where: {
@@ -60,14 +60,14 @@ export async function getBrandsByIdCategory(idCategory: number) {
 			}
 		})
 
-		if(!models) {
-			return json(
-				{
-					error: `Ocurrió un error al recuperar marcas dado categoria: ${idCategory}.`,
-				},
-				{ status: 400 },
-			);
-		}
+		// if(!models) {
+		// 	return json(
+		// 		{
+		// 			error: `Ocurrió un error al recuperar marcas dado categoria: ${idCategory}.`,
+		// 		},
+		// 		{ status: 400 },
+		// 	);
+		// }
 
 		return models;
 	} catch (error) {

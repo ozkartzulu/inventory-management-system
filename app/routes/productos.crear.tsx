@@ -7,17 +7,53 @@ import { ActionFunction, LoaderFunction, json, redirect,
     unstable_composeUploadHandlers, } from "@remix-run/node";
 import { useActionData, useLoaderData, useFetcher, FormEncType, Form, useSubmit } from "@remix-run/react";
 import { validateFile, validatePassword, validateName, validateLastName, validateNumber } from "~/utils/validators";
-import type { ActionFunctionArgs } from "@remix-run/node";
+import type { ActionFunctionArgs, TypedResponse } from "@remix-run/node";
 import { getUser } from "~/utils/auth.server";
 import FormField from "~/components/form-field";
 import SelectField from '~/components/select-field';
+import SelectFieldVariant from '~/components/select-field-variant';
 import { getAllCategories } from "~/utils/category.server";
-import { Category } from "@prisma/client";
+import { Brand, Category, Madein, Model, Variant } from "@prisma/client";
 import { getPathRelative, registerProduct } from "~/utils/product.server";
 import { getModelsByIdCategory } from "~/utils/model.server";
 import { getVariantsByIdCategory } from "~/utils/variant.server";
 import { getBrandsByIdCategory } from "~/utils/brand.server";
 import { getAllMadeins } from "~/utils/madein.server";
+
+type ActionData = {
+    error?: string;
+    success?: string;
+    variants: Variant[] | null;
+    models: Model[] | null;
+    brands: Brand[] | null;
+    fields?: { 
+        name: string;
+        description: string; 
+        number: number; 
+        file: string; 
+        madeinId: number; 
+        categoryId: number; 
+        modelId: number; 
+        brandId: number; 
+        variantId: number;
+    };
+    errors?: {
+        name: string;
+        description: string;
+        number: string;
+        file: string;
+        madeinId: string;
+        categoryId: string;
+        modelId: string;
+        brandId: string;
+        variantId: string;
+    };
+};
+
+type ActionLoader = {
+    categories: Category[] | null;
+    madeins: Madein[] | null;
+}
 
 
 export async function action({ request}: ActionFunctionArgs) {
@@ -45,12 +81,9 @@ export async function action({ request}: ActionFunctionArgs) {
         const variants = await getVariantsByIdCategory(idCategory);
         const models = await getModelsByIdCategory(idCategory);
         const brands = await getBrandsByIdCategory(idCategory);
-        return json({ variants, models, brands });
+        return json<ActionData>({ variants, models, brands });
     }
 
-
-    // console.log(Object.fromEntries(formData.entries()))
-    // console.log(formData)
     const name = formData.get('name');
     const description = String(formData.get('description'));
     const number = Number(formData.get('number'));
@@ -59,14 +92,8 @@ export async function action({ request}: ActionFunctionArgs) {
     const modelId = Number(formData.get('modelId'));
     const brandId = Number(formData.get('brandId'));
     const variantId = Number(formData.get('variantId'));
-    let file = formData.get('file')?.filepath ?? '';
-    file = getPathRelative(file);
-    console.log(file)
-    // console.log(description)
-    // console.log(number)
-    // console.log(categoryId)
-    // console.log(madeinId)
-    // console.log(file)
+    let file: string = formData.get('file')?.filepath ?? '';
+    file = file ? getPathRelative(file) : '';
 
     if (typeof name !== 'string' || typeof description !== 'string' || typeof number !== 'number' || typeof categoryId !== 'number' || typeof madeinId !== 'number' || typeof file !== 'string') {
         return json({ error: `Tipos de datos en los campos invalidos.`, form: action }, { status: 400 })
@@ -138,28 +165,38 @@ export const action: ActionFunction = async ({request}) => {
 }
 */
 
+export const loader: LoaderFunction = async ({ request }) => {
+    const categories = await getAllCategories();
+    const madeins = await getAllMadeins();
+    return json<ActionLoader>({categories, madeins});
+}
+
 function normalizeImageUrl(url: string) {
     return url
         .toLowerCase()
         .replace(/\s+/g, '-')
 }
 
-export const loader: LoaderFunction = async ({ request }) => {
-    const categories = await getAllCategories();
-    const madeins = await getAllMadeins();
-    return {categories, madeins};
-}
 
 export default function ProductCreate() {
 
     const submit = useSubmit();
 
-    const actionData = useActionData<typeof action>();
-    // console.log(actionData)
+    const actionData = useActionData<ActionData>();
 
-    const loaders = useLoaderData();
+    const loaders = useLoaderData<ActionLoader>();
 
-    const [errors, setErrors] = useState(actionData?.errors || {});
+    const [errors, setErrors] = useState({
+        name: actionData?.errors?.name || '',
+        description: actionData?.errors?.description || '',
+        number: actionData?.errors?.number || '',
+        file: actionData?.errors?.file || '',
+        madeinId: actionData?.errors?.madeinId || '',
+        categoryId: actionData?.errors?.categoryId || '',
+        modelId: actionData?.errors?.modelId || '',
+        brandId: actionData?.errors?.brandId || '',
+        variantId: actionData?.errors?.variantId || '',
+    });
     const [formError, setFormError] = useState(actionData?.error || '');
     const [showVariants, setShowVariants] = useState(false);
     const [showModels, setShowModels] = useState(false);
@@ -243,10 +280,7 @@ export default function ProductCreate() {
                     label="Fabricado en"
                     value={formData?.madeinId}
                     optionDefault="Seleccionar Fabricado en"
-                    typeSelect="madein"
                     onChange={e => handleInputChange(e, 'madeinId')}
-                    // onChange={e => submit(e.target.value)}
-                    // onChange={e => handleChange(e)}
                     error={errors?.madeinId}
                 />
                 <SelectField
@@ -255,9 +289,6 @@ export default function ProductCreate() {
                     label="Categoría"
                     // value={formData.categoryId}
                     optionDefault="Seleccionar Categoría"
-                    typeSelect="category"
-                    // onChange={e => handleInputChange(e, 'categoryId')}
-                    // onChange={e => submit(e.target.value)}
                     onChange={e => handleChange(e, 'categoryId')}
                     error={errors?.categoryId}
                 />
@@ -268,7 +299,6 @@ export default function ProductCreate() {
                         label="Modelos"
                         value={formData?.modelId}
                         optionDefault="Seleccionar Modelo"
-                        typeSelect="models"
                         onChange={e => handleInputChange(e, 'modelId')}
                         // onChange={e => submit(e.target.value)}
                         // onChange={e => handleChange(e)}
@@ -282,7 +312,6 @@ export default function ProductCreate() {
                         label="Marcas"
                         value={formData?.brandId}
                         optionDefault="Seleccionar Marca"
-                        typeSelect="brand"
                         onChange={e => handleInputChange(e, 'brandId')}
                         // onChange={e => submit(e.target.value)}
                         // onChange={e => handleChange(e)}
@@ -290,13 +319,12 @@ export default function ProductCreate() {
                     />
                 )}
                 {showVariants && (
-                    <SelectField
+                    <SelectFieldVariant
                         categories={actionData?.variants}
                         htmlFor='variantId'
                         label="Variantes"
                         value={formData?.variantId}
                         optionDefault="Seleccionar Variante"
-                        typeSelect="variants"
                         onChange={e => handleInputChange(e, 'variantId')}
                         // onChange={e => submit(e.target.value)}
                         // onChange={e => handleChange(e)}

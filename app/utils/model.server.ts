@@ -52,7 +52,7 @@ export async function getAllModels() {
   }
 }
 
-export async function getModelsByIdCategory(idCategory: number) {
+export async function getModelsByIdCategory(idCategory: number | undefined) {
 	try {
 		const models = await prisma.model.findMany({
 			where: {
@@ -60,14 +60,14 @@ export async function getModelsByIdCategory(idCategory: number) {
 			}
 		})
 
-		if(!models) {
-			return json(
-				{
-					error: `Ocurrió un error al recuperar modelos dado categoria: ${idCategory}.`,
-				},
-				{ status: 400 },
-			);
-		}
+		// if(!models) {
+		// 	return json(
+		// 		{
+		// 			error: `Ocurrió un error al recuperar modelos dado categoria: ${idCategory}.`,
+		// 		},
+		// 		{ status: 400 },
+		// 	);
+		// }
 
 		return models;
 	} catch (error) {
