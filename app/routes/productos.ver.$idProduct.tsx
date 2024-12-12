@@ -15,15 +15,11 @@ type ProductCategory = {
     url: string;
     madeinId: number;
     categoryId: number;
-    category: {
-        id: number;
-        name: string;
-        description: string;
-        variant: [Variant];
-        model: [Model];
-        brand: [Brand];
-    };
+    category: Category;
     madein: Madein;
+    brand: Brand;
+    model: Model;
+    variant: Variant;
 }
 
 export const loader: LoaderFunction = async ({ params, }) => {
@@ -55,9 +51,9 @@ export default function VerProducto() {
                         <li className="mb-2"><span className="text-indigo-950 font-bold ">Nombre Categoría: </span><span className="font-thin text-gray-300">{product?.category.name}</span></li>
                         <li className="mb-2"><span className="text-indigo-950 font-bold ">Descripción Categoría: </span><span className="font-thin text-gray-300">{product?.category.description}</span></li>
                         <li className="mb-2"><span className="text-indigo-950 font-bold ">Fabricado en: </span><span className="font-thin text-gray-300">{product?.madein.name}</span></li>
-                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Marca: </span><span className="font-thin text-gray-300">{product?.category.brand[0].name}</span></li>
-                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Model: </span><span className="font-thin text-gray-300">{product?.category.model[0].name}</span></li>
-                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Variante: </span><span className="font-thin text-gray-300">{product?.category.variant[0].unit +" - "+ product?.category.variant[0].medida}</span></li>
+                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Marca: </span><span className="font-thin text-gray-300">{product?.brand.name}</span></li>
+                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Model: </span><span className="font-thin text-gray-300">{product?.model.name}</span></li>
+                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Variante: </span><span className="font-thin text-gray-300">{product?.variant.unit +" - "+ product?.variant.medida}</span></li>
                     </ul>
                 </div>
             </div>

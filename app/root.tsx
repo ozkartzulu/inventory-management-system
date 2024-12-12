@@ -25,7 +25,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export function Layout({ children }: { children: React.ReactNode }) {
 
   const user = useLoaderData();
-
+    
   return (
     <html lang="en">
       <head>

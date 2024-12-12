@@ -30,7 +30,7 @@ type ActionData = {
         name: string;
         description: string; 
         number: number; 
-        file: string; 
+        url: string; 
         madeinId: number; 
         categoryId: number; 
         modelId: number; 
@@ -41,7 +41,7 @@ type ActionData = {
         name: string;
         description: string;
         number: string;
-        file: string;
+        url: string;
         madeinId: string;
         categoryId: string;
         modelId: string;
@@ -81,6 +81,7 @@ export async function action({ request}: ActionFunctionArgs) {
         const variants = await getVariantsByIdCategory(idCategory);
         const models = await getModelsByIdCategory(idCategory);
         const brands = await getBrandsByIdCategory(idCategory);
+
         return json<ActionData>({ variants, models, brands });
     }
 
@@ -92,10 +93,10 @@ export async function action({ request}: ActionFunctionArgs) {
     const modelId = Number(formData.get('modelId'));
     const brandId = Number(formData.get('brandId'));
     const variantId = Number(formData.get('variantId'));
-    let file: string = formData.get('file')?.filepath ?? '';
-    file = file ? getPathRelative(file) : '';
+    let url: string = formData.get('file')?.filepath ?? '';
+    url = url ? getPathRelative(url) : '';
 
-    if (typeof name !== 'string' || typeof description !== 'string' || typeof number !== 'number' || typeof categoryId !== 'number' || typeof madeinId !== 'number' || typeof file !== 'string') {
+    if (typeof name !== 'string' || typeof description !== 'string' || typeof number !== 'number' || typeof categoryId !== 'number' || typeof madeinId !== 'number' || typeof url !== 'string') {
         return json({ error: `Tipos de datos en los campos invalidos.`, form: action }, { status: 400 })
     }
 
@@ -103,7 +104,7 @@ export async function action({ request}: ActionFunctionArgs) {
         name: validateName(name),
         description: validateName(description),
         number: validateNumber(number),
-        file: validateFile(file),
+        url: validateFile(url),
         categoryId: validateNumber(categoryId),
         madeinId: validateNumber(madeinId),
         modelId: validateNumber(modelId),
@@ -112,10 +113,10 @@ export async function action({ request}: ActionFunctionArgs) {
     }
 
     if (Object.values(errors).some(Boolean)) {
-        return json({ errors, fields: { name, description, number, file, madeinId, categoryId, modelId, brandId, variantId}, form: action }, { status: 400 })
+        return json({ errors, fields: { name, description, number, url, madeinId, categoryId, modelId, brandId, variantId}, form: action }, { status: 400 })
     }
 
-    return await registerProduct({ name, description, number, madeinId, categoryId, file});
+    return await registerProduct({ name, description, number, url, madeinId, categoryId, brandId, modelId, variantId});
     
 }
 
@@ -190,7 +191,7 @@ export default function ProductCreate() {
         name: actionData?.errors?.name || '',
         description: actionData?.errors?.description || '',
         number: actionData?.errors?.number || '',
-        file: actionData?.errors?.file || '',
+        url: actionData?.errors?.url || '',
         madeinId: actionData?.errors?.madeinId || '',
         categoryId: actionData?.errors?.categoryId || '',
         modelId: actionData?.errors?.modelId || '',
@@ -206,7 +207,7 @@ export default function ProductCreate() {
         name: actionData?.fields?.name || '',
         description: actionData?.fields?.description || '',
         number: actionData?.fields?.number || '',
-        file: actionData?.fields?.file || '',
+        url: actionData?.fields?.url || '',
         madeinId: actionData?.fields?.madeinId || '',
         categoryId: actionData?.fields?.categoryId || '',
         modelId: actionData?.fields?.modelId || '',
@@ -270,9 +271,9 @@ export default function ProductCreate() {
                     label="Cargar Imagen"
                     accept=".jpg, .jpeg, .png"
                     type="file"
-                    value={formData?.file}
-                    onChange={e => handleInputChange(e, 'file')}
-                    error={errors?.file}
+                    value={formData?.url}
+                    onChange={e => handleInputChange(e, 'url')}
+                    error={errors?.url}
                 />
                 <SelectField
                     categories={loaders?.madeins}
@@ -292,19 +293,6 @@ export default function ProductCreate() {
                     onChange={e => handleChange(e, 'categoryId')}
                     error={errors?.categoryId}
                 />
-                {showModels && (
-                    <SelectField
-                        categories={actionData?.models}
-                        htmlFor='modelId'
-                        label="Modelos"
-                        value={formData?.modelId}
-                        optionDefault="Seleccionar Modelo"
-                        onChange={e => handleInputChange(e, 'modelId')}
-                        // onChange={e => submit(e.target.value)}
-                        // onChange={e => handleChange(e)}
-                        // error={errors?.categoryId}
-                    />
-                )}
                 {showBrands && (
                     <SelectField
                         categories={actionData?.brands}
@@ -318,6 +306,21 @@ export default function ProductCreate() {
                         // error={errors?.categoryId}
                     />
                 )}
+
+                {showModels && (
+                    <SelectField
+                        categories={actionData?.models}
+                        htmlFor='modelId'
+                        label="Modelos"
+                        value={formData?.modelId}
+                        optionDefault="Seleccionar Modelo"
+                        onChange={e => handleInputChange(e, 'modelId')}
+                        // onChange={e => submit(e.target.value)}
+                        // onChange={e => handleChange(e)}
+                        // error={errors?.categoryId}
+                    />
+                )}
+                
                 {showVariants && (
                     <SelectFieldVariant
                         categories={actionData?.variants}

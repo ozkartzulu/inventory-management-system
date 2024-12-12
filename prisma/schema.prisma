@@ -32,6 +32,57 @@ model User {
   password  String
   firstName String
   lastName  String
+  order Order[]
+  supplierDetail SupplierDetail[]
+}
+
+model Order {
+    id  Int @id @default(autoincrement())
+    quantity Int
+    price Float
+    date DateTime @default(now())
+    product Product @relation(fields: [productId], references: [id])
+    productId Int
+    user User @relation(fields: [userId], references: [id])
+    userId Int 
+    customer Customer @relation(fields: [customerId], references: [id])
+    customerId Int
+}
+
+model Customer {
+    id Int @id @default(autoincrement())
+    name String
+    address String
+    phone Int
+    order Order[]
+}
+
+model SupplierDetail {
+    id  Int @id @default(autoincrement())
+    quantity Int
+    price Float
+    date DateTime @default(now())
+    product Product @relation(fields: [productId], references: [id])
+    productId Int
+    user User @relation(fields: [userId], references: [id])
+    userId Int 
+    supplier Supplier @relation(fields: [supplierId], references: [id])
+    supplierId Int
+}
+
+model Supplier {
+    id Int @id @default(autoincrement())
+    name String
+    address String
+    phone Int
+    supplierDetail SupplierDetail[]
+}
+
+model Inventary {
+    id Int @id @default(autoincrement())
+    stock Int
+    product Product @relation(fields: [productId], references: [id])
+    productId Int @unique
 }
 
 model Product {
@@ -44,6 +95,15 @@ model Product {
   madeinId Int
   category Category @relation(fields: [categoryId], references: [id])
   categoryId Int
+  variant Variant @relation(fields: [variantId], references: [id])
+  variantId Int
+  model Model @relation(fields: [modelId], references: [id])
+  modelId Int
+  brand Brand @relation(fields: [brandId], references: [id])
+  brandId Int
+  order Order[]
+  supplierDetail SupplierDetail[]
+  inventory Inventary?
 }
 
 model Category {
@@ -68,6 +128,7 @@ model Variant {
   unit Int
   category Category @relation(fields: [categoryId], references: [id])
   categoryId Int
+  product Product[]
 }
 
 model Model {
@@ -75,6 +136,7 @@ model Model {
   name String
   category Category @relation(fields: [categoryId], references: [id])
   categoryId Int
+  product Product[]
 }
 
 model Brand {
@@ -82,6 +144,7 @@ model Brand {
   name String
   category Category @relation(fields: [categoryId], references: [id])
   categoryId Int
+  product Product[]
 }
 
 // model Post {

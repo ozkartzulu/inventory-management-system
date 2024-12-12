@@ -1,4 +1,4 @@
-import { Category, Product } from "@prisma/client";
+import { Brand, Category, Model, Product, Variant } from "@prisma/client";
 import { useNavigate, Form } from "@remix-run/react";
 
 interface FormFieldProps {
@@ -10,7 +10,10 @@ interface FormFieldProps {
         url: string;
         madeinId: number;
         categoryId: number;
-        category: Category
+        category: Category;
+        // brand: Brand;
+        // model: Model;
+        // variant: Variant;
     }
 }
 

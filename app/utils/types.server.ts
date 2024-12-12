@@ -31,16 +31,20 @@ export type registerMadein = {
 }
 
 export type registerVariant = {
-    medida: string
     unit: number
+    medida: string
     categoryId: number
 }
 
 export type registerProduct = {
+    idProduct?: number
     name: string
     description: string
     number: number
-    madeinId: number
+    url: string
     categoryId: number
-    file: string
+    madeinId: number
+    brandId: number
+    modelId: number
+    variantId: number
 }

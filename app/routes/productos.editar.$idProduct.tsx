@@ -10,11 +10,12 @@ import { validateFile, validatePassword, validateName, validateLastName, validat
 import type { ActionFunctionArgs, TypedResponse } from "@remix-run/node";
 import { getUser } from "~/utils/auth.server";
 import FormField from "~/components/form-field";
+import FieldFile from "~/components/field-file";
 import SelectField from '~/components/select-field';
 import SelectFieldVariant from '~/components/select-field-variant';
 import { getAllCategories } from "~/utils/category.server";
-import { Brand, Category, Madein, Model, Variant } from "@prisma/client";
-import { getPathRelative, getProduct, registerProduct } from "~/utils/product.server";
+import { Brand, Category, Madein, Model, Product, Variant } from "@prisma/client";
+import { getPathRelative, getProduct, registerProduct, updateProduct } from "~/utils/product.server";
 import { getModelsByIdCategory } from "~/utils/model.server";
 import { getVariantsByIdCategory } from "~/utils/variant.server";
 import { getBrandsByIdCategory } from "~/utils/brand.server";
@@ -31,7 +32,7 @@ type ActionData = {
         name: string;
         description: string; 
         number: number; 
-        file: string; 
+        url: string; 
         madeinId: number; 
         categoryId: number; 
         modelId: number; 
@@ -42,7 +43,7 @@ type ActionData = {
         name: string;
         description: string;
         number: string;
-        file: string;
+        url: string;
         madeinId: string;
         categoryId: string;
         modelId: string;
@@ -71,12 +72,30 @@ type ProductCategory = {
 }
 
 type ActionLoader = {
+    product: Product | null;
     categories: Category[] | null;
     madeins: Madein[] | null;
+    brands: Brand[] | null;
+    models: Model[] | null;
+    variants: Variant[] | null;
+}
+
+type StateProduct = {
+    description: string | '';
+    name: string | '';
+    number: number | '';
+    url: string | '';
+    madeinId: number | '';
+    categoryId: number | '';
+    modelId: number | '';
+    brandId: number | '';
+    variantId: number | '';
 }
 
 
-export async function action({ request}: ActionFunctionArgs) {
+export async function action({ request, params}: ActionFunctionArgs) {
+
+    let idProduct: number = Number(params.idProduct);
 
     let formData = await unstable_parseMultipartFormData(
         request,
@@ -96,12 +115,13 @@ export async function action({ request}: ActionFunctionArgs) {
         ),
     );
 
+
     if(formData.get('formCategory') == 'true' && formData.get('categoryId') ) {
         const idCategory = Number(formData.get('categoryId'));
         const variants = await getVariantsByIdCategory(idCategory);
         const models = await getModelsByIdCategory(idCategory);
         const brands = await getBrandsByIdCategory(idCategory);
-        return json<ActionData>({ variants, models, brands });
+        return { variants, models, brands };
     }
 
     const name = formData.get('name');
@@ -112,10 +132,11 @@ export async function action({ request}: ActionFunctionArgs) {
     const modelId = Number(formData.get('modelId'));
     const brandId = Number(formData.get('brandId'));
     const variantId = Number(formData.get('variantId'));
-    let file: string = formData.get('file')?.filepath ?? '';
-    file = file ? getPathRelative(file) : '';
+    const productUrl = formData.get('productUrl') ? String(formData.get('productUrl')) : '';
+    let url: string = formData.get('url')?.filepath ?? '';
+    url = url ? getPathRelative(url) : productUrl;
 
-    if (typeof name !== 'string' || typeof description !== 'string' || typeof number !== 'number' || typeof categoryId !== 'number' || typeof madeinId !== 'number' || typeof file !== 'string') {
+    if (typeof name !== 'string' || typeof description !== 'string' || typeof number !== 'number' || typeof categoryId !== 'number' || typeof madeinId !== 'number' || typeof url !== 'string') {
         return json({ error: `Tipos de datos en los campos invalidos.`, form: action }, { status: 400 })
     }
 
@@ -123,7 +144,7 @@ export async function action({ request}: ActionFunctionArgs) {
         name: validateName(name),
         description: validateName(description),
         number: validateNumber(number),
-        file: validateFile(file),
+        url: validateFile(url),
         categoryId: validateNumber(categoryId),
         madeinId: validateNumber(madeinId),
         modelId: validateNumber(modelId),
@@ -132,10 +153,10 @@ export async function action({ request}: ActionFunctionArgs) {
     }
 
     if (Object.values(errors).some(Boolean)) {
-        return json({ errors, fields: { name, description, number, file, madeinId, categoryId, modelId, brandId, variantId}, form: action }, { status: 400 })
+        return json({ errors, fields: { name, description, number, url, madeinId, categoryId, modelId, brandId, variantId}, form: action }, { status: 400 })
     }
 
-    return await registerProduct({ name, description, number, madeinId, categoryId, file});
+    return await updateProduct({ idProduct, name, description, number, url, madeinId, categoryId, modelId, brandId, variantId});
     
 }
 
@@ -164,13 +185,12 @@ export default function ProductEdit() {
     const actionData = useActionData<ActionData>();
 
     const loaders = useLoaderData<ActionLoader>();
-    console.log(loaders)
 
     const [errors, setErrors] = useState({
         name: actionData?.errors?.name || '',
         description: actionData?.errors?.description || '',
         number: actionData?.errors?.number || '',
-        file: actionData?.errors?.file || '',
+        url: actionData?.errors?.url || '',
         madeinId: actionData?.errors?.madeinId || '',
         categoryId: actionData?.errors?.categoryId || '',
         modelId: actionData?.errors?.modelId || '',
@@ -178,31 +198,35 @@ export default function ProductEdit() {
         variantId: actionData?.errors?.variantId || '',
     });
     const [formError, setFormError] = useState(actionData?.error || '');
-    const [showVariants, setShowVariants] = useState(false);
-    const [showModels, setShowModels] = useState(false);
-    const [showBrands, setShowBrands] = useState(false);
-
-    const [formData, setFormData] = useState({
-        name: actionData?.fields?.name || '',
-        description: actionData?.fields?.description || '',
-        number: actionData?.fields?.number || '',
-        file: actionData?.fields?.file || '',
-        madeinId: actionData?.fields?.madeinId || '',
-        categoryId: actionData?.fields?.categoryId || '',
-        modelId: actionData?.fields?.modelId || '',
-        brandId: actionData?.fields?.brandId || '',
-        variantId: actionData?.fields?.variantId || '',
+    // const [showVariants, setShowVariants] = useState(true);
+    // const [showModels, setShowModels] = useState(true);
+    const [list, setList] = useState({
+        models: loaders.models,
+        brands: loaders.brands,
+        variants: loaders.variants,
     });
+
+    const [formData, setFormData] = useState<StateProduct>({
+        name: loaders?.product?.name || '',
+        description: loaders?.product?.description || '',
+        number: loaders?.product?.number || '',
+        url: loaders?.product?.url || '',
+        madeinId: loaders?.product?.madeinId || '',
+        categoryId: loaders?.product?.categoryId || '',
+        modelId: loaders?.product?.modelId || '',
+        brandId: loaders?.product?.brandId || '',
+        variantId: loaders?.product?.variantId || '',
+    });
+
 
     useEffect( () => {
         if(actionData?.variants) {
-            setShowVariants(true);
-        }
-        if(actionData?.models) {
-            setShowModels(true);
-        }
-        if(actionData?.brands) {
-            setShowBrands(true);
+            setList({
+                ...list,
+                models: actionData.models,
+                brands: actionData.brands,
+                variants: actionData.variants
+            })
         }
     }, [actionData])
 
@@ -220,45 +244,44 @@ export default function ProductEdit() {
 
     return (
         <div className="h-full justify-center items-center flex flex-col gap-y-4">
-            <p className="text-2xl font-extrabold text-yellow-300 mb-6">Registrar Producto</p>
+            <p className="text-2xl font-extrabold text-yellow-300 mb-6">Editar Producto</p>
             
             <form method="post" encType="multipart/form-data"  className="rounded-2xl bg-gray-200 p-6 w-11/12 max-w-xl mb-12" >
                 <div className="text-xs font-semibold text-center tracking-wide text-red-500 w-full">{formError}</div>
                 <FormField
                     htmlFor="name"
                     label="Nombre"
-                    value={formData?.name}
+                    value={formData.name}
                     onChange={e => handleInputChange(e, 'name')}
                     error={errors?.name}
                 />
                 <FormField
                     htmlFor="description"
                     label="Descripción"
-                    value={formData?.description}
+                    value={formData.description}
                     onChange={e => handleInputChange(e, 'description')}
                     error={errors?.description}
                 />
                 <FormField
                     htmlFor="number"
                     label="Número"
-                    value={formData?.number}
+                    value={formData.number}
                     onChange={e => handleInputChange(e, 'number')}
                     error={errors?.number}
                 />
-                <FormField
-                    htmlFor="file"
+
+                <FieldFile
                     label="Cargar Imagen"
                     accept=".jpg, .jpeg, .png"
-                    type="file"
-                    value={formData?.file}
-                    onChange={e => handleInputChange(e, 'file')}
-                    error={errors?.file}
+                    value={formData.url}
+                    error={errors?.url}
                 />
+
                 <SelectField
                     categories={loaders?.madeins}
                     htmlFor='madeinId'
                     label="Fabricado en"
-                    value={formData?.madeinId}
+                    value={formData.madeinId}
                     optionDefault="Seleccionar Fabricado en"
                     onChange={e => handleInputChange(e, 'madeinId')}
                     error={errors?.madeinId}
@@ -272,50 +295,50 @@ export default function ProductEdit() {
                     onChange={e => handleChange(e, 'categoryId')}
                     error={errors?.categoryId}
                 />
-                {showModels && (
-                    <SelectField
-                        categories={actionData?.models}
-                        htmlFor='modelId'
-                        label="Modelos"
-                        value={formData?.modelId}
-                        optionDefault="Seleccionar Modelo"
-                        onChange={e => handleInputChange(e, 'modelId')}
-                        // onChange={e => submit(e.target.value)}
-                        // onChange={e => handleChange(e)}
-                        // error={errors?.categoryId}
-                    />
-                )}
-                {showBrands && (
-                    <SelectField
-                        categories={actionData?.brands}
-                        htmlFor='brandId'
-                        label="Marcas"
-                        value={formData?.brandId}
-                        optionDefault="Seleccionar Marca"
-                        onChange={e => handleInputChange(e, 'brandId')}
-                        // onChange={e => submit(e.target.value)}
-                        // onChange={e => handleChange(e)}
-                        // error={errors?.categoryId}
-                    />
-                )}
-                {showVariants && (
-                    <SelectFieldVariant
-                        categories={actionData?.variants}
-                        htmlFor='variantId'
-                        label="Variantes"
-                        value={formData?.variantId}
-                        optionDefault="Seleccionar Variante"
-                        onChange={e => handleInputChange(e, 'variantId')}
-                        // onChange={e => submit(e.target.value)}
-                        // onChange={e => handleChange(e)}
-                        // error={errors?.categoryId}
-                    />
-                )}
+
+                <SelectField
+                    categories={list?.models}
+                    htmlFor='modelId'
+                    label="Modelos"
+                    value={formData.modelId}
+                    optionDefault="Seleccionar Modelo"
+                    onChange={e => handleInputChange(e, 'modelId')
+                        
+                    }
+                    // onChange={e => submit(e.target.value)}
+                    // onChange={e => handleChange(e)}
+                    // error={errors?.categoryId}
+                />
+
+                <SelectField
+                    categories={list?.brands}
+                    htmlFor='brandId'
+                    label="Marcas"
+                    value={formData.brandId}
+                    optionDefault="Seleccionar Marca"
+                    onChange={e => handleInputChange(e, 'brandId')}
+                    // onChange={e => submit(e.target.value)}
+                    // onChange={e => handleChange(e)}
+                    // error={errors?.categoryId}
+                />
+
+                <SelectFieldVariant
+                    categories={list?.variants}
+                    htmlFor='variantId'
+                    label="Variantes"
+                    value={formData.variantId}
+                    optionDefault="Seleccionar Variante"
+                    onChange={e => handleInputChange(e, 'variantId')}
+                    // onChange={e => submit(e.target.value)}
+                    // onChange={e => handleChange(e)}
+                    // error={errors?.categoryId}
+                />
+
                 <div className="w-full text-center">
                     <input
                     type="submit"
                     className="rounded-xl mt-3 bg-yellow-300 px-6 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1 cursor-pointer"
-                    value="Registrar"
+                    value="Editar"
                     />
                 </div>
             </form>

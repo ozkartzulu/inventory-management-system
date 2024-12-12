@@ -2,8 +2,8 @@
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { Category, Product } from "@prisma/client";
-import { LoaderFunction } from "@remix-run/node";
-import { requireUserId } from "~/utils/auth.server";
+import { LoaderFunction, redirect } from "@remix-run/node";
+import { getUser, getUserIdName, requireUserId } from "~/utils/auth.server";
 import { getAllProducts } from "~/utils/product.server";
 import ItemProduct from "~/components/item-product";
 
@@ -20,6 +20,10 @@ type ProductCategory = {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     const products = await getAllProducts();
     if(!products) {
         return null;
@@ -33,7 +37,9 @@ export default function Productos() {
     
     const [searchTerm, setSearchTerm] = useState('');
     return (
-        <div className="container max-w-screen-xl m-auto">
+        <div className="container max-w-screen-xl m-auto px-4">
+        { products.length ? (
+            <>
             <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Lista de Productos</h2>
             <div className='flex gap-5 mb-3'>
                 <input 
@@ -68,6 +74,8 @@ export default function Productos() {
                     </tbody>
                 </table>
             </div>
+            </>
+            ) : (<p>No hay productos</p>)}
         </div>
     )
 }

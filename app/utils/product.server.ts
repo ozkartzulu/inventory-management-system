@@ -17,9 +17,12 @@ export async function registerProduct(product: registerProduct) {
 			name: product.name,
 			description: product.description,
 			number: product.number,
+			url: product.url,
 			madeinId: product.madeinId,
 			categoryId: product.categoryId,
-			url: product.file,
+            brandId: product.brandId,
+            modelId: product.modelId,
+            variantId: product.variantId,
 		},
 	});
 
@@ -27,7 +30,44 @@ export async function registerProduct(product: registerProduct) {
 		return json(
 			{
 				error: `Hubo un error al crear producto.`,
-				fields: { name: product.name, description: product.description, number: product.number, madeinId: product.madeinId, categoryId: product.categoryId, file: product.file },
+				fields: { name: product.name, description: product.description, number: product.number, file: product.url, madeinId: product.madeinId, categoryId: product.categoryId, brandId: product.brandId, modelId: product.modelId, variantId: product.modelId },
+			},
+			{ status: 400 },
+		);
+	}
+
+	return redirect('/productos');
+}
+
+export async function updateProduct(product: registerProduct) {
+
+	const exists = await prisma.product.count({ where: { id: product.idProduct } });
+	if (!exists) {
+		return json({ error: `Este producto no existe, no se puede actualizar datos` }, { status: 400 });
+	}
+
+	const newProduct = await prisma.product.update({
+		where: {
+            id: product.idProduct,
+        },
+        data: {
+			name: product.name,
+			description: product.description,
+			number: product.number,
+			url: product.url,
+			madeinId: product.madeinId,
+			categoryId: product.categoryId,
+            brandId: product.brandId,
+            modelId: product.modelId,
+            variantId: product.variantId,
+		},
+	});
+
+	if (!newProduct) {
+		return json(
+			{
+				error: `Hubo un error al crear producto.`,
+				fields: { name: product.name, description: product.description, number: product.number, file: product.url, madeinId: product.madeinId, categoryId: product.categoryId, brandId: product.brandId, modelId: product.modelId, variantId: product.modelId },
 			},
 			{ status: 400 },
 		);
@@ -67,14 +107,11 @@ export async function getProduct(idProduct: number) {
 				id: idProduct
 			},
 			include: {
-				category: {
-					include: {
-						variant: true,
-						model: true,
-						brand: true,
-					},
-				},
+				category: true,
 				madein: true,
+                brand: true,
+                model: true,
+                variant: true,
 			}
 		});
 
