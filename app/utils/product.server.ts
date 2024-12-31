@@ -131,6 +131,26 @@ export async function getProduct(idProduct: number) {
 	}
 }
 
+export async function deleteProduct(idProduct: number) {
+	try {
+        const exists = await prisma.product.count({ where: { id: idProduct } });
+        if (!exists) {
+            return json({ error: `Este producto no existe, no se puede eliminar` }, { status: 400 });
+        }
+
+		const product = await prisma.product.delete({
+			where: {
+				id: idProduct
+			},
+		});
+
+		return product;
+	} catch (error) {
+		console.log('Ocurrió un error al recuperar todas los productos');
+		return null;
+	}
+}
+
 export function getPathRelative(absolutePath: string) {
 	const publicFolder = "public";
 

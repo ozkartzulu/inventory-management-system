@@ -1,6 +1,7 @@
 import { Brand, Category, Madein, Model, Product, Variant } from "@prisma/client";
 import { LoaderFunction, LoaderFunctionArgs, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import Button from "~/components/button";
 import { getAllProducts, getProduct } from "~/utils/product.server";
 
 type ActionLoader = {
@@ -36,8 +37,13 @@ export default function VerProducto() {
     const product: ProductCategory = useLoaderData();
     
     return (
-        <div className="container max-w-screen-xl m-auto">
+        <div className="container max-w-screen-xl m-auto px-4">
             <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5 capitalize'>{product?.name}</h2>
+            <div className='flex gap-5 mb-3'>
+                <Button label="Nuevo" href="/productos/crear" />
+                <Button label="Editar" href={`/productos/editar/${product?.id}`} />
+                <Button label="Cancelar" href="/productos" />
+            </div>
             <div className="flex gap-4">
                 <div className="basis-1/2 sm:basis-1/2 md:basis-2/5 relative rounded">
                     <img src={ product?.url} alt={product?.name} className="w-full h-96 object-cover rounded" />

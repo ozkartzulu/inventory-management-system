@@ -28,3 +28,12 @@ export const validateLastName = (lastName: string): string | undefined => {
 export const validateNumber = (number: number): string | undefined => {
     if (!number) return `Por favor ingrese un valor numerico`;
 }
+
+// validator of supplier
+
+export const validatePhone = (number: number): string | undefined => {
+    if (!number) return `Por favor ingrese un valor numerico`;
+    if(number.toString().length < 8 || number.toString().length > 8) {
+        return 'Por favor ingrese un número de teléfono válido';
+    }
+}

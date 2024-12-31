@@ -1,4 +1,5 @@
 .nav {
+    position: relative;
     ul {
         display: flex;
         li{
@@ -10,17 +11,18 @@
             }
         }
         > li{
-            position: relative;
+            
             ul {
                 position: absolute;
                 
                 min-width: 180px;
                 top: 100%;
-                right: 0;
+                right: 15px;
                 li {
                     a{
-                        padding: 15px 20px;
-                        text-align: right;
+                        padding: 10px 20px;
+                        text-align: center;
+                        min-width: 120px;
                         background-image: linear-gradient(135deg, #8547c6 25%, #b845c1 62%, #ab5d8a 95%);
                         border-radius: 25px;
                         transition: all 0.3s ease;
@@ -36,8 +38,12 @@
                 }
             }
             &:hover {
+                > a {
+                    color: #FDE047;
+                }
                 ul {
-                    display: block;
+                    display: flex;
+                    gap: 10px;
                 }
             }
             

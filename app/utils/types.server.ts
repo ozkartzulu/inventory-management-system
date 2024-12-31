@@ -5,6 +5,13 @@ export type RegisterForm = {
     lastName: string
 }
 
+export type RegisterSupplier = {
+    idSupplier?: number
+    name: string
+    phone: number
+    address: string
+}
+
 export type LoginForm = {
     email: string
     password: string

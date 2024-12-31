@@ -5,7 +5,7 @@ import { ActionFunction, LoaderFunction, json, redirect,
     unstable_parseMultipartFormData,
     unstable_createFileUploadHandler,
     unstable_composeUploadHandlers, } from "@remix-run/node";
-import { useActionData, useLoaderData, useFetcher, FormEncType, Form, useSubmit } from "@remix-run/react";
+import { useActionData, useLoaderData, useFetcher, FormEncType, Form, useSubmit, useNavigate } from "@remix-run/react";
 import { validateFile, validatePassword, validateName, validateLastName, validateNumber } from "~/utils/validators";
 import type { ActionFunctionArgs, TypedResponse } from "@remix-run/node";
 import { getUser } from "~/utils/auth.server";
@@ -186,6 +186,8 @@ export default function ProductEdit() {
 
     const loaders = useLoaderData<ActionLoader>();
 
+    const navigation = useNavigate();
+
     const [errors, setErrors] = useState({
         name: actionData?.errors?.name || '',
         description: actionData?.errors?.description || '',
@@ -334,12 +336,16 @@ export default function ProductEdit() {
                     // error={errors?.categoryId}
                 />
 
-                <div className="w-full text-center">
+                <div className="w-full flex justify-center gap-5">
                     <input
                     type="submit"
                     className="rounded-xl mt-3 bg-yellow-300 px-6 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1 cursor-pointer"
                     value="Editar"
                     />
+                    <button 
+                        className="rounded-xl mt-3 bg-yellow-300 px-6 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
+                        onClick={() => navigation(`/productos`)}
+                    >Cancelar</button>
                 </div>
             </form>
             

@@ -6,6 +6,7 @@ import { LoaderFunction, redirect } from "@remix-run/node";
 import { getUser, getUserIdName, requireUserId } from "~/utils/auth.server";
 import { getAllProducts } from "~/utils/product.server";
 import ItemProduct from "~/components/item-product";
+import Button from "~/components/button";
 
 
 type ProductCategory = {
@@ -44,10 +45,11 @@ export default function Productos() {
             <div className='flex gap-5 mb-3'>
                 <input 
                     type="text"
-                    className='py-1 px-3 shadow-sm w-1/3'
+                    className='py-1 px-3 shadow-sm w-1/3 rounded'
                     onChange={ e => setSearchTerm(e.target.value) } 
                     placeholder="Buscar por Nombre..." 
                 />
+                <Button label="Nuevo" href="/productos/crear" />
             </div>
             <div className="list-products">
                 <table className='w-full'> 

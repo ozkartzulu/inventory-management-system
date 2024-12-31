@@ -26,7 +26,7 @@ export default function ItemProduct({product}: FormFieldProps) {
             <td className="p-2 capitalize">{product?.description}</td>
             <td className="p-2 capitalize">{product?.category.name}</td>
             <td className="p-2">{product?.number}</td>
-            <td className="p-2"> <img src={product?.url} className="w-10 h-10 object-cover" alt="" /> </td>
+            <td className="p-2"> <img src={product?.url} className="w-10 h-10 object-cover rounded-sm" alt="" /> </td>
             <td className="">
                 <div className="flex gap-2 items-center">
                     <button 
@@ -37,9 +37,9 @@ export default function ItemProduct({product}: FormFieldProps) {
                         className="bg-yellow-600 text-white px-2 py-1 text-sm rounded"
                         onClick={ () => navigation(`/productos/editar/${product?.id}`) }
                     >Editar</button>
-                    <Form 
+                    {/* <Form 
                         method='post'
-                        action={`/socio-delete/${product?.id}`}
+                        action={`/productos/eliminar/${product?.id}`}
                         onSubmit={ e => {
                             if(!confirm('Estas seguro de eliminar?')){
                                 e.preventDefault()
@@ -47,7 +47,11 @@ export default function ItemProduct({product}: FormFieldProps) {
                         } }
                     >
                         <button type='submit' className="bg-red-700 text-white px-2 py-1 text-sm rounded">Eliminar</button>
-                    </Form>
+                    </Form> */}
+                    <button 
+                        className="bg-red-700 text-white px-2 py-1 text-sm rounded"
+                        onClick={ () => navigation(`/productos/eliminar/${product?.id}`) }
+                    >Eliminar</button>
                     
                 </div>
             </td>
