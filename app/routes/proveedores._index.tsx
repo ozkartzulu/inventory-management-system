@@ -27,8 +27,6 @@ export default function Proveedores() {
     const [searchTerm, setSearchTerm] = useState('');
     return (
         <div className="container max-w-screen-xl m-auto px-4">
-        { suppliers.length ? (
-            <>
             <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Lista de Proveedores</h2>
             <div className='flex gap-5 mb-3'>
                 <input 
@@ -39,6 +37,8 @@ export default function Proveedores() {
                 />
                 <Button label="Nuevo" href="/proveedores/crear" />
             </div>
+        { suppliers.length ? (
+            <>
             <div className="list-suppliers">
                 <table className='w-full'> 
                     <thead className='bg-indigo-600 text-white text-left'>

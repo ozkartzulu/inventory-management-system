@@ -39,8 +39,6 @@ export default function Productos() {
     const [searchTerm, setSearchTerm] = useState('');
     return (
         <div className="container max-w-screen-xl m-auto px-4">
-        { products.length ? (
-            <>
             <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Lista de Productos</h2>
             <div className='flex gap-5 mb-3'>
                 <input 
@@ -51,6 +49,8 @@ export default function Productos() {
                 />
                 <Button label="Nuevo" href="/productos/crear" />
             </div>
+        { products.length ? (
+            <>
             <div className="list-products">
                 <table className='w-full'> 
                     <thead className='bg-indigo-600 text-white text-left'>

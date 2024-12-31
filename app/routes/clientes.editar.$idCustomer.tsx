@@ -1,14 +1,18 @@
 
 import { useState } from "react";
-import { ActionFunction, json, redirect } from "@remix-run/node";
-import { useActionData, useNavigate } from "@remix-run/react";
+import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
+import { useActionData, useLoaderData, useNavigate } from "@remix-run/react";
 
-import { registerSupplier } from "~/utils/supplier.server";
+import { getCustomer, updateCustomer } from "~/utils/customer.server";
 
 import { validateName, validatePhone } from "~/utils/validators";
 import FormField from "~/components/form-field";
+import { Customer } from "@prisma/client";
 
-export const action: ActionFunction = async ({request}) => {
+export const action: ActionFunction = async ({request, params}) => {
+
+    let idCustomer: number = Number(params.idCustomer);
+
     const form = await request.formData();
     const name = form.get('name');
     const phone = Number(form.get('phone'));
@@ -28,26 +32,35 @@ export const action: ActionFunction = async ({request}) => {
         return json({ errors, fields: { name, phone, address}, form: action }, { status: 400 });
     }
 
-    const supplier = await registerSupplier({ name, phone, address });
-    if(!supplier) {
-        return json({ error: `No se pudo completar el registro`, form: action }, { status: 400 })
+    const customer = await updateCustomer({ idCustomer, name, phone, address });
+    if(!customer) {
+        return json({ error: `No se pudo completar el cambio de cliente`, form: action }, { status: 400 })
     }
-    return redirect('/proveedores');
+    return redirect('/clientes');
 }
 
-export default function CrearProveedor() {
+export const loader: LoaderFunction = async ({ params }) => {
+    let idCustomer: number = Number(params.idCustomer);
+   
+    const customer = await getCustomer(idCustomer);
+    return customer;
+}
+
+export default function EditarProveedor() {
 
     const actionData = useActionData<typeof action>();
 
-    const navigation = useNavigate();
+    const loader = useLoaderData<Customer>();
 
+    const navigation = useNavigate();
+    
     const [errors, setErrors] = useState(actionData?.errors || {});
     const [formError, setFormError] = useState(actionData?.error || '');
 
     const [formData, setFormData] = useState({
-        name: actionData?.fields?.name || '',
-        phone: actionData?.fields?.phone || '',
-        address: actionData?.fields?.address || '',
+        name: loader.name || '',
+        phone: loader.phone || '',
+        address: loader.address || '',
     });
 
     // Updates the form data when an input changes
@@ -57,7 +70,7 @@ export default function CrearProveedor() {
 
     return (
         <div className="h-full justify-center items-center flex flex-col gap-y-4">
-            <p className="text-2xl font-extrabold text-yellow-300 mb-6">Registrar Proveedor</p>
+            <p className="text-2xl font-extrabold text-yellow-300 mb-6">Editar Cliente</p>
             <form method="post" className="rounded-2xl bg-gray-200 p-6 w-96">
                 <div className="text-xs font-semibold text-center tracking-wide text-red-500 w-full">{formError}</div>
                 <FormField
@@ -88,11 +101,11 @@ export default function CrearProveedor() {
                     <input
                     type="submit"
                     className=" cursor-pointer rounded-xl mt-2 bg-yellow-300 px-3 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
-                    value="Registrar"
+                    value="Editar"
                     />
                     <button 
                         className="rounded-xl mt-3 bg-yellow-300 px-6 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
-                        onClick={() => navigation(`/proveedores`)}
+                        onClick={() => navigation(`/clientes`)}
                     >Cancelar</button>
                 </div>
             </form>

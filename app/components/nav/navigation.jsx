@@ -26,6 +26,9 @@ function Navigation({user}){
                     <Link to='/proveedores' className={ `${location.pathname === '/proveedores' ? 'active' : ''} ` } >Proveedores</Link>
                 </li>
                 <li>
+                    <Link to='/clientes' className={ `${location.pathname === '/clientes' ? 'active' : ''} ` } >Clientes</Link>
+                </li>
+                <li>
                     <Link to='/backup' className={ `${location.pathname === '/backup' ? 'active' : ''} `  } >Back Up</Link>
                 </li>
                 <li>

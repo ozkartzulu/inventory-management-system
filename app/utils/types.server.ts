@@ -12,6 +12,13 @@ export type RegisterSupplier = {
     address: string
 }
 
+export type RegisterCustomer = {
+    idCustomer?: number
+    name: string
+    phone: number
+    address: string
+}
+
 export type LoginForm = {
     email: string
     password: string
