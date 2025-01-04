@@ -3,6 +3,8 @@ import { Link, useLocation, Form } from '@remix-run/react';
 import styles from './styles.module.css';
 // import { UserSession } from '~/utils/types.server';
 
+import Cart from '../cart';
+
 function Navigation({user}){
     const location = useLocation()
     // console.log(user)
@@ -38,6 +40,11 @@ function Navigation({user}){
                             <Form method='post' action='/logout'><button type='submit' className='cursor-pointer'>Log Out</button></Form>
                         </li>
                     </ul>
+                </li>
+                <li>
+                    <a href="/clientes">
+                        <Cart />
+                    </a>
                 </li>
             </ul>
             </nav>

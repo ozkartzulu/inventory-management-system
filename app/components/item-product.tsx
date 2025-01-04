@@ -1,5 +1,7 @@
-import { Brand, Category, Model, Product, Variant } from "@prisma/client";
+import { Category } from "@prisma/client";
 import { useNavigate, Form } from "@remix-run/react";
+import { useState, useEffect } from "react";
+import useCart from "~/hooks/useCart";
 
 interface FormFieldProps {
     product: {
@@ -11,14 +13,33 @@ interface FormFieldProps {
         madeinId: number;
         categoryId: number;
         category: Category;
-        // brand: Brand;
-        // model: Model;
-        // variant: Variant;
     }
 }
 
 export default function ItemProduct({product}: FormFieldProps) {
     const navigation = useNavigate();
+
+    const [active, setActive] = useState( false );
+
+    const cartLStorage = useCart();
+    const cartItems = cartLStorage?.cartItems;
+
+    useEffect(() => {
+        
+        if (typeof window !== "undefined") {
+            let productInCart = cartItems?.find( (item) => item.id === product.id );
+            if(productInCart) {
+                setActive(true);
+            }
+        }
+     
+    }, []);
+
+    const handleClick = () => {
+        const productCart = {id: product.id, name: product.name, url: product.url}
+        cartLStorage?.addToCart(productCart);
+        setActive( prev => !prev);
+    }
 
     return (
         <tr className="border-b border-b-pink-200 border-opacity-30">
@@ -29,6 +50,7 @@ export default function ItemProduct({product}: FormFieldProps) {
             <td className="p-2"> <img src={product?.url} className="w-10 h-10 object-cover rounded-sm" alt="" /> </td>
             <td className="">
                 <div className="flex gap-2 items-center">
+                   
                     <button 
                         className="bg-green-700 text-white px-2 py-1 text-sm rounded" 
                         onClick={ () => navigation(`/productos/ver/${product?.id}`) }
@@ -52,6 +74,17 @@ export default function ItemProduct({product}: FormFieldProps) {
                         className="bg-red-700 text-white px-2 py-1 text-sm rounded"
                         onClick={ () => navigation(`/productos/eliminar/${product?.id}`) }
                     >Eliminar</button>
+
+                     <div className={`w-7 h-auto cursor-pointer`}>
+                        <img 
+                            src="/icons/cart-shopping-gray.svg" 
+                            alt="cart icon"
+                            style={{
+                                filter: active ? "invert(26%) sepia(58%) saturate(1537%) hue-rotate(112deg) brightness(96%) contrast(93%)" : 'none',
+                            }}
+                            onClick={handleClick} 
+                        />
+                    </div>
                     
                 </div>
             </td>

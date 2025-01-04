@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { ActionFunction, LoaderFunction, json, redirect } from "@remix-run/node";
-import { useActionData, useLoaderData } from "@remix-run/react";
+import { useActionData, useLoaderData, useNavigate } from "@remix-run/react";
 import { validateName, validateNumber } from "~/utils/validators";
 import { registerVariant } from "~/utils/variant.server";
 import FormField from "~/components/form-field";
@@ -40,6 +40,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function VariantCreate() {
 
     const actionData = useActionData<typeof action>();
+
+    const navigation = useNavigate();
 
     const categories: Category[] = useLoaderData();
     // console.log(categories)
@@ -83,17 +85,21 @@ export default function VariantCreate() {
                     htmlFor="categoryId"
                     label="Categoría"
                     optionDefault="Seleccionar Categoría"
-                    typeSelect="category"
                     onChange={e => handleInputChange(e, 'categoryId')}
                     error={errors?.categoryId}
                 />
 
-                <div className="w-full text-center">
+                <div className="w-full flex justify-center gap-5">
                     <input
                     type="submit"
                     className="rounded-xl mt-3 bg-yellow-300 px-6 cursor-pointer py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
                     value="Registrar"
                     />
+                    <button
+                        type="button" 
+                        className="rounded-xl mt-3 bg-yellow-300 px-6 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
+                        onClick={() => navigation(`/variantes`)}
+                    >Cancelar</button>
                 </div>
             </form>
         </div>

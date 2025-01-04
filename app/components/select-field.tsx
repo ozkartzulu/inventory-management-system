@@ -11,7 +11,7 @@ interface FormFieldProps {
   error?: string
 }
   
-export default function SelectField({ categories, htmlFor, label, value, optionDefault, onChange = () => {}, error = "" }: FormFieldProps) {
+export default function SelectField({ categories, htmlFor, label, value = "", optionDefault, onChange = () => {}, error = "" }: FormFieldProps) {
 
   const [errorText, setErrorText] = useState(error);
 

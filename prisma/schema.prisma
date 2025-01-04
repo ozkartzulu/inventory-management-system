@@ -32,8 +32,8 @@ model User {
   password  String
   firstName String
   lastName  String
-  order Order[]
-  supplierDetail SupplierDetail[]
+  invoiceSales InvoiceSales[]
+  invoiceOrder InvoiceOrder[]
 }
 
 model Order {
@@ -43,10 +43,20 @@ model Order {
     date DateTime @default(now())
     product Product @relation(fields: [productId], references: [id])
     productId Int
+    invoiceOrder InvoiceOrder @relation(fields: [invoiceOrderId], references: [id])
+    invoiceOrderId Int 
+}
+
+model InvoiceOrder {
+    id Int @id @default(autoincrement())
+    date DateTime @default(now())
+    total Float
+    debt Float @default(0)
     user User @relation(fields: [userId], references: [id])
     userId Int 
     customer Customer @relation(fields: [customerId], references: [id])
     customerId Int
+    order Order[]
 }
 
 model Customer {
@@ -54,20 +64,29 @@ model Customer {
     name String
     address String
     phone Int
-    order Order[]
+    invoiceOrder InvoiceOrder[]
 }
 
-model SupplierDetail {
+model DetailSales {
     id  Int @id @default(autoincrement())
     quantity Int
     price Float
-    date DateTime @default(now())
     product Product @relation(fields: [productId], references: [id])
     productId Int
+    invoiceSales InvoiceSales @relation(fields: [invoiceSalesId], references: [id])
+    invoiceSalesId Int
+}
+
+model InvoiceSales {
+    id Int @id @default(autoincrement())
+    date DateTime @default(now())
+    total Float
+    debt Float @default(0)
     user User @relation(fields: [userId], references: [id])
     userId Int 
     supplier Supplier @relation(fields: [supplierId], references: [id])
     supplierId Int
+    detailSales DetailSales[]
 }
 
 model Supplier {
@@ -75,12 +94,15 @@ model Supplier {
     name String
     address String
     phone Int
-    supplierDetail SupplierDetail[]
+    invoiceSales InvoiceSales[]
 }
 
 model Inventary {
     id Int @id @default(autoincrement())
-    stock Int
+    productsSold Int
+    productsBought Int
+    sales Float
+    purchases Float
     product Product @relation(fields: [productId], references: [id])
     productId Int @unique
 }
@@ -102,7 +124,7 @@ model Product {
   brand Brand @relation(fields: [brandId], references: [id])
   brandId Int
   order Order[]
-  supplierDetail SupplierDetail[]
+  detailSales DetailSales[]
   inventory Inventary?
 }
 
