@@ -27,16 +27,21 @@ export default function ItemProduct({product}: FormFieldProps) {
     useEffect(() => {
         
         if (typeof window !== "undefined") {
-            let productInCart = cartItems?.find( (item) => item.id === product.id );
-            if(productInCart) {
-                setActive(true);
-            }
+            
+            setTimeout(() => {
+                let productInCart = cartItems?.find( (item) => item.id === product.id );
+                // console.log(cartLStorage?.cartItems);
+                if(productInCart) {
+                    setActive(true);
+                }
+            }, 100);
+            
         }
      
     }, []);
 
     const handleClick = () => {
-        const productCart = {id: product.id, name: product.name, url: product.url}
+        const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "50"}
         cartLStorage?.addToCart(productCart);
         setActive( prev => !prev);
     }

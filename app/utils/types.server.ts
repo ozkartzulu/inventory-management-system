@@ -62,3 +62,11 @@ export type registerProduct = {
     modelId: number
     variantId: number
 }
+
+export type productCart = {
+    id: number,
+    name: string,
+    url: string,
+    quantity: number,
+    price: string
+}

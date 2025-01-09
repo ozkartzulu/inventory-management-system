@@ -42,7 +42,7 @@ function Navigation({user}){
                     </ul>
                 </li>
                 <li>
-                    <a href="/clientes">
+                    <a href="/ventas">
                         <Cart />
                     </a>
                 </li>
