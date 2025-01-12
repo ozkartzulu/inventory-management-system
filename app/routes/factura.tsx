@@ -33,7 +33,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 
     const customer = await getCustomer(customerId);
     const invoice = await getInvoice(invoiceId);
-    // console.log(invoice);
+    if(!customer || !invoice) {
+        return redirect('/productos');
+    }
+
+    if(!invoice.state) {
+        console.log('la factura ya fué emitida');
+        return redirect('/productos');
+    }
     
     // change type data of date to string
     const invoiceNew = invoice ? {...invoice, date: invoice?.date + ''} : null;
@@ -60,24 +67,15 @@ export async function action({ request}: ActionFunctionArgs) {
     
     const formData = await request.formData();
     const data = formData.get('data');
-    if (!data) {
-        console.log('No hay productos para la factura');
-        return redirect('/productos');
-    }
 
     const dataObj = JSON.parse(data as string);
-    // console.log(dataObj);
-    // return null;
     
     if(dataObj.hasOwnProperty('state')) {
         await setStateInvoice(invoiceId, dataObj.state);
         console.log('se cambio el state de la factura');
         return redirect('/productos');
-    }
+    } 
 
-    
-
-    // const { products } = JSON.parse(data as string);
     if(dataObj.hasOwnProperty('products')) {
         if(dataObj.products.length == 0) {
             console.log('no hay productos para generar la factura')
@@ -103,47 +101,31 @@ export default function Invoice() {
     const navigate = useNavigate();
 
     const cartLStorage = useCart();
-    const products = cartLStorage?.cartItems ? cartLStorage?.cartItems : [];
-
+    
     const loader = useLoaderData<LoaderData>();
+    
+    const [products, setProducts] = useState<{id: number, name: string, url: string, quantity: number, price: string}[]>([]);
 
     const [isClient, setIsClient] = useState(false);
 
-    const [invoiceState, setInvoiceState] = useState(loader.invoice?.state);
-
     useEffect(() => {
         setIsClient(true);
-        handleSubmit();
-
-        if(products.length == 0 ) {
-            navigate('/productos');
-        }
-
-        if(!invoiceState) {
-            navigate('/productos');
-        }
-        // window.addEventListener("beforeunload", handleEnd);
-
-        // return () => {
-        //     window.removeEventListener("beforeunload", handleEnd);
-        // };
     }, []);
 
     useEffect(() => {
-        if(products.length == 0 ) {
-            navigate('/productos');
+        // console.log(cartLStorage?.cartItems);
+        setProducts(cartLStorage?.cartItems ? cartLStorage.cartItems : [] );
+        if(cartLStorage?.cartItems.length != 0 ) {
+            handleSubmit();
         }
-    }, [products]);
+    }, [cartLStorage?.cartItems]);
 
-    useEffect(() => {
-        if(!invoiceState) {
-            navigate('/productos');
-        }
-    }, [invoiceState]);
 
 
     const handleSubmit = () => {
-        const data = { products: products}
+        const data = { products: cartLStorage?.cartItems}
+        // console.log(cartLStorage?.cartItems);
+        
         fetcher.submit(
             { data: JSON.stringify(data) },
             { method: "post"}
@@ -160,7 +142,6 @@ export default function Invoice() {
         );
 
         cartLStorage?.resetCart();
-        setInvoiceState(false);
     }
 
     if (!isClient) {

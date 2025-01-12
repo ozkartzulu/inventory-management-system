@@ -24,24 +24,24 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 const CartProvider: React.FC<{ children: React.ReactNode }>  = ({children}) => {
 
     // solo para desarrollo
-    const [cartItems, setCartItems] = useState<{id: number, name: string, url: string, quantity: number, price: string}[]>(
-        () => {
-            if (typeof window !== "undefined") {
-                const storedCart = localStorage.getItem("cart");
-                return storedCart ? JSON.parse(storedCart) : [];
-            }
-        }
-    );
+    // const [cartItems, setCartItems] = useState<{id: number, name: string, url: string, quantity: number, price: string}[]>(
+    //     () => {
+    //         if (typeof window !== "undefined") {
+    //             const storedCart = localStorage.getItem("cart");
+    //             return storedCart ? JSON.parse(storedCart) : [];
+    //         }
+    //     }
+    // );
 
     // habilitar para produccion
-    // const [cartItems, setCartItems] = useState<{id: number, name: string, url: string, quantity: number, price: string}[]>([]);
+    const [cartItems, setCartItems] = useState<{id: number, name: string, url: string, quantity: number, price: string}[]>([]);
 
-    // useEffect(() => {
-    //     if (typeof window !== "undefined") {
-    //         const storedCart = localStorage.getItem("cart");
-    //         setCartItems(storedCart ? JSON.parse(storedCart) : []);
-    //     }
-    // }, []);
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const storedCart = localStorage.getItem("cart");
+            setCartItems(storedCart ? JSON.parse(storedCart) : []);
+        }
+    }, []);
 
     useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(cartItems));

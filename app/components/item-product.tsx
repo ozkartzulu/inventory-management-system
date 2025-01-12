@@ -20,27 +20,45 @@ export default function ItemProduct({product}: FormFieldProps) {
     const navigation = useNavigate();
 
     const [active, setActive] = useState( false );
+    const [activeSupplier, setActiveSupplier] = useState( false );
 
     const cartLStorage = useCart();
     const cartItems = cartLStorage?.cartItems;
 
-    useEffect(() => {
+    // useEffect(() => {
         
-        if (typeof window !== "undefined") {
+    //     if (typeof window !== "undefined") {
+    //         console.log(cartItems);
             
-            setTimeout(() => {
-                let productInCart = cartItems?.find( (item) => item.id === product.id );
-                // console.log(cartLStorage?.cartItems);
-                if(productInCart) {
-                    setActive(true);
-                }
-            }, 100);
+    //         setTimeout(() => {
+    //             let productInCart = cartItems?.find( (item) => item.id === product.id );
+    //             if(productInCart) {
+    //                 setActive(true);
+    //             }
+    //         }, 100);
             
-        }
+    //     }
      
-    }, []);
+    // }, []);
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+
+            let productInCart = cartLStorage?.cartItems.find( (item) => item.id === product.id );
+            if(productInCart) {
+                setActive(true);
+            }
+        }
+        
+    }, [cartLStorage?.cartItems])
 
     const handleClick = () => {
+        const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "50"}
+        cartLStorage?.addToCart(productCart);
+        setActive( prev => !prev);
+    }
+
+    const handleClickSupplier = () => {
         const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "50"}
         cartLStorage?.addToCart(productCart);
         setActive( prev => !prev);
@@ -80,7 +98,17 @@ export default function ItemProduct({product}: FormFieldProps) {
                         onClick={ () => navigation(`/productos/eliminar/${product?.id}`) }
                     >Eliminar</button>
 
-                     <div className={`w-7 h-auto cursor-pointer`}>
+                    <div className={`w-7 h-auto cursor-pointer`}>
+                        <img 
+                            src="/icons/truck-fast.svg" 
+                            alt="cart icon"
+                            style={{
+                                filter: activeSupplier ? "invert(26%) sepia(58%) saturate(1537%) hue-rotate(112deg) brightness(96%) contrast(93%)" : 'none',
+                            }}
+                            onClick={handleClickSupplier} 
+                        />
+                    </div>
+                    <div className={`w-7 h-auto cursor-pointer`}>
                         <img 
                             src="/icons/cart-shopping-gray.svg" 
                             alt="cart icon"
@@ -90,6 +118,7 @@ export default function ItemProduct({product}: FormFieldProps) {
                             onClick={handleClick} 
                         />
                     </div>
+                    
                     
                 </div>
             </td>

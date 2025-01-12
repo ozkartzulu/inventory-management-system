@@ -4,7 +4,7 @@ import {Document, Page, Text, View, Image, PDFViewer} from '@react-pdf/renderer'
 import { capitalizeWords, formatDate } from '~/utils/utils';
 
 type InvoiceType = {
-    products: {id: number, name: string, url: string, quantity: number, price: string}[], 
+    products: {id: number, name: string, url: string, quantity: number, price: string}[] | undefined, 
     customer: Customer | null, 
     invoice: {id: number, date: string, total: number, debt: number, userId: number, customerId: number;} | null, 
     user: {id: number, firstName: string, lastName: string, email: string} | null

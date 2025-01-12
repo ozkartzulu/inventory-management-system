@@ -77,6 +77,9 @@ export default function Ventas() {
     let [customer, setCustomer] = useState('');
 
     useEffect(() => {
+        if(cartItems.length == 0) {
+            navigate('/productos');
+        }
         setTotal(prev => {
             const total = cartItems?.reduce( (total, row) => total + ( row.quantity * +row.price) , 0 );
             return total+'';
