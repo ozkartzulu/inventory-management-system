@@ -1,16 +1,27 @@
 
-import { Customer, InvoiceOrder, User } from '@prisma/client';
+import { Customer, InvoiceOrder, Supplier, User } from '@prisma/client';
 import {Document, Page, Text, View, Image, PDFViewer} from '@react-pdf/renderer';
 import { capitalizeWords, formatDate } from '~/utils/utils';
 
 type InvoiceType = {
     products: {id: number, name: string, url: string, quantity: number, price: string}[] | undefined, 
-    customer: Customer | null, 
-    invoice: {id: number, date: string, total: number, debt: number, userId: number, customerId: number;} | null, 
-    user: {id: number, firstName: string, lastName: string, email: string} | null
+    customer?: Customer | null, 
+    supplier?: Supplier | null, 
+    invoice: {id: number, date: string, total: number, debt: number, userId: number, customerId?: number, supplierId?: number} | null, 
+    user: {id: number, firstName: string, lastName: string, email: string} | null,
+    type: string
 }
 
-function Documento({ products, customer, invoice, user }: InvoiceType){
+function Documento({ products, customer, supplier, invoice, user, type }: InvoiceType){
+
+    const getNameClient = () => {
+        if(type === 'sell' && customer) {
+            return capitalizeWords(customer.name);
+        } else if(type === 'buy' && supplier) {
+            return capitalizeWords(supplier.name);
+        }
+        return '';
+    }
 
     return (
         <Document>
@@ -18,7 +29,7 @@ function Documento({ products, customer, invoice, user }: InvoiceType){
         <View style={{margin: "10px 12px"}}>
             <Text style={{marginBottom: "15px", fontSize: "16px", textAlign: "center"}}>Lubricantes Rojas</Text>
             <Text style={{marginBottom: "6px", fontSize: "10px"}}>Fecha: {formatDate(invoice?.date+'')}</Text>
-            <Text style={{marginBottom: "6px", fontSize: "10px"}}>Cliente: { customer ? capitalizeWords(customer.name) : ''}</Text>
+            <Text style={{marginBottom: "6px", fontSize: "10px"}}>Cliente: { getNameClient()}</Text>
             <Text style={{marginBottom: "10px", fontSize: "10px"}}>Vendedor: { user ? capitalizeWords(user.firstName+' '+ user?.lastName) : '' }</Text>
             <View >
                 <View style={{}}>
@@ -34,7 +45,7 @@ function Documento({ products, customer, invoice, user }: InvoiceType){
                     <View style={{borderLeft: "1px solid #9CA3AF", borderRight: "1px solid #9CA3AF"}}>
                         { products?.map( (row, index) => (
                             <View key={index} style={{ display: "flex", flexDirection: "row", borderBottom: "1px solid #9CA3AF" }}>
-                                <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}>{row.id}</Text>
+                                <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}>{invoice?.id}</Text>
                                 <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}>{row.quantity}</Text>
                                 <Text style={{padding: "4px 6px", width: "35%", fontSize: "9px"}}>{row.name}</Text>
                                 <Text style={{padding: "4px 6px", width: "20%", fontSize: "9px"}}>{ row.price } Bs.</Text>

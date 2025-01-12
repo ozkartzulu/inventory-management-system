@@ -19,8 +19,8 @@ interface FormFieldProps {
 export default function ItemProduct({product}: FormFieldProps) {
     const navigation = useNavigate();
 
-    const [active, setActive] = useState( false );
-    const [activeSupplier, setActiveSupplier] = useState( false );
+    const [activeSell, setActiveSell] = useState( false );
+    const [activeBuy, setActiveBuy] = useState( false );
 
     const cartLStorage = useCart();
     const cartItems = cartLStorage?.cartItems;
@@ -33,7 +33,7 @@ export default function ItemProduct({product}: FormFieldProps) {
     //         setTimeout(() => {
     //             let productInCart = cartItems?.find( (item) => item.id === product.id );
     //             if(productInCart) {
-    //                 setActive(true);
+    //                 setActiveSell(true);
     //             }
     //         }, 100);
             
@@ -44,24 +44,29 @@ export default function ItemProduct({product}: FormFieldProps) {
     useEffect(() => {
         if (typeof window !== "undefined") {
 
-            let productInCart = cartLStorage?.cartItems.find( (item) => item.id === product.id );
-            if(productInCart) {
-                setActive(true);
+            let productSell = cartLStorage?.cartItems.sell.find( (item) => item.id === product.id );
+            if(productSell) {
+                setActiveSell(true);
+            }
+
+            let productBuy = cartLStorage?.cartItems.buy.find( (item) => item.id === product.id );
+            if(productBuy) {
+                setActiveBuy(true);
             }
         }
         
     }, [cartLStorage?.cartItems])
 
-    const handleClick = () => {
+    const handleClickSell = () => {
         const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "50"}
-        cartLStorage?.addToCart(productCart);
-        setActive( prev => !prev);
+        cartLStorage?.addToCart(productCart, 'sell');
+        setActiveSell( prev => !prev);
     }
 
-    const handleClickSupplier = () => {
+    const handleClickBuy = () => {
         const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "50"}
-        cartLStorage?.addToCart(productCart);
-        setActive( prev => !prev);
+        cartLStorage?.addToCart(productCart, 'buy');
+        setActiveBuy( prev => !prev);
     }
 
     return (
@@ -103,9 +108,9 @@ export default function ItemProduct({product}: FormFieldProps) {
                             src="/icons/truck-fast.svg" 
                             alt="cart icon"
                             style={{
-                                filter: activeSupplier ? "invert(26%) sepia(58%) saturate(1537%) hue-rotate(112deg) brightness(96%) contrast(93%)" : 'none',
+                                filter: activeBuy ? "invert(26%) sepia(58%) saturate(1537%) hue-rotate(112deg) brightness(96%) contrast(93%)" : 'none',
                             }}
-                            onClick={handleClickSupplier} 
+                            onClick={handleClickBuy} 
                         />
                     </div>
                     <div className={`w-7 h-auto cursor-pointer`}>
@@ -113,9 +118,9 @@ export default function ItemProduct({product}: FormFieldProps) {
                             src="/icons/cart-shopping-gray.svg" 
                             alt="cart icon"
                             style={{
-                                filter: active ? "invert(26%) sepia(58%) saturate(1537%) hue-rotate(112deg) brightness(96%) contrast(93%)" : 'none',
+                                filter: activeSell ? "invert(26%) sepia(58%) saturate(1537%) hue-rotate(112deg) brightness(96%) contrast(93%)" : 'none',
                             }}
-                            onClick={handleClick} 
+                            onClick={handleClickSell} 
                         />
                     </div>
                     

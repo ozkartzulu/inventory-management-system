@@ -1,32 +1,33 @@
 
 import { useActionData, useFetcher, useLoaderData, useNavigate, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { Customer } from "@prisma/client";
+import { Customer, Supplier } from "@prisma/client";
 import { ActionFunctionArgs, json, LoaderFunction } from "@remix-run/node";
 
 import { getAllCustomers } from "~/utils/customer.server";
 import Button from "~/components/button";
-import ItemVenta from "~/components/item-venta";
+import ItemBuy from "~/components/item-buy";
 import useCart from "~/hooks/useCart";
 import { validateName, validateNumber } from "~/utils/validators";
 import { getUser } from "~/utils/auth.server";
-import { registerInvoice } from "~/utils/invoice.server";
+import { registerInvoice, registerInvoiceBuy } from "~/utils/invoice.server";
 import { productCart, productProp } from "~/utils/types.server";
+import { getAllSuppliers } from "~/utils/supplier.server";
 
 type ActionLoader = {
-    customers: Customer[] | null;
+    suppliers: Supplier[] | null;
 }
 
 type ActionData = {
     error?: string;
     fields?: { 
-        customer: string;
+        supplier: string;
     };
     errors?: {
-        customer: string;
+        supplier: string;
     };
     success?: boolean;
-    customerId: number;
+    supplierId: number;
     invoiceId: number;
 };
 
@@ -41,29 +42,29 @@ export async function action({ request}: ActionFunctionArgs) {
         return {error: 'No hay data suficiente'};
     }
     
-    const { products, customerId } = JSON.parse(data as string);
+    const { products, supplierId } = JSON.parse(data as string);
 
     const errors = {
-        customer: validateName(customerId),
+        supplier: validateName(supplierId),
     }
 
     if (Object.values(errors).some(Boolean)) {  
-        return json({ errors, fields: { customerId }, form: action }, { status: 400 })
+        return json({ errors, fields: { supplierId }, form: action }, { status: 400 })
     }
 
     if(user) {
-        return await registerInvoice(products, customerId, user.id );
+        return await registerInvoiceBuy(products, supplierId, user.id );
     }
     
     return json({ success: false, message: "No se pudo crear la factura." }); 
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-    const customers = await getAllCustomers();
-    return json<ActionLoader>({customers});
+    const suppliers = await getAllSuppliers();
+    return json<ActionLoader>({suppliers});
 }
 
-export default function Ventas() {
+export default function Compras() {
 
     const navigate = useNavigate();
     const cartLStorage = useCart();
@@ -80,7 +81,7 @@ export default function Ventas() {
     
     let [total, setTotal] = useState('');
 
-    let [customer, setCustomer] = useState('');
+    let [supplier, setSupplier] = useState('');
 
     const [products, setProducts] = useState<productProp[]>([]);
     // console.log(products);
@@ -102,7 +103,7 @@ export default function Ventas() {
     }, [products])
 
     useEffect(() => {
-        setProducts(cartLStorage?.cartItems.sell ? cartLStorage.cartItems.sell : [] );
+        setProducts(cartLStorage?.cartItems.buy ? cartLStorage.cartItems.buy : [] );
         // if(cartLStorage?.cartItems.sell.length == 0) {
             
         //     navigate('/productos');
@@ -111,13 +112,13 @@ export default function Ventas() {
         //     const total = cartLStorage?.cartItems.sell.reduce( (total, row) => total + (row.quantity * +row.price) , 0 );
         //     return total+'';
         // });
-    }, [cartLStorage?.cartItems.sell])
+    }, [cartLStorage?.cartItems.buy])
 
     useEffect(() => {
         if (fetcher.data?.success) {
             // navigate(`/factura/${fetcher.data.facturaId}`);
             setTimeout( () => {
-                navigate(`/factura?customer=${fetcher.data?.customerId}&invoice=${fetcher.data?.invoiceId}`);
+                navigate(`/factura-proveedor?supplier=${fetcher.data?.supplierId}&invoice=${fetcher.data?.invoiceId}`);
             }, 1000 );
         }
     }, [fetcher.data]);
@@ -125,9 +126,9 @@ export default function Ventas() {
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
 
         let form: any = e.currentTarget.form;
-        const customerId = form.customer.value;
+        const supplierId = form.supplier.value;
 
-        const data = { products: products, customerId }
+        const data = { products: products, supplierId }
 
         fetcher.submit(
             { data: JSON.stringify(data) },
@@ -153,7 +154,7 @@ export default function Ventas() {
                     </thead>
                     <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-thin'>
                         { products.map( venta => (
-                            <ItemVenta venta={venta} key={venta.id} />
+                            <ItemBuy venta={venta} key={venta.id} />
                         ) ) }
                     </tbody>
                     <tfoot>
@@ -173,20 +174,20 @@ export default function Ventas() {
         
         <form action="" className="mt-10">
             <div className="row flex items-center">
-                <label htmlFor='customer' className="text-xl text-yellow-300 font-bold w-1/4">
+                <label htmlFor='supplier' className="text-xl text-yellow-300 font-bold w-1/4">
                     Seleccionar Cliente:
                 </label>
                 <select onChange={e => {
-                    setCustomer(e.target.value);
-                    }} id='customer' name='customer' value={customer} className="w-full p-2 rounded-lg my-2" >
+                    setSupplier(e.target.value);
+                    }} id='supplier' name='supplier' value={supplier} className="w-full p-2 rounded-lg my-2" >
                     <option value={''} hidden>Seleccione Cliente</option>
-                    {loader.customers?.map( (customer, index) => (
-                        <option value={customer.id} key={customer.id}>{ customer.name }</option>
+                    {loader.suppliers?.map( (supplier, index) => (
+                        <option value={supplier.id} key={supplier.id}>{ supplier.name }</option>
                     ) )}
                 </select>
             </div>
             <div className="text-base font-semibold text-right tracking-wide text-red-500 w-full">
-                {fetcher.data?.errors?.customer}
+                {fetcher.data?.errors?.supplier}
             </div>
             <div className="row flex justify-end">
                 <button 

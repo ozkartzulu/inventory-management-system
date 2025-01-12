@@ -24,7 +24,7 @@ export default function ItemVenta({venta}: productType) {
 
     useEffect(() => {
         setCounter( prev => {
-            const found = cartLStorage?.cartItems.sell.find(item => item.id === venta.id);
+            const found = cartLStorage?.cartItems.buy.find(item => item.id === venta.id);
             if(found) {
                 return found.quantity;
             }
@@ -32,7 +32,7 @@ export default function ItemVenta({venta}: productType) {
         });
 
         setPrice( prev => {
-            const found = cartLStorage?.cartItems.sell.find(item => item.id === venta.id);
+            const found = cartLStorage?.cartItems.buy.find(item => item.id === venta.id);
             if(found) {
                 return found.price;
             }
@@ -44,13 +44,13 @@ export default function ItemVenta({venta}: productType) {
     const handleClickPlus = () => {
         if(counter < 20) {
             setCounter(++counter);
-            cartLStorage?.setQuantity(venta.id, counter, 'sell');
+            cartLStorage?.setQuantity(venta.id, counter, 'buy');
         }
     }
     const handleClickMinus = () => {
         if(counter > 1) {
             setCounter(--counter);
-            cartLStorage?.setQuantity(venta.id, counter, 'sell');
+            cartLStorage?.setQuantity(venta.id, counter, 'buy');
         }
     }
 
@@ -58,12 +58,12 @@ export default function ItemVenta({venta}: productType) {
         const newPrice = event.target.value;
         if(newPrice) {
             setPrice(newPrice);
-            cartLStorage?.setPrice(venta.id, newPrice, 'sell');
+            cartLStorage?.setPrice(venta.id, newPrice, 'buy');
         }
     }
 
     const handleRemove = () => {
-        cartLStorage?.removeVenta(venta.id, 'sell');
+        cartLStorage?.removeVenta(venta.id, 'buy');
     }
 
     return (

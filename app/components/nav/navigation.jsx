@@ -3,7 +3,8 @@ import { Link, useLocation, Form } from '@remix-run/react';
 import styles from './styles.module.css';
 // import { UserSession } from '~/utils/types.server';
 
-import Cart from '../cart';
+import CartSell from '../cart-sell';
+import CartBuy from '../cart-buy';
 
 function Navigation({user}){
     const location = useLocation()
@@ -42,8 +43,13 @@ function Navigation({user}){
                     </ul>
                 </li>
                 <li>
+                    <a href="/compras">
+                        <CartBuy />
+                    </a>
+                </li>
+                <li>
                     <a href="/ventas">
-                        <Cart />
+                        <CartSell />
                     </a>
                 </li>
             </ul>

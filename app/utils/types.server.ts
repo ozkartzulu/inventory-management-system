@@ -63,10 +63,28 @@ export type registerProduct = {
     variantId: number
 }
 
-export type productCart = {
+export type productProp = {
     id: number,
     name: string,
     url: string,
     quantity: number,
     price: string
+}
+
+// context
+export type productCart = {
+    sell: {
+        id: number;
+        name: string;
+        url: string;
+        quantity: number;
+        price: string;
+    }[],
+    buy: {
+        id: number;
+        name: string;
+        url: string;
+        quantity: number;
+        price: string;
+    }[]
 }

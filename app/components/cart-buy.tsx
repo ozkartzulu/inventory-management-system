@@ -2,25 +2,24 @@ import { Category, Madein, Model, Variant } from "@prisma/client";
 import { useState, useEffect } from "react";
 import useCart from "~/hooks/useCart";
   
-export default function Cart() {
+export default function CartBuy() {
 
   const [number, setNumber] = useState(0);
 
   const cartLStorage = useCart();
-  const cartItems = cartLStorage?.cartItems;
 
 
   useEffect(() => {
-    const sizeCart = cartItems ? cartItems.length : 0;
+    const sizeCart = cartLStorage?.cartItems ? cartLStorage?.cartItems.buy.length : 0;
     setNumber(sizeCart);
-  }, [cartItems])
+  }, [cartLStorage?.cartItems])
 
 
   return (
     <>
         <div className={`w-6 h-auto cursor-pointer relative`}>
             <img 
-                src="/icons/cart-shopping-gray.svg" 
+                src="/icons/truck-fast.svg" 
                 alt="cart icon"
             />
             <span 
