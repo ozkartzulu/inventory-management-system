@@ -51,7 +51,10 @@ export async function action({ request}: ActionFunctionArgs) {
         return json({ errors, fields: { customerId }, form: action }, { status: 400 })
     }
 
-    if(user) {
+    // check if same product there are not stock
+    const stockEmpty = products.find( (product:productProp) => product.stock == 0);
+    if(user && !stockEmpty) {
+        // console.log(products)
         return await registerInvoice(products, customerId, user.id );
     }
     
@@ -147,6 +150,7 @@ export default function Ventas() {
                             <th className='p-2'>Nombre</th>
                             <th className='p-2'>Imagen</th>
                             <th className='p-2'>Cantidad</th>
+                            <th className='p-2'>Stock</th>
                             <th className='p-2'>Precio</th>
                             <th className='p-2'>Operaciones</th>
                         </tr>
@@ -158,6 +162,7 @@ export default function Ventas() {
                     </tbody>
                     <tfoot>
                         <tr>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>

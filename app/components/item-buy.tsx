@@ -9,6 +9,7 @@ type productType = {
         name: string;
         url: string;
         quantity: number;
+        stock: number;
     }
 }
 
@@ -72,6 +73,7 @@ export default function ItemVenta({venta}: productType) {
             <td className="p-2 capitalize">
                 <img src={venta?.url} className="w-7 h-7 object-cover rounded-sm" alt="product image" />
             </td>
+            <td className="p-2 capitalize">{venta?.stock}</td>
             <td className="p-2 capitalize flex gap-1">
                 <span className="border w-7 rounded-md flex items-center justify-center">{counter} </span>
                 <button 

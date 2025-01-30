@@ -85,12 +85,7 @@ export async function getAllProducts() {
 		});
 
 		if (!products) {
-			return json(
-				{
-					error: `Ocurrió un error al recuperar todas los productos.`,
-				},
-				{ status: 400 },
-			);
+			return null;
 		}
 
 		return products;

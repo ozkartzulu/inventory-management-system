@@ -147,6 +147,7 @@ export default function Compras() {
                         <tr>
                             <th className='p-2'>Nombre</th>
                             <th className='p-2'>Imagen</th>
+                            <th className='p-2'>Stock</th>
                             <th className='p-2'>Cantidad</th>
                             <th className='p-2'>Precio</th>
                             <th className='p-2'>Operaciones</th>

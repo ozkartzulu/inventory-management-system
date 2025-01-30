@@ -2,14 +2,10 @@ import { Customer } from "@prisma/client";
 import { useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import useCart from "~/hooks/useCart";
+import { productProp } from "~/utils/types.server";
 
 type productType = {
-    venta : {
-        id: number;
-        name: string;
-        url: string;
-        quantity: number;
-    }
+    venta : productProp
 }
 
 export default function ItemVenta({venta}: productType) {
@@ -89,6 +85,7 @@ export default function ItemVenta({venta}: productType) {
                     <img src="/icons/minus.svg" alt="minus icon" />
                 </button>
             </td>
+            <td className="p-2 capitalize">{venta?.stock}</td>
             <td className="p-1 capitalize">
                 <input 
                     type="number" 

@@ -7,6 +7,7 @@ import { getUser, getUserIdName, requireUserId } from "~/utils/auth.server";
 import { getAllProducts } from "~/utils/product.server";
 import ItemProduct from "~/components/item-product";
 import Button from "~/components/button";
+import { getAllInventories } from "~/utils/inventory.server";
 
 
 type ProductCategory = {
@@ -18,6 +19,7 @@ type ProductCategory = {
     madeinId: number;
     categoryId: number;
     category: Category;
+    stock: number;
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -26,10 +28,21 @@ export const loader: LoaderFunction = async ({ request }) => {
         return redirect('/login');
     }
     const products = await getAllProducts();
+    const inventories = await getAllInventories();
+
     if(!products) {
         return null;
     }
-    return products;
+
+    const productsAndStock = products.map( product => {
+        const inventory = inventories?.find( inv => inv.productId === product.id);
+        if(inventory) {
+            return {...product, stock: inventory.productsBought - inventory.productsSold};
+        }
+        return {...product, stock: 0};
+    })
+    
+    return productsAndStock;
 }
 
 export default function Productos() {
@@ -60,6 +73,7 @@ export default function Productos() {
                             <th className='p-2'>Categoría</th>
                             <th className='p-2'>Número</th>
                             <th className='p-2'>Imagen</th>
+                            <th className='p-2'>Stock</th>
                             <th className='p-2'>Operaciones</th>
                         </tr>
                     </thead>

@@ -13,6 +13,7 @@ interface FormFieldProps {
         madeinId: number;
         categoryId: number;
         category: Category;
+        stock: number;
     }
 }
 
@@ -21,6 +22,7 @@ export default function ItemProduct({product}: FormFieldProps) {
 
     const [activeSell, setActiveSell] = useState( false );
     const [activeBuy, setActiveBuy] = useState( false );
+    const [stock, setStock] = useState( true );
 
     const cartLStorage = useCart();
     const cartItems = cartLStorage?.cartItems;
@@ -53,18 +55,22 @@ export default function ItemProduct({product}: FormFieldProps) {
             if(productBuy) {
                 setActiveBuy(true);
             }
+
+            if( product.stock == 0) {
+                setStock(false);
+            }
         }
         
     }, [cartLStorage?.cartItems])
 
     const handleClickSell = () => {
-        const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "50"}
+        const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "50", stock: product.stock}
         cartLStorage?.addToCart(productCart, 'sell');
         setActiveSell( prev => !prev);
     }
 
     const handleClickBuy = () => {
-        const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "50"}
+        const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "50", stock: product.stock}
         cartLStorage?.addToCart(productCart, 'buy');
         setActiveBuy( prev => !prev);
     }
@@ -76,6 +82,7 @@ export default function ItemProduct({product}: FormFieldProps) {
             <td className="p-2 capitalize">{product?.category.name}</td>
             <td className="p-2">{product?.number}</td>
             <td className="p-2"> <img src={product?.url} className="w-10 h-10 object-cover rounded-sm" alt="" /> </td>
+            <td className="p-2">{product?.stock}</td>
             <td className="">
                 <div className="flex gap-2 items-center">
                    
@@ -112,16 +119,22 @@ export default function ItemProduct({product}: FormFieldProps) {
                             }}
                             onClick={handleClickBuy} 
                         />
+                        
                     </div>
                     <div className={`w-7 h-auto cursor-pointer`}>
-                        <img 
-                            src="/icons/cart-shopping-gray.svg" 
-                            alt="cart icon"
-                            style={{
-                                filter: activeSell ? "invert(26%) sepia(58%) saturate(1537%) hue-rotate(112deg) brightness(96%) contrast(93%)" : 'none',
-                            }}
-                            onClick={handleClickSell} 
-                        />
+                        { stock ? (
+                            <img 
+                                src="/icons/cart-shopping-black.svg" 
+                                alt="cart icon"
+                                style={{
+                                    filter: activeSell ? "invert(26%) sepia(58%) saturate(1537%) hue-rotate(112deg) brightness(96%) contrast(93%)" : 'none',
+                                }}
+                                onClick={handleClickSell} 
+                            />
+                        ) : (
+                            <img src="/icons/cart-shopping-gray.svg" alt="icon buy" />
+                        )}
+                        
                     </div>
                     
                     

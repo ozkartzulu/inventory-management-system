@@ -10,7 +10,7 @@ export default function CartBuy() {
 
 
   useEffect(() => {
-    const sizeCart = cartLStorage?.cartItems ? cartLStorage?.cartItems.buy.length : 0;
+    const sizeCart = cartLStorage?.cartItems.buy ? cartLStorage?.cartItems.buy.length : 0;
     setNumber(sizeCart);
   }, [cartLStorage?.cartItems])
 

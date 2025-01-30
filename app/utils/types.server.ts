@@ -68,7 +68,8 @@ export type productProp = {
     name: string,
     url: string,
     quantity: number,
-    price: string
+    price: string,
+    stock: number,
 }
 
 // context
@@ -79,6 +80,7 @@ export type productCart = {
         url: string;
         quantity: number;
         price: string;
+        stock: number;
     }[],
     buy: {
         id: number;
@@ -86,5 +88,6 @@ export type productCart = {
         url: string;
         quantity: number;
         price: string;
+        stock: number;
     }[]
 }

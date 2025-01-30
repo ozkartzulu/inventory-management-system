@@ -9,7 +9,7 @@ export default function CartSell() {
   const cartLStorage = useCart();
 
   useEffect(() => {
-    const sizeCart = cartLStorage?.cartItems ? cartLStorage?.cartItems.sell.length : 0;
+    const sizeCart = cartLStorage?.cartItems.sell ? cartLStorage?.cartItems.sell.length : 0;
     setNumber(sizeCart);
   }, [cartLStorage?.cartItems])
 
@@ -18,7 +18,7 @@ export default function CartSell() {
     <>
         <div className={`w-6 h-auto cursor-pointer relative`}>
             <img 
-                src="/icons/cart-shopping-gray.svg" 
+                src="/icons/cart-shopping-black.svg" 
                 alt="cart icon"
             />
             <span 

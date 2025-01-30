@@ -21,6 +21,28 @@ export async function registerManyOrders(products: productProp[], invoice: Invoi
         return null;
     }
 
+    // register inventory
+    products.forEach(async product => {
+        const existProduct = await prisma.inventary.count({ where: { productId: product.id } });
+        if(existProduct) {
+            await prisma.inventary.update({
+                where: {
+                    productId: product.id,
+                },
+                data: {
+                    productsSold: {
+                        increment: product.quantity,
+                    },
+                    sales: {
+                        increment: product.quantity * parseFloat(product.price),
+                    }
+                }
+            })
+        } else {
+            console.log('No existe el producto'+ product.name +' en inventario no se actualizó datos');
+        }
+    })
+
     // return redirect(`/factura?customer=${customerId}&invoice=${invoice.id}`);
     return json({ success: true, customerId: customerId, invoiceId: invoice.id });
 }
@@ -44,6 +66,37 @@ export async function registerManyOrdersBuy(products: productProp[], invoice: In
     if(!cantOrders) {
         return null;
     }
+
+    // register inventory
+    products.forEach(async product => {
+        const existProduct = await prisma.inventary.count({ where: { productId: product.id } });
+        if(!existProduct) {
+            await prisma.inventary.create({
+                data: {
+                    productId: product.id,
+                    productsBought: product.quantity,
+                    productsSold: 0,
+                    purchases: product.quantity * parseFloat(product.price),
+                    sales: 0
+                }
+            })
+        } else {
+            // if exist product, update the values
+            await prisma.inventary.update({
+                where: {
+                    productId: product.id,
+                },
+                data: {
+                    productsBought: {
+                        increment: product.quantity,
+                    },
+                    purchases: {
+                        increment: product.quantity * parseFloat(product.price),
+                    }
+                }
+            })
+        }
+    })
 
     // return redirect(`/factura?customer=${customerId}&invoice=${invoice.id}`);
     return json({ success: true, supplierId: supplierId, invoiceId: invoice.id });
