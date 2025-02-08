@@ -52,3 +52,42 @@ export async function getAllCategories() {
   }
   
 }
+
+export async function getCategory(idCategory: number) {
+	try {
+		const category = await prisma.category.findUnique({
+            where: {
+                id: idCategory,
+            }
+        });
+
+		if (!category) {
+			return null;
+		}
+
+		return category;
+	} catch (error) {
+		console.log('Ocurrió un error al recuperar cliente');
+		return null;
+	}
+}
+
+
+export async function updateCategory(category: registerCategory) {
+
+    const newCategory = await prisma.category.update({
+        where: {
+            id: category.idCategory,
+        },
+        data: {
+            name: category.name,
+            description: category.description
+        },
+    });
+
+    if(!newCategory) {
+        return null;
+    }
+
+    return { id: newCategory.id, name: category.name, description: category.description }
+}

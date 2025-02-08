@@ -34,7 +34,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     return (await getUser(request)) ? redirect('/productos') : null;
 }
 
-export default function Login() {
+export default function Recover() {
 
     const actionData = useActionData<typeof action>();
 
@@ -42,8 +42,9 @@ export default function Login() {
     const [formError, setFormError] = useState(actionData?.error || '');
 
     const [formData, setFormData] = useState({
-        email: actionData?.fields?.email || '',
-        password: actionData?.fields?.password || ''
+        email: '',
+        password: '',
+        repeatPwd: '',
     });
 
     // Updates the form data when an input changes
@@ -55,7 +56,7 @@ export default function Login() {
     return (
         <div className="h-full justify-center items-center flex flex-col gap-y-4">
             <h2 className="text-5xl font-extrabold text-yellow-300">Lubricantes Rojas</h2>
-            <p className="font-semibold text-slate-300">Inicia sesión para administrar inventario</p>
+            <p className="font-semibold text-slate-300">Cambiar contraseña</p>
 
             <form method="post" className="rounded-2xl bg-gray-200 p-6 w-96">
                 <div className="text-xs font-semibold text-center tracking-wide text-red-500 w-full">{formError}</div>
@@ -69,9 +70,18 @@ export default function Login() {
                 <FormField
                     htmlFor="password"
                     type="password"
-                    label="Contraseña"
+                    label="Nueva Contraseña"
                     value={formData.password}
                     onChange={e => handleInputChange(e, 'password')}
+                    error={errors?.password}
+                />
+
+                <FormField
+                    htmlFor="password"
+                    type="password"
+                    label="Repetir nueva Contraseña"
+                    value={formData.repeatPwd}
+                    onChange={e => handleInputChange(e, 'repeatPwd')}
                     error={errors?.password}
                 />
 
@@ -79,12 +89,12 @@ export default function Login() {
                     <input
                     type="submit"
                     className="cursor-pointer rounded-xl mt-2 bg-yellow-300 px-3 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
-                    value="Iniciar Sesión"
+                    value="Cambiar Contraseña"
                     />
                 </div>
             </form>
             <p className="font-semibold text-slate-300">¿No tienes cuenta aún? <a href="/sign-up" className='text-yellow-300 underline'>Registrate!</a> </p>
-            <p className="font-semibold text-slate-300"> <a href="/recover" className='text-yellow-300 underline'>¿Olvidaste tu contraseña?</a> </p>
+            <p className="font-semibold text-slate-300">¿Ya tiene cuenta? <a href="/login" className="text-yellow-300 underline">Iniciar Sesión</a> </p>
         </div>
     )
 }

@@ -15,3 +15,24 @@ export const createUser = async (user: RegisterForm) => {
   
   return { id: newUser.id, name: user.firstName, email: user.email }
 }
+
+export async function getAllUsers() {
+	try {
+		const users = await prisma.user.findMany({
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true
+            }
+        });
+
+		if (!users) {
+			return null;
+		}
+
+		return users;
+	} catch (error) {
+		console.log('Ocurrió un error al recuperar todos los usuarios');
+		return null;
+	}
+}

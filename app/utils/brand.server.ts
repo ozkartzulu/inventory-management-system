@@ -1,4 +1,4 @@
-import type { registerModel } from './types.server';
+import type { registerModel, updateBrand } from './types.server';
 import { prisma } from './prisma.server';
 import { redirect, json, createCookieSessionStorage  } from '@remix-run/node';
 import { createUser } from './user.server';
@@ -73,5 +73,42 @@ export async function getBrandsByIdCategory(idCategory: number | undefined) {
 	} catch (error) {
 		console.log(`Ocurrió un error al recuperar marcas dado categoria: ${idCategory}.`);
 		return null;
+	}
+}
+
+export async function updateBrand(brand: updateBrand) {
+
+    const newBrand = await prisma.brand.update({
+        where: {
+            id: brand.idBrand,
+        },
+        data: {
+            name: brand.name,
+        },
+    });
+
+    if(!newBrand) {
+        return null;
+    }
+
+    return { id: newBrand.id, name: brand.name }
+}
+
+export async function getBrand(idBrand: number) {
+	try {
+		const brand = await prisma.brand.findUnique({
+            where: {
+                id: idBrand,
+            }
+        });
+
+		if (!brand) {
+			return null;
+		}
+
+		return brand;
+	} catch (error) {
+		console.log('Ocurrió un error al recuperar modelo');
+		// return null;
 	}
 }

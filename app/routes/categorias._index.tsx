@@ -1,9 +1,9 @@
 import { Category } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
-import { useActionData, useLoaderData } from "@remix-run/react";
-import { requireUserId } from "~/utils/auth.server";
+import { useLoaderData } from "@remix-run/react";
 import { getAllCategories } from "~/utils/category.server";
-import Item from '~/components/item';
+import ItemCategory from '~/components/item-category';
+import Button from "~/components/button";
 
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -11,18 +11,39 @@ export const loader: LoaderFunction = async ({ request }) => {
     if(!categories) {
         return null;
     }
-    // console.log(categories)
     return categories;
 }
 
 export default function Index() {
 
     const categories:[Category] = useLoaderData();
-    console.log(categories)
 
     return (
-        <div className="container">
-            {categories.map( (item, index) => <Item item={item} key={index} />)}
-        </div>
-    )
+            <div className="container max-w-screen-xl m-auto px-4">
+                <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Lista de Categorías</h2>
+                <div className='flex gap-5 mb-3'>
+                    <Button label="Nuevo" href="/categorias/crear" />
+                </div>
+            { categories.length ? (
+                <>
+                <div className="list-products">
+                    <table className='w-full'> 
+                        <thead className='bg-indigo-600 text-white text-left'>
+                            <tr>
+                                <th className='p-2'>Nombre</th>
+                                <th className='p-2'>Descripción</th>
+                                <th className='p-2'>Operaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-thin'>
+                            { categories?.map( category => (
+                                <ItemCategory category={category} key={category.id} />
+                            ) ) }
+                        </tbody>
+                    </table>
+                </div>
+                </>
+                ) : (<p>No hay Categorías</p>)}
+            </div>
+        )
 }

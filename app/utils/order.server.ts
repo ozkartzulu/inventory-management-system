@@ -101,3 +101,147 @@ export async function registerManyOrdersBuy(products: productProp[], invoice: In
     // return redirect(`/factura?customer=${customerId}&invoice=${invoice.id}`);
     return json({ success: true, supplierId: supplierId, invoiceId: invoice.id });
 }
+
+export async function getAllOrders() {
+	try {
+		const orders = await prisma.order.findMany({
+			include: {
+				product: {
+                    include: {
+                        category: true
+                    }, 
+                },
+                invoiceOrder: {
+                    include: {
+                        user: {
+                            select: {id: true, firstName: true}
+                        },
+                        customer: {
+                            select: {id: true, name: true}
+                        }
+                    }
+                }
+			},
+		});
+
+		if (!orders) {
+			return null;
+		}
+
+		return orders;
+	} catch (error) {
+		console.log('Ocurrió un error al recuperar todas las ordenes');
+		return null;
+	}
+}
+
+export async function getAllOrdersProduct(startDate: Date, endDate: Date | null) {
+    let dateData = {};
+    if(endDate) {
+        dateData = {
+            gte: startDate,
+            lte: endDate
+        }
+        console.log(dateData)
+    } else {
+        dateData = {
+            gte: startDate
+        }
+        console.log(dateData)
+    }
+	try {
+		const orders = await prisma.order.findMany({
+            where: {
+                date: dateData
+            },
+			include: {
+				product: {
+                    select: {
+                        id: true, url: true, name: true
+                    }
+                },
+			},
+		});
+
+		if (!orders) {
+			return null;
+		}
+
+		return orders;
+	} catch (error) {
+		console.log('Ocurrió un error al recuperar todas las orders');
+		return null;
+	}
+}
+
+//////////////////////// Detail Sales //////////////////////////
+
+export async function getAllSales() {
+	try {
+		const orders = await prisma.detailSales.findMany({
+			include: {
+				product: {
+                    include: {
+                        category: true
+                    }, 
+                },
+                invoiceSales: {
+                    include: {
+                        user: {
+                            select: {id: true, firstName: true}
+                        },
+                        supplier: {
+                            select: {id: true, name: true}
+                        }
+                    }
+                }
+			},
+		});
+
+		if (!orders) {
+			return null;
+		}
+
+		return orders;
+	} catch (error) {
+		console.log('Ocurrió un error al recuperar todas las detail sales');
+		return null;
+	}
+}
+
+export async function getAllSalesProduct(startDate: Date, endDate: Date | null) {
+    let dateData = {};
+    if(endDate) {
+        dateData = {
+            gte: startDate,
+            lte: endDate
+        }
+    } else {
+        dateData = {
+            gte: startDate
+        }
+    }
+	try {
+		const orders = await prisma.detailSales.findMany({
+            where: {
+                date: dateData
+            },
+			include: {
+				product: {
+                    select: {
+                        id: true, url: true, name: true
+                    }
+                },
+			},
+		});
+
+		if (!orders) {
+			return null;
+		}
+
+		return orders;
+	} catch (error) {
+		console.log('Ocurrió un error al recuperar todas las orders');
+		return null;
+	}
+}

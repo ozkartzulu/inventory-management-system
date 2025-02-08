@@ -1,4 +1,4 @@
-import type { registerMadein, registerModel } from './types.server';
+import type { registerMadein, registerModel, updateMadein } from './types.server';
 import { prisma } from './prisma.server';
 import { redirect, json, createCookieSessionStorage  } from '@remix-run/node';
 import { createUser } from './user.server';
@@ -50,6 +50,43 @@ export async function getAllMadeins() {
     console.log('Ocurrió un error al recuperar todas los fabricados');
     return null;
   }
+}
+
+export async function updateMadein(madein: updateMadein) {
+
+    const newBrand = await prisma.madein.update({
+        where: {
+            id: madein.idMadein,
+        },
+        data: {
+            name: madein.name,
+        },
+    });
+
+    if(!newBrand) {
+        return null;
+    }
+
+    return { id: newBrand.id, name: madein.name }
+}
+
+export async function getMadein(idMadein: number) {
+	try {
+		const brand = await prisma.madein.findUnique({
+            where: {
+                id: idMadein,
+            }
+        });
+
+		if (!brand) {
+			return null;
+		}
+
+		return brand;
+	} catch (error) {
+		console.log('Ocurrió un error al recuperar modelo');
+		// return null;
+	}
 }
 
 /*

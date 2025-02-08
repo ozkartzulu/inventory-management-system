@@ -33,7 +33,7 @@ export const action: ActionFunction = async ({request}) => {
 
 export const loader: LoaderFunction = async ({ request }) => {
     // If there's already a user in the session, redirect to the home page
-    return (await getUser(request)) ? redirect('/') : null;
+    return (await getUser(request)) ? redirect('/productos') : null;
 }
 
 export default function Signup() {

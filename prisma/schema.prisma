@@ -72,6 +72,7 @@ model DetailSales {
     id  Int @id @default(autoincrement())
     quantity Int
     price Float
+    date DateTime @default(now())
     product Product @relation(fields: [productId], references: [id])
     productId Int
     invoiceSales InvoiceSales @relation(fields: [invoiceSalesId], references: [id])

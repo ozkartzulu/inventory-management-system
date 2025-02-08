@@ -1,4 +1,4 @@
-import type { registerModel } from './types.server';
+import type { registerModel, updateModel } from './types.server';
 import { prisma } from './prisma.server';
 import { redirect, json, createCookieSessionStorage  } from '@remix-run/node';
 import { createUser } from './user.server';
@@ -74,4 +74,41 @@ export async function getModelsByIdCategory(idCategory: number | undefined) {
 		console.log(`Ocurrió un error al recuperar modelos dado categoria: ${idCategory}.`);
 		return null;
 	}
+}
+
+export async function getModel(idModel: number) {
+	try {
+		const model = await prisma.model.findUnique({
+            where: {
+                id: idModel,
+            }
+        });
+
+		if (!model) {
+			return null;
+		}
+
+		return model;
+	} catch (error) {
+		console.log('Ocurrió un error al recuperar modelo');
+		// return null;
+	}
+}
+
+export async function updateModel(model: updateModel) {
+
+    const newModel = await prisma.model.update({
+        where: {
+            id: model.idModel,
+        },
+        data: {
+            name: model.name,
+        },
+    });
+
+    if(!newModel) {
+        return null;
+    }
+
+    return { id: newModel.id, name: model.name }
 }

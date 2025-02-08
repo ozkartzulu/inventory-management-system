@@ -32,13 +32,21 @@ function Navigation({user}){
                     <Link to='/clientes' className={ `${location.pathname === '/clientes' ? 'active' : ''} ` } >Clientes</Link>
                 </li>
                 <li>
-                    <Link to='/backup' className={ `${location.pathname === '/backup' ? 'active' : ''} `  } >Back Up</Link>
+                    <Link to='/reportes/total-ventas' >Reportes</Link>
+                    <ul>
+                        <li><Link to='/reportes/ventas'  >Ventas</Link></li>
+                        <li><Link to='/reportes/compras'  >Compras</Link></li>
+                        <li><Link to='/reportes/total-ventas'  >Total Ventas</Link></li>
+                    </ul>
                 </li>
+                {/* <li>
+                    <Link to='/backup' className={ `${location.pathname === '/backup' ? 'active' : ''} `  } >Back Up</Link>
+                </li> */}
                 <li>
-                    <Link to='/'>{user.name}</Link> 
+                    <Link to='/productos'>{user.name}</Link> 
                     <ul>
                         <li>
-                            <Form method='post' action='/logout'><button type='submit' className='cursor-pointer'>Log Out</button></Form>
+                            <Link to='/logout' className={ `${location.pathname === '/categorias' ? 'active' : ''} ` }>Log Out</Link>
                         </li>
                     </ul>
                 </li>

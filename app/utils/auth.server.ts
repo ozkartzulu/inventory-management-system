@@ -50,7 +50,7 @@ export async function register(user: RegisterForm) {
       );
     }
 
-    return createUserSession(newUser, '/');
+    return createUserSession(newUser, '/productos');
 }
 
 export async function login({ email, password }: LoginForm) {
@@ -63,7 +63,7 @@ export async function login({ email, password }: LoginForm) {
         return json({ error: `Incorrect login` }, { status: 400 });
     }
   
-    return createUserSession({id: user.id, name: user.firstName, email: user.email}, '/');
+    return createUserSession({id: user.id, name: user.firstName, email: user.email}, '/productos');
 }
 
 export async function requireUserId(request: Request, redirectTo: string = new URL(request.url).pathname) {

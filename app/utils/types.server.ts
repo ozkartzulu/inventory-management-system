@@ -31,12 +31,35 @@ export type UserSession = {
 }
 
 export type registerCategory = {
+    idCategory?: number
     name: string
     description: string
 }
 
 export type registerModel = {
     name: string
+    categoryId: number
+}
+
+export type updateModel = {
+    idModel: number
+    name: string
+}
+
+export type updateBrand = {
+    idBrand: number
+    name: string
+}
+
+export type updateMadein = {
+    idMadein: number
+    name: string
+}
+
+export type updateVariant = {
+    idVariant: number
+    unit: number
+    medida: string
     categoryId: number
 }
 
@@ -70,6 +93,37 @@ export type productProp = {
     quantity: number,
     price: string,
     stock: number,
+}
+
+
+// orders
+export type TotalVenta = {
+    productId: number;
+    quantitySell: number;
+    amountSell: number;
+    quantityBuy: number;
+    amountBuy: number;
+    product: {id: number, url: string, name: string};
+}
+
+export type OrderType = {
+    id: number;
+    quantity: number;
+    price: number;
+    date: Date;
+    productId: number;
+    invoiceOrderId: number;
+    product: {id: number, url: string, name: string};
+}
+
+export type SalesType = {
+    id: number;
+    quantity: number;
+    price: number;
+    date: Date;
+    productId: number;
+    invoiceSalesId: number;
+    product: {id: number, url: string, name: string};
 }
 
 // context

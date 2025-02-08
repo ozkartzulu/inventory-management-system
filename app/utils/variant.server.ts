@@ -1,4 +1,4 @@
-import type { registerVariant } from './types.server';
+import type { registerVariant, updateVariant } from './types.server';
 import { prisma } from './prisma.server';
 import { redirect, json, createCookieSessionStorage  } from '@remix-run/node';
 import { createUser } from './user.server';
@@ -35,7 +35,11 @@ export async function registerVariant(variant: registerVariant) {
 
 export async function getAllVariants() {
 	try {
-		const variants = await prisma.variant.findMany();
+		const variants = await prisma.variant.findMany({
+            include: {
+                category: true,
+            }
+        });
 
 		if(!variants) {
 			return json(
@@ -76,4 +80,46 @@ export async function getVariantsByIdCategory(idCategory: number | undefined) {
 		console.log(`Ocurrió un error al recuperar variantes dado categoria: ${idCategory}.`);
 		return null;
 	}
+}
+
+export async function getVariant(idVariant: number) {
+	try {
+		const variant = await prisma.variant.findUnique({
+            where: {
+                id: idVariant,
+            },
+            include: {
+                category: true,
+            }
+        });
+
+		if (!variant) {
+			return null;
+		}
+
+		return variant;
+	} catch (error) {
+		console.log('Ocurrió un error al recuperar variante');
+		// return null;
+	}
+}
+
+export async function updateVariant(variant: updateVariant) {
+
+    const newVariant = await prisma.variant.update({
+        where: {
+            id: variant.idVariant,
+        },
+        data: {
+            medida: variant.medida,
+            unit: variant.unit,
+            categoryId: variant.categoryId,
+        },
+    });
+
+    if(!newVariant) {
+        return null;
+    }
+
+    return { id: newVariant.id, medida: variant.medida, unit: variant.unit, categoryId: variant.categoryId }
 }
