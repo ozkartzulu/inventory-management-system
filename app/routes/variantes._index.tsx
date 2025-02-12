@@ -31,11 +31,11 @@ export default function Index() {
             <div className="container max-w-screen-xl m-auto px-4">
                 <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Lista de Variantes</h2>
                 <div className='flex gap-5 mb-3'>
-                    <Button label="Nuevo" href="/variantes/crear" />
+                    <Button label="Nueva Variante" href="/variantes/crear" />
                 </div>
             { variants.length ? (
                 <>
-                <div className="list-products">
+                <div className="list-products overflow-auto">
                     <table className='w-full'> 
                         <thead className='bg-indigo-600 text-white text-left'>
                             <tr>

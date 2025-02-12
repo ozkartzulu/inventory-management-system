@@ -140,39 +140,39 @@ export default function ReporteCompras() {
     return (
         <div className="container max-w-screen-xl m-auto px-4">
             <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Lista de Compras</h2>
-            <div className='flex gap-5 mb-3'>
+            <div className='flex flex-wrap gap-5 mb-4'>
                 <input 
                     type="text"
-                    className='py-1 px-3 shadow-sm w-1/3 rounded'
+                    className='py-2 px-3 shadow-sm w-full md:w-1/3 rounded'
                     onChange={ e => setSearchTerm(e.target.value) } 
                     placeholder="Buscar por Nombre de Producto..." 
                 />
-                <select  id='select-supplier' name='select-supplier' className="p-2 rounded-md w-44" onChange={handleSupplier}>
+                <select  id='select-supplier' name='select-supplier' className="p-2 rounded-md w-full md:w-44" onChange={handleSupplier}>
                     <option  value=''>Todos los Proveedores</option>
                     {data?.suppliers.map( (supplier, index) => (
                         <option value={supplier.id} key={supplier.id}>{ supplier.name}</option>
                     ) )}
                 </select>
-                <select  id='select-user' name='select-user' className="p-2 rounded-md w-44" onChange={handleUser}>
+                <select  id='select-user' name='select-user' className="p-2 rounded-md w-full md:w-44" onChange={handleUser}>
                     <option  value=''>Todos los Usuario</option>
                     {data?.users.map( (user, index) => (
                         <option value={user.id} key={user.id}>{ user.firstName}</option>
                     ) )}
                 </select>
-                <select  id='select-category' name='select-category' className="p-2 rounded-md w-44" onChange={handleCategory}>
+                <select  id='select-category' name='select-category' className="p-2 rounded-md w-full md:w-44" onChange={handleCategory}>
                     <option  value=''>Todas las Categoría</option>
                     {data?.categories.map( (category, index) => (
                         <option value={category.id} key={category.id}>{ category.name}</option>
                     ) )}
                 </select>
-                <select  id='select-date' name='select-date' className="p-2 rounded-md w-44" onChange={handleDate}>
+                <select  id='select-date' name='select-date' className="p-2 rounded-md w-full md:w-44" onChange={handleDate}>
                     <option  value='2'>Fecha DESC</option> 
                     <option  value='1'>Fecha ASC</option>
                 </select>
             </div>
         { orders?.length ? (
             <>
-            <div className="list-products">
+            <div className="list-products overflow-auto">
                 <table className='w-full'> 
                     <thead className='bg-indigo-600 text-white text-left'>
                         <tr>

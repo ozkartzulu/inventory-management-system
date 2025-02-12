@@ -164,19 +164,19 @@ export default function ReporteTotalVentas() {
     return (
         <div className="container max-w-screen-xl m-auto px-4">
             <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Total Ventas</h2>
-            <div className='flex gap-5 mb-3'>
-                <div className="flex gap-6 items-center mr-7">
-                    <label htmlFor="start" className="text-yellow-300 text-xl font-bold">Seleccionar Fecha Inicio</label>
-                    <input type="date" id="start" name="start" className="py-2 px-3 rounded-md" onChange={handleStart}/>
+            <div className='flex flex-wrap gap-5 mb-3'>
+                <div className="flex gap-3 md:gap-6 items-center md:mr-7">
+                    <label htmlFor="start" className="text-yellow-300 text-lg md:text-lg font-bold w-2/5 ">Seleccionar Fecha Inicio</label>
+                    <input type="date" id="start" name="start" className="py-2 px-3 rounded-md w-3/5" onChange={handleStart}/>
                 </div>
-                <div className="flex gap-6 items-center">
-                    <label htmlFor="end" className="text-yellow-300 text-xl font-bold" >Seleccionar Fecha Fin</label>
-                    <input type="date" id="end" name="end" className="py-2 px-3 rounded-md" onChange={handleEnd} />
+                <div className="flex gap-3 md:gap-6 items-center">
+                    <label htmlFor="end" className="text-yellow-300 text-lg md:text-lg font-bold w-2/5" >Seleccionar Fecha Fin</label>
+                    <input type="date" id="end" name="end" className="py-2 px-3 rounded-md w-3/5" onChange={handleEnd} />
                 </div>
             </div>
         { orders?.length ? (
             <>
-            <div className="list-products">
+            <div className="list-products overflow-auto">
                 <table className='w-full'> 
                     <thead className='bg-indigo-600 text-white text-left'>
                         <tr>

@@ -53,18 +53,18 @@ export default function Productos() {
     return (
         <div className="container max-w-screen-xl m-auto px-4">
             <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Lista de Productos</h2>
-            <div className='flex gap-5 mb-3'>
+            <div className='flex flex-wrap gap-4 mb-4'>
+                <Button label="Nuevo Producto" href="/productos/crear" />
                 <input 
                     type="text"
-                    className='py-1 px-3 shadow-sm w-1/3 rounded'
+                    className='py-1 px-3 shadow-sm w-full md:w-1/3 rounded'
                     onChange={ e => setSearchTerm(e.target.value) } 
                     placeholder="Buscar por Nombre..." 
                 />
-                <Button label="Nuevo" href="/productos/crear" />
             </div>
         { products.length ? (
             <>
-            <div className="list-products">
+            <div className="list-products overflow-auto">
                 <table className='w-full'> 
                     <thead className='bg-indigo-600 text-white text-left'>
                         <tr>

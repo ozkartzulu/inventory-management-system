@@ -10,7 +10,7 @@ export default function Button({ label, href }: FormFieldProps) {
         <>
             <a 
                 href={href} 
-                className="bg-indigo-800 text-white flex justify-center items-center rounded px-2 py-1 min-w-28 font-semibold"
+                className="bg-indigo-800 text-white text-center flex justify-center items-center rounded px-2 py-1 min-w-24 md:min-w-28 font-semibold"
             >{label}</a>
         </>
     )

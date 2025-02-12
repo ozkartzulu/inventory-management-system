@@ -22,11 +22,11 @@ export default function Index() {
             <div className="container max-w-screen-xl m-auto px-4">
                 <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Lista de Categorías</h2>
                 <div className='flex gap-5 mb-3'>
-                    <Button label="Nuevo" href="/categorias/crear" />
+                    <Button label="Nueva Categoría" href="/categorias/crear" />
                 </div>
             { categories.length ? (
                 <>
-                <div className="list-products">
+                <div className="list-products overflow-auto">
                     <table className='w-full'> 
                         <thead className='bg-indigo-600 text-white text-left'>
                             <tr>

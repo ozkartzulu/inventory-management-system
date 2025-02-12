@@ -12,6 +12,12 @@ export const validatePassword = (password: string): string | undefined => {
         return "Por favor ingrese una contraseña que al menos tenga 5 caractres de longitud";
     }
 }
+
+export const validateRepeatPassword = (password: string, repeatPwd: string): string | undefined => {
+    if (password !== repeatPwd) {
+        return "Contraseña repetida no coincide";
+    }
+}
   
 export const validateName = (name: string): string | undefined => {
     if (!name.length) return `Por favor ingrese un valor`;

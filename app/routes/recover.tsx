@@ -4,28 +4,32 @@ import { ActionFunction, LoaderFunction, json, redirect } from '@remix-run/node'
 import { useActionData } from '@remix-run/react';
 import { login, getUser } from '~/utils/auth.server';
 import FormField from '~/components/form-field';
-import { validateEmail, validatePassword } from '~/utils/validators';
+import FieldPassword from '~/components/field-password'
+import { validateEmail, validatePassword, validateRepeatPassword } from '~/utils/validators';
+import { updateUserPwd } from '~/utils/user.server';
 
 
 export const action: ActionFunction = async ({request}) => {
     const form = await request.formData();
     const email = form.get('email');
     const password = form.get('password');
+    const repeatPwd = form.get('repeatPwd');
 
-    if (typeof email !== 'string' || typeof password !== 'string') {
-        return json({ error: `Invalid Form Data`, form: action }, { status: 400 })
+    if (typeof email !== 'string' || typeof password !== 'string' || typeof repeatPwd !== 'string') {
+        return json({ error: `Invalido de datos`, form: action }, { status: 400 })
     }
 
     const errors = {
         email: validateEmail(email),
         password: validatePassword(password),
+        repeatPwd: validateRepeatPassword(password, repeatPwd),
     }
 
     if (Object.values(errors).some(Boolean)) {
-        return json({ errors, fields: { email, password }, form: action }, { status: 400 })
+        return json({ errors, fields: { email, password, repeatPwd }, form: action }, { status: 400 })
     }
 
-    return await login({ email, password });
+    return await updateUserPwd({ email, password });
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -38,11 +42,13 @@ export default function Recover() {
 
     const actionData = useActionData<typeof action>();
 
+    const [showPassword, setShowPassword] = useState(false);
+
     const [errors, setErrors] = useState(actionData?.errors || {});
     const [formError, setFormError] = useState(actionData?.error || '');
 
     const [formData, setFormData] = useState({
-        email: '',
+        email: actionData?.fields.email || '',
         password: '',
         repeatPwd: '',
     });
@@ -55,10 +61,10 @@ export default function Recover() {
 
     return (
         <div className="h-full justify-center items-center flex flex-col gap-y-4">
-            <h2 className="text-5xl font-extrabold text-yellow-300">Lubricantes Rojas</h2>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-yellow-300">Lubricantes Rojas</h2>
             <p className="font-semibold text-slate-300">Cambiar contraseña</p>
 
-            <form method="post" className="rounded-2xl bg-gray-200 p-6 w-96">
+            <form method="post" className="rounded-2xl bg-gray-200 p-6 w-11/12 md:w-96">
                 <div className="text-xs font-semibold text-center tracking-wide text-red-500 w-full">{formError}</div>
                 <FormField
                     htmlFor="email"
@@ -67,22 +73,19 @@ export default function Recover() {
                     onChange={e => handleInputChange(e, 'email')}
                     error={errors?.email}
                 />
-                <FormField
+
+                <FieldPassword
                     htmlFor="password"
-                    type="password"
                     label="Nueva Contraseña"
-                    value={formData.password}
                     onChange={e => handleInputChange(e, 'password')}
                     error={errors?.password}
                 />
 
-                <FormField
-                    htmlFor="password"
-                    type="password"
+                <FieldPassword
+                    htmlFor="repeatPwd"
                     label="Repetir nueva Contraseña"
-                    value={formData.repeatPwd}
                     onChange={e => handleInputChange(e, 'repeatPwd')}
-                    error={errors?.password}
+                    error={errors?.repeatPwd}
                 />
 
                 <div className="w-full text-center">

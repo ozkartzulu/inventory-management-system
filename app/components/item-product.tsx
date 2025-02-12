@@ -83,7 +83,7 @@ export default function ItemProduct({product}: FormFieldProps) {
             <td className="p-2">{product?.number}</td>
             <td className="p-2"> <img src={product?.url} className="w-10 h-10 object-cover rounded-sm" alt="" /> </td>
             <td className="p-2">{product?.stock}</td>
-            <td className="">
+            <td className="pr-2">
                 <div className="flex gap-2 items-center">
                    
                     <button 

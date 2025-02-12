@@ -141,11 +141,11 @@ export default function Compras() {
         <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Revisar Productos</h2>
         { products ? (
             <>
-            <div className="list-customers">
+            <div className="list-customers overflow-auto">
                 <table className='w-full'> 
                     <thead className='bg-indigo-600 text-white text-left'>
                         <tr>
-                            <th className='p-2'>Nombre</th>
+                            <th className='p-2 w-28'>Nombre</th>
                             <th className='p-2'>Imagen</th>
                             <th className='p-2'>Stock</th>
                             <th className='p-2'>Cantidad</th>
@@ -174,13 +174,13 @@ export default function Compras() {
 
         
         <form action="" className="mt-10">
-            <div className="row flex items-center">
-                <label htmlFor='supplier' className="text-xl text-yellow-300 font-bold w-1/4">
+            <div className="row flex flex-wrap items-center">
+                <label htmlFor='supplier' className="text-xl text-yellow-300 font-bold w-full md:w-1/4">
                     Seleccionar Cliente:
                 </label>
                 <select onChange={e => {
                     setSupplier(e.target.value);
-                    }} id='supplier' name='supplier' value={supplier} className="w-full p-2 rounded-lg my-2" >
+                    }} id='supplier' name='supplier' value={supplier} className="w-full md:w-3/4 p-2 rounded-lg my-2" >
                     <option value={''} hidden>Seleccione Cliente</option>
                     {loader.suppliers?.map( (supplier, index) => (
                         <option value={supplier.id} key={supplier.id}>{ supplier.name }</option>
@@ -190,7 +190,7 @@ export default function Compras() {
             <div className="text-base font-semibold text-right tracking-wide text-red-500 w-full">
                 {fetcher.data?.errors?.supplier}
             </div>
-            <div className="row flex justify-end">
+            <div className="row flex justify-start md:justify-end">
                 <button 
                     type="button" 
                     onClick={handleSubmit}

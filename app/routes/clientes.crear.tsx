@@ -58,7 +58,7 @@ export default function CrearCustomer() {
     return (
         <div className="h-full justify-center items-center flex flex-col gap-y-4">
             <p className="text-2xl font-extrabold text-yellow-300 mb-6">Registrar Cliente</p>
-            <form method="post" className="rounded-2xl bg-gray-200 p-6 w-96">
+            <form method="post" className="rounded-2xl bg-gray-200 p-6 w-11/12 md:w-96">
                 <div className="text-xs font-semibold text-center tracking-wide text-red-500 w-full">{formError}</div>
                 <FormField
                     htmlFor="name"

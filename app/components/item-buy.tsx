@@ -69,12 +69,12 @@ export default function ItemVenta({venta}: productType) {
 
     return (
         <tr className="border-b border-b-pink-200 border-opacity-30">
-            <td className="p-2 capitalize">{venta?.name}</td>
+            <td className="p-2 capitalize min-w-24">{venta?.name}</td>
             <td className="p-2 capitalize">
                 <img src={venta?.url} className="w-7 h-7 object-cover rounded-sm" alt="product image" />
             </td>
             <td className="p-2 capitalize">{venta?.stock}</td>
-            <td className="p-2 capitalize flex gap-1">
+            <td className="p-4 capitalize flex gap-1">
                 <span className="border w-7 rounded-md flex items-center justify-center">{counter} </span>
                 <button 
                     className="w-7 rounded-md border border-opacity-30 border-gray" 
@@ -95,7 +95,7 @@ export default function ItemVenta({venta}: productType) {
                 <input 
                     type="number" 
                     value={price} 
-                    className="bg-transparent border rounded-md py-1 pl-2 pr-1"
+                    className="bg-transparent border rounded-md py-1 pl-2 pr-1 w-20"
                     onChange={handlePrice}
                 />
             </td>

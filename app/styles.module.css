@@ -1,3 +1,12 @@
 .body {
     background: -webkit-linear-gradient(0deg, #3b47c8,#671ade,#df90b1);                                            
 }
+main {
+    padding-bottom: 50px;
+}
+
+@media (max-width: 678px) {
+    body {
+        font-size: 15px;
+    }
+}

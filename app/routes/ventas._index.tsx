@@ -143,7 +143,7 @@ export default function Ventas() {
         <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Revisar Productos</h2>
         { products ? (
             <>
-            <div className="list-customers">
+            <div className="list-customers overflow-auto">
                 <table className='w-full'> 
                     <thead className='bg-indigo-600 text-white text-left'>
                         <tr>
@@ -177,13 +177,13 @@ export default function Ventas() {
 
         
         <form action="" className="mt-10">
-            <div className="row flex items-center">
-                <label htmlFor='customer' className="text-xl text-yellow-300 font-bold w-1/4">
+            <div className="row flex flex-wrap items-center">
+                <label htmlFor='customer' className="text-xl text-yellow-300 font-bold w-full md:w-1/4">
                     Seleccionar Cliente:
                 </label>
                 <select onChange={e => {
                     setCustomer(e.target.value);
-                    }} id='customer' name='customer' value={customer} className="w-full p-2 rounded-lg my-2" >
+                    }} id='customer' name='customer' value={customer} className="w-full md:w-3/4 p-2 rounded-lg my-2" >
                     <option value={''} hidden>Seleccione Cliente</option>
                     {loader.customers?.map( (customer, index) => (
                         <option value={customer.id} key={customer.id}>{ customer.name }</option>
@@ -193,7 +193,7 @@ export default function Ventas() {
             <div className="text-base font-semibold text-right tracking-wide text-red-500 w-full">
                 {fetcher.data?.errors?.customer}
             </div>
-            <div className="row flex justify-end">
+            <div className="row flex justify-start md:justify-end">
                 <button 
                     type="button" 
                     onClick={handleSubmit}

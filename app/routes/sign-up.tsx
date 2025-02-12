@@ -57,10 +57,10 @@ export default function Signup() {
 
     return (
         <div className="h-full justify-center items-center flex flex-col gap-y-4">
-            <h2 className="text-5xl font-extrabold text-yellow-300">Lubricantes Rojas</h2>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-yellow-300">Lubricantes Rojas</h2>
             <p className="font-semibold text-slate-300">Por favor registrate!</p>
 
-            <form method="post" className="rounded-2xl bg-gray-200 p-6 w-96">
+            <form method="post" className="rounded-2xl bg-gray-200 p-6 w-11/12 md:w-96">
                 <div className="text-xs font-semibold text-center tracking-wide text-red-500 w-full">{formError}</div>
                 <FormField
                     htmlFor="email"

@@ -23,7 +23,7 @@ export default function Index() {
             <div className="container max-w-screen-xl m-auto px-4">
                 <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Lista de Modelos</h2>
                 <div className='flex gap-5 mb-3'>
-                    <Button label="Nuevo" href="/modelos/crear" />
+                    <Button label="Nuevo Modelo" href="/modelos/crear" />
                 </div>
             { models.length ? (
                 <>
