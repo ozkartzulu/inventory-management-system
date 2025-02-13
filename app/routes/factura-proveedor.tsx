@@ -9,14 +9,14 @@ import { getCustomer } from '~/utils/customer.server';
 import { getInvoice, getInvoiceBuy, setStateInvoice, setStateInvoiceBuy } from '~/utils/invoice.server';
 import { getUser } from '~/utils/auth.server';
 import { formatDateUnSpace, generateRandomDigits, removeSpace } from '~/utils/utils';
-import { Customer, InvoiceOrder, Supplier } from '@prisma/client';
+import { customer, invoiceorder, supplier } from '@prisma/client';
 import SharePdf from '~/components/share-button';
 import { log } from 'node:console';
 import { productProp } from '~/utils/types.server';
 import { getSupplier } from '~/utils/supplier.server';
 
 type LoaderData = {
-    supplier: Supplier | null, 
+    supplier: supplier | null, 
     invoice: {id: number, date: string, total: number, debt: number, state: boolean, userId: number, supplierId: number} | null, 
     user: {id: number, firstName: string, lastName: string, email: string} | null,
     sold: boolean

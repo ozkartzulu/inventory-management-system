@@ -1,9 +1,9 @@
 import { redirect, json } from "@remix-run/node";
 import { prisma } from "./prisma.server";
 import { productProp } from "./types.server";
-import { InvoiceOrder, InvoiceSales } from "@prisma/client";
+import { invoiceorder, invoicesales } from "@prisma/client";
 
-export async function registerManyOrders(products: productProp[], invoice: InvoiceOrder, customerId: number) {
+export async function registerManyOrders(products: productProp[], invoice: invoiceorder, customerId: number) {
 
     const orders = products.map(item => {
         return {
@@ -49,7 +49,7 @@ export async function registerManyOrders(products: productProp[], invoice: Invoi
 
 
 // Detail Sales
-export async function registerManyOrdersBuy(products: productProp[], invoice: InvoiceSales, supplierId: number) {
+export async function registerManyOrdersBuy(products: productProp[], invoice: invoicesales, supplierId: number) {
 
     const orders = products.map(item => {
         return {
@@ -59,7 +59,7 @@ export async function registerManyOrdersBuy(products: productProp[], invoice: In
             invoiceSalesId: invoice.id
         }
     })
-    const cantOrders = await prisma.detailSales.createMany({
+    const cantOrders = await prisma.detailsales.createMany({
         data: orders
     });
 
@@ -111,7 +111,7 @@ export async function getAllOrders() {
                         category: true
                     }, 
                 },
-                invoiceOrder: {
+                invoiceorder: {
                     include: {
                         user: {
                             select: {id: true, firstName: true}
@@ -178,14 +178,14 @@ export async function getAllOrdersProduct(startDate: Date, endDate: Date | null)
 
 export async function getAllSales() {
 	try {
-		const orders = await prisma.detailSales.findMany({
+		const orders = await prisma.detailsales.findMany({
 			include: {
 				product: {
                     include: {
                         category: true
                     }, 
                 },
-                invoiceSales: {
+                invoicesales: {
                     include: {
                         user: {
                             select: {id: true, firstName: true}
@@ -222,7 +222,7 @@ export async function getAllSalesProduct(startDate: Date, endDate: Date | null) 
         }
     }
 	try {
-		const orders = await prisma.detailSales.findMany({
+		const orders = await prisma.detailsales.findMany({
             where: {
                 date: dateData
             },

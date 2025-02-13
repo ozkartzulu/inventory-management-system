@@ -1,7 +1,7 @@
 
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import { Customer } from "@prisma/client";
+import { customer } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 
 import { getAllCustomers } from "~/utils/customer.server";
@@ -22,7 +22,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 }
 
 export default function Customers() {
-    const customers:[Customer] = useLoaderData();
+    const customers:[customer] = useLoaderData();
     
     const [searchTerm, setSearchTerm] = useState('');
     return (

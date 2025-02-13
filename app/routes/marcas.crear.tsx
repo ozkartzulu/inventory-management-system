@@ -6,7 +6,7 @@ import { validateName, validateNumber } from "~/utils/validators";
 import FormField from "~/components/form-field";
 import SelectField from '~/components/select-field';
 import { getAllCategories } from "~/utils/category.server";
-import { Category } from "@prisma/client";
+import { category } from "@prisma/client";
 import { registerBrand } from "~/utils/brand.server";
 
 export const action: ActionFunction = async ({request}) => {
@@ -41,7 +41,7 @@ export default function BrandCreate() {
 
     const navigation = useNavigate();
 
-    const categories: Category[] = useLoaderData();
+    const categories: category[] = useLoaderData();
     // console.log(categories)
 
     const [errors, setErrors] = useState(actionData?.errors || {});

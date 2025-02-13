@@ -1,11 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["relationJoins"]
 }
 
@@ -14,186 +8,174 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model User {
-//   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-//   createAt  DateTime @default(now())
-//   updateAt  DateTime @updatedAt
-//   email     String   @unique
-//   password  String
-//   firstName String
-//   lastName  String
-// }
+model brand {
+  id         Int       @id @default(autoincrement())
+  name       String
+  categoryId Int
+  category   category  @relation(fields: [categoryId], references: [id], onDelete: NoAction, map: "Brand_categoryId_fkey")
+  product    product[]
 
-model User {
-  id        Int   @id @default(autoincrement())
-  createAt  DateTime @default(now())
-  updateAt  DateTime @updatedAt
-  email     String   @unique
-  password  String
-  firstName String
-  lastName  String
-  invoiceSales InvoiceSales[]
-  invoiceOrder InvoiceOrder[]
+  @@index([categoryId], map: "Brand_categoryId_fkey")
 }
 
-model Order {
-    id  Int @id @default(autoincrement())
-    quantity Int
-    price Float
-    date DateTime @default(now())
-    product Product @relation(fields: [productId], references: [id])
-    productId Int
-    invoiceOrder InvoiceOrder @relation(fields: [invoiceOrderId], references: [id])
-    invoiceOrderId Int 
-}
-
-model InvoiceOrder {
-    id Int @id @default(autoincrement())
-    date DateTime @default(now())
-    total Float
-    debt Float @default(0)
-    state Boolean @default(true)
-    user User @relation(fields: [userId], references: [id])
-    userId Int 
-    customer Customer @relation(fields: [customerId], references: [id])
-    customerId Int
-    order Order[]
-}
-
-model Customer {
-    id Int @id @default(autoincrement())
-    name String
-    address String
-    phone Int
-    invoiceOrder InvoiceOrder[]
-}
-
-model DetailSales {
-    id  Int @id @default(autoincrement())
-    quantity Int
-    price Float
-    date DateTime @default(now())
-    product Product @relation(fields: [productId], references: [id])
-    productId Int
-    invoiceSales InvoiceSales @relation(fields: [invoiceSalesId], references: [id])
-    invoiceSalesId Int
-}
-
-model InvoiceSales {
-    id Int @id @default(autoincrement())
-    date DateTime @default(now())
-    total Float
-    debt Float @default(0)
-    state Boolean @default(true)
-    user User @relation(fields: [userId], references: [id])
-    userId Int 
-    supplier Supplier @relation(fields: [supplierId], references: [id])
-    supplierId Int
-    detailSales DetailSales[]
-}
-
-model Supplier {
-    id Int @id @default(autoincrement())
-    name String
-    address String
-    phone Int
-    invoiceSales InvoiceSales[]
-}
-
-model Inventary {
-    id Int @id @default(autoincrement())
-    productsSold Int
-    productsBought Int
-    sales Float
-    purchases Float
-    product Product @relation(fields: [productId], references: [id])
-    productId Int @unique
-}
-
-model Product {
-  id  Int @id @default(autoincrement())
-  name  String
+model category {
+  id          Int       @id @default(autoincrement())
+  name        String
   description String
-  number Int
-  url String
-  madein Madein @relation(fields: [madeinId], references: [id])
-  madeinId Int
-  category Category @relation(fields: [categoryId], references: [id])
-  categoryId Int
-  variant Variant @relation(fields: [variantId], references: [id])
-  variantId Int
-  model Model @relation(fields: [modelId], references: [id])
-  modelId Int
-  brand Brand @relation(fields: [brandId], references: [id])
-  brandId Int
-  order Order[]
-  detailSales DetailSales[]
-  inventory Inventary?
+  brand       brand[]
+  model       model[]
+  product     product[]
+  variant     variant[]
 }
 
-model Category {
-  id  Int @id @default(autoincrement())
-  name String
+model customer {
+  id           Int            @id @default(autoincrement())
+  name         String
+  address      String
+  phone        Int
+  invoiceorder invoiceorder[]
+}
+
+model detailsales {
+  id             Int          @id @default(autoincrement())
+  quantity       Int
+  price          Float
+  productId      Int
+  invoiceSalesId Int
+  date           DateTime     @default(now())
+  invoicesales   invoicesales @relation(fields: [invoiceSalesId], references: [id], onDelete: NoAction, map: "DetailSales_invoiceSalesId_fkey")
+  product        product      @relation(fields: [productId], references: [id], onDelete: NoAction, map: "DetailSales_productId_fkey")
+
+  @@index([invoiceSalesId], map: "DetailSales_invoiceSalesId_fkey")
+  @@index([productId], map: "DetailSales_productId_fkey")
+}
+
+model inventary {
+  id             Int     @id @default(autoincrement())
+  productId      Int     @unique(map: "Inventary_productId_key")
+  productsBought Int
+  productsSold   Int
+  purchases      Float
+  sales          Float
+  product        product @relation(fields: [productId], references: [id], onDelete: NoAction, map: "Inventary_productId_fkey")
+}
+
+model invoiceorder {
+  id         Int      @id @default(autoincrement())
+  date       DateTime @default(now())
+  total      Float
+  debt       Float    @default(0)
+  userId     Int
+  customerId Int
+  state      Boolean  @default(true)
+  customer   customer @relation(fields: [customerId], references: [id], onDelete: NoAction, map: "InvoiceOrder_customerId_fkey")
+  user       user     @relation(fields: [userId], references: [id], onDelete: NoAction, map: "InvoiceOrder_userId_fkey")
+  order      order[]
+
+  @@index([customerId], map: "InvoiceOrder_customerId_fkey")
+  @@index([userId], map: "InvoiceOrder_userId_fkey")
+}
+
+model invoicesales {
+  id          Int           @id @default(autoincrement())
+  date        DateTime      @default(now())
+  total       Float
+  debt        Float         @default(0)
+  userId      Int
+  supplierId  Int
+  state       Boolean       @default(true)
+  detailsales detailsales[]
+  supplier    supplier      @relation(fields: [supplierId], references: [id], onDelete: NoAction, map: "InvoiceSales_supplierId_fkey")
+  user        user          @relation(fields: [userId], references: [id], onDelete: NoAction, map: "InvoiceSales_userId_fkey")
+
+  @@index([supplierId], map: "InvoiceSales_supplierId_fkey")
+  @@index([userId], map: "InvoiceSales_userId_fkey")
+}
+
+model madein {
+  id      Int       @id @default(autoincrement())
+  name    String
+  product product[]
+}
+
+model model {
+  id         Int       @id @default(autoincrement())
+  name       String
+  categoryId Int
+  category   category  @relation(fields: [categoryId], references: [id], onDelete: NoAction, map: "Model_categoryId_fkey")
+  product    product[]
+
+  @@index([categoryId], map: "Model_categoryId_fkey")
+}
+
+model order {
+  id             Int          @id @default(autoincrement())
+  quantity       Int
+  price          Float
+  date           DateTime     @default(now())
+  productId      Int
+  invoiceOrderId Int
+  invoiceorder   invoiceorder @relation(fields: [invoiceOrderId], references: [id], onDelete: NoAction, map: "Order_invoiceOrderId_fkey")
+  product        product      @relation(fields: [productId], references: [id], onDelete: NoAction, map: "Order_productId_fkey")
+
+  @@index([invoiceOrderId], map: "Order_invoiceOrderId_fkey")
+  @@index([productId], map: "Order_productId_fkey")
+}
+
+model product {
+  id          Int           @id @default(autoincrement())
+  name        String
   description String
-  product Product[]
-  variant Variant[]
-  model Model[]
-  brand Brand[]
+  categoryId  Int
+  number      Int
+  url         String
+  madeinId    Int
+  brandId     Int
+  modelId     Int
+  variantId   Int
+  detailsales detailsales[]
+  inventary   inventary?
+  order       order[]
+  brand       brand         @relation(fields: [brandId], references: [id], onDelete: NoAction, map: "Product_brandId_fkey")
+  category    category      @relation(fields: [categoryId], references: [id], onDelete: NoAction, map: "Product_categoryId_fkey")
+  madein      madein        @relation(fields: [madeinId], references: [id], onDelete: NoAction, map: "Product_madeinId_fkey")
+  model       model         @relation(fields: [modelId], references: [id], onDelete: NoAction, map: "Product_modelId_fkey")
+  variant     variant       @relation(fields: [variantId], references: [id], onDelete: NoAction, map: "Product_variantId_fkey")
+
+  @@index([brandId], map: "Product_brandId_fkey")
+  @@index([categoryId], map: "Product_categoryId_fkey")
+  @@index([madeinId], map: "Product_madeinId_fkey")
+  @@index([modelId], map: "Product_modelId_fkey")
+  @@index([variantId], map: "Product_variantId_fkey")
 }
 
-model Madein {
-  id Int @id @default(autoincrement())
-  name String
-  product Product[]
+model supplier {
+  id           Int            @id @default(autoincrement())
+  name         String
+  address      String
+  phone        Int
+  invoicesales invoicesales[]
 }
 
-model Variant {
-  id Int @id @default(autoincrement())
-  medida String
-  unit Int
-  category Category @relation(fields: [categoryId], references: [id])
+model user {
+  id           Int            @id @default(autoincrement())
+  createAt     DateTime       @default(now())
+  updateAt     DateTime       @default(now())
+  email        String         @unique(map: "User_email_key")
+  password     String
+  firstName    String
+  lastName     String
+  invoiceorder invoiceorder[]
+  invoicesales invoicesales[]
+}
+
+model variant {
+  id         Int       @id @default(autoincrement())
+  medida     String
+  unit       Int
   categoryId Int
-  product Product[]
+  product    product[]
+  category   category  @relation(fields: [categoryId], references: [id], onDelete: NoAction, map: "Variant_categoryId_fkey")
+
+  @@index([categoryId], map: "Variant_categoryId_fkey")
 }
-
-model Model {
-  id Int @id @default(autoincrement())
-  name String
-  category Category @relation(fields: [categoryId], references: [id])
-  categoryId Int
-  product Product[]
-}
-
-model Brand {
-  id Int @id @default(autoincrement())
-  name String
-  category Category @relation(fields: [categoryId], references: [id])
-  categoryId Int
-  product Product[]
-}
-
-// model Post {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   title     String   @db.VarChar(255)
-//   content   String?
-//   published Boolean  @default(false)
-//   author    User     @relation(fields: [authorId], references: [id])
-//   authorId  Int
-// }
-
-// model Profile {
-//   id     Int     @id @default(autoincrement())
-//   bio    String?
-//   user   User    @relation(fields: [userId], references: [id])
-//   userId Int     @unique
-// }
-
-// model User {
-//   id      Int      @id @default(autoincrement())
-//   email   String   @unique
-//   name    String?
-//   posts   Post[]
-//   profile Profile?
-// }

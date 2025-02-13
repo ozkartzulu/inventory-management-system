@@ -1,7 +1,7 @@
 
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import { Supplier } from "@prisma/client";
+import { supplier } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 
 import { getAllSuppliers } from "~/utils/supplier.server";
@@ -22,7 +22,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 }
 
 export default function Proveedores() {
-    const suppliers:[Supplier] = useLoaderData();
+    const suppliers:[supplier] = useLoaderData();
     
     const [searchTerm, setSearchTerm] = useState('');
     return (

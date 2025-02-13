@@ -1,5 +1,4 @@
 
-import { Category, Product } from '@prisma/client';
 import { createContext, useEffect, useState } from 'react'
 import { productCart, productProp } from '~/utils/types.server';
 

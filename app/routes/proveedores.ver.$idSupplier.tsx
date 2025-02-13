@@ -1,4 +1,4 @@
-import { Supplier} from "@prisma/client";
+import { supplier} from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import Button from "~/components/button";
@@ -14,7 +14,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 
 export default function VerProducto() {
-    const supplier = useLoaderData<Supplier>();
+    const supplier = useLoaderData<supplier>();
     
     return (
         <div className="container max-w-screen-xl m-auto px-4">

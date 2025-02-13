@@ -7,7 +7,7 @@ import { getCustomer, updateCustomer } from "~/utils/customer.server";
 
 import { validateName, validatePhone } from "~/utils/validators";
 import FormField from "~/components/form-field";
-import { Customer } from "@prisma/client";
+import { customer } from "@prisma/client";
 
 export const action: ActionFunction = async ({request, params}) => {
 
@@ -50,7 +50,7 @@ export default function EditarProveedor() {
 
     const actionData = useActionData<typeof action>();
 
-    const loader = useLoaderData<Customer>();
+    const loader = useLoaderData<customer>();
 
     const navigation = useNavigate();
     

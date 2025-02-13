@@ -8,7 +8,7 @@ import { registerManyOrders, registerManyOrdersBuy } from "./order.server";
 export async function registerInvoice(products: productProp[], customerId: string, userId: number) {
     const total = products?.reduce( (total, row) => total + ( row.quantity * +row.price) , 0 );
     const customerNewId = +customerId;
-    const invoice = await prisma.invoiceOrder.create({
+    const invoice = await prisma.invoiceorder.create({
         data: {
             total: total,
             debt: 0,
@@ -27,7 +27,7 @@ export async function registerInvoice(products: productProp[], customerId: strin
 
 export async function getInvoice(idInvoice: number) {
 	try {
-		const invoice = await prisma.invoiceOrder.findUnique({
+		const invoice = await prisma.invoiceorder.findUnique({
 			where: {
 				id: idInvoice
 			},
@@ -42,7 +42,7 @@ export async function getInvoice(idInvoice: number) {
 
 export async function setStateInvoice(invoiceId: number, state: boolean) {
 
-    const invoice = await prisma.invoiceOrder.update({
+    const invoice = await prisma.invoiceorder.update({
         where: {
             id: invoiceId,
         },
@@ -65,7 +65,7 @@ export async function setStateInvoice(invoiceId: number, state: boolean) {
 export async function registerInvoiceBuy(products: productProp[], supplierId: string, userId: number) {
     const total = products?.reduce( (total, row) => total + ( row.quantity * +row.price) , 0 );
     const supplierNewId = +supplierId;
-    const invoice = await prisma.invoiceSales.create({
+    const invoice = await prisma.invoicesales.create({
         data: {
             total: total,
             debt: 0,
@@ -84,7 +84,7 @@ export async function registerInvoiceBuy(products: productProp[], supplierId: st
 
 export async function getInvoiceBuy(idInvoice: number) {
 	try {
-		const invoice = await prisma.invoiceSales.findUnique({
+		const invoice = await prisma.invoicesales.findUnique({
 			where: {
 				id: idInvoice
 			},
@@ -99,7 +99,7 @@ export async function getInvoiceBuy(idInvoice: number) {
 
 export async function setStateInvoiceBuy(invoiceId: number, state: boolean) {
 
-    const invoice = await prisma.invoiceSales.update({
+    const invoice = await prisma.invoicesales.update({
         where: {
             id: invoiceId,
         },

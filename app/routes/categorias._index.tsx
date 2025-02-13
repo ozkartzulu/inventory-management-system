@@ -1,4 +1,4 @@
-import { Category } from "@prisma/client";
+import { category } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { getAllCategories } from "~/utils/category.server";
@@ -16,7 +16,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Index() {
 
-    const categories:[Category] = useLoaderData();
+    const categories:[category] = useLoaderData();
 
     return (
             <div className="container max-w-screen-xl m-auto px-4">

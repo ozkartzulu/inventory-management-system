@@ -7,7 +7,7 @@ import { registerVariant } from "~/utils/variant.server";
 import FormField from "~/components/form-field";
 import SelectField from '~/components/select-field';
 import { getAllCategories } from "~/utils/category.server";
-import { Category } from "@prisma/client";
+import { category } from "@prisma/client";
 
 export const action: ActionFunction = async ({request}) => {
     const form = await request.formData();
@@ -43,7 +43,7 @@ export default function VariantCreate() {
 
     const navigation = useNavigate();
 
-    const categories: Category[] = useLoaderData();
+    const categories: category[] = useLoaderData();
     // console.log(categories)
 
     const [errors, setErrors] = useState(actionData?.errors || {});

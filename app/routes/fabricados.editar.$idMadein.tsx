@@ -6,7 +6,7 @@ import { validateEmail, validatePassword, validateName, validateLastName } from 
 import { getCategory, registerCategory, updateCategory } from "~/utils/category.server";
 import { getUser } from "~/utils/auth.server";
 import FormField from "~/components/form-field";
-import { Category } from "@prisma/client";
+import { category } from "@prisma/client";
 import { getModel, updateModel } from "~/utils/model.server";
 import { getBrand, updateBrand } from "~/utils/brand.server";
 import { getMadein, updateMadein } from "~/utils/madein.server";
@@ -50,7 +50,7 @@ export default function BrandEdit() {
 
     const actionData = useActionData<typeof action>();
 
-    const loader = useLoaderData<Category>();
+    const loader = useLoaderData<category>();
 
     const navigation = useNavigate();
 

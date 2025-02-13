@@ -1,12 +1,12 @@
 
-import { Customer, InvoiceOrder, Supplier, User } from '@prisma/client';
+import { customer, supplier } from '@prisma/client';
 import {Document, Page, Text, View, Image, PDFViewer} from '@react-pdf/renderer';
 import { capitalizeWords, formatDate } from '~/utils/utils';
 
 type InvoiceType = {
     products: {id: number, name: string, url: string, quantity: number, price: string}[] | undefined, 
-    customer?: Customer | null, 
-    supplier?: Supplier | null, 
+    customer?: customer | null, 
+    supplier?: supplier | null, 
     invoice: {id: number, date: string, total: number, debt: number, userId: number, customerId?: number, supplierId?: number} | null, 
     user: {id: number, firstName: string, lastName: string, email: string} | null,
     type: string

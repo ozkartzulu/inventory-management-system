@@ -3,7 +3,6 @@ import { prisma } from './prisma.server';
 import { redirect, json, createCookieSessionStorage  } from '@remix-run/node';
 import { createUser } from './user.server';
 import bcrypt from 'bcryptjs';
-import { Model } from '@prisma/client';
 
 
 export async function registerMadeins(model: registerMadein) {

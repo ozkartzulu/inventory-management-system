@@ -13,7 +13,7 @@ import FormField from "~/components/form-field";
 import SelectField from '~/components/select-field';
 import SelectFieldVariant from '~/components/select-field-variant';
 import { getAllCategories } from "~/utils/category.server";
-import { Brand, Category, Madein, Model, Variant } from "@prisma/client";
+import { brand, category, madein, model, variant } from "@prisma/client";
 import { getPathRelative, registerProduct } from "~/utils/product.server";
 import { getModelsByIdCategory } from "~/utils/model.server";
 import { getVariantsByIdCategory } from "~/utils/variant.server";
@@ -23,9 +23,9 @@ import { getAllMadeins } from "~/utils/madein.server";
 type ActionData = {
     error?: string;
     success?: string;
-    variants: Variant[] | null;
-    models: Model[] | null;
-    brands: Brand[] | null;
+    variants: variant[] | null;
+    models: model[] | null;
+    brands: brand[] | null;
     fields?: { 
         name: string;
         description: string; 
@@ -51,8 +51,8 @@ type ActionData = {
 };
 
 type ActionLoader = {
-    categories: Category[] | null;
-    madeins: Madein[] | null;
+    categories: category[] | null;
+    madeins: madein[] | null;
 }
 
 

@@ -1,8 +1,8 @@
-import { Supplier } from "@prisma/client";
+import { supplier } from "@prisma/client";
 import { useNavigate } from "@remix-run/react";
 
 interface FormFieldProps {
-    supplier: Supplier
+    supplier: supplier
 }
 
 export default function ItemSupplier({supplier}: FormFieldProps) {

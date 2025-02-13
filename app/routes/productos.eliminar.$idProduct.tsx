@@ -1,11 +1,11 @@
-import { Brand, Category, Madein, Model, Product, Variant } from "@prisma/client";
+import { brand, category, madein, model, product, variant } from "@prisma/client";
 import { ActionFunction, LoaderFunction, LoaderFunctionArgs, json, redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { deleteProduct, getAllProducts, getProduct } from "~/utils/product.server";
 
 type ActionLoader = {
-    product: Product | null;
+    product: product | null;
 }
 
 type ProductCategory = {
@@ -16,11 +16,11 @@ type ProductCategory = {
     url: string;
     madeinId: number;
     categoryId: number;
-    category: Category;
-    madein: Madein;
-    brand: Brand;
-    model: Model;
-    variant: Variant;
+    category: category;
+    madein: madein;
+    brand: brand;
+    model: model;
+    variant: variant;
 }
 
 export const action: ActionFunction = async ({ request }) => {

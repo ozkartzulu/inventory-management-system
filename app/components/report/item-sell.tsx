@@ -1,8 +1,8 @@
-import { Category, Customer, InvoiceOrder, Product, User } from "@prisma/client";
+import { category } from "@prisma/client";
 import { useNavigate, Form } from "@remix-run/react";
 import { useState, useEffect } from "react";
 import useCart from "~/hooks/useCart";
-import { formatDateBol } from "~/utils/utils";
+import { capitalizeWords, formatDateBol } from "~/utils/utils";
 
 interface FormFieldProps {
     order: {
@@ -12,7 +12,7 @@ interface FormFieldProps {
         date: string;
         productId: number;
         invoiceOrderId: number;
-        product: {id: number, url: string, name: string, categoryId: number, category: Category};
+        product: {id: number, url: string, name: string, categoryId: number, category: category};
         invoiceOrder: {
             id: number;
             date: string;
@@ -43,10 +43,10 @@ export default function ItemSell({order}: FormFieldProps) {
             <td className="p-2 capitalize">{order?.product.name}</td>
             <td className="p-2 capitalize">{order?.quantity}</td>
             <td className="p-2 capitalize">{order?.price}</td>
-            <td className="p-2">{order?.product.category.name}</td>
+            <td className="p-2">{capitalizeWords(order?.product.category.name)}</td>
             <td className="p-2"> <img src={order?.product.url} className="w-10 h-10 object-cover rounded-sm" alt="" /> </td>
-            <td className="p-2">{order?.invoiceOrder.user.firstName}</td>
-            <td className="p-2">{order?.invoiceOrder.customer.name}</td>
+            <td className="p-2">{capitalizeWords(order?.invoiceOrder.user.firstName)}</td>
+            <td className="p-2">{capitalizeWords(order?.invoiceOrder.customer.name)}</td>
 
         </tr>
     )

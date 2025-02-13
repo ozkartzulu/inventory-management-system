@@ -1,8 +1,8 @@
-import { Brand, Category, Madein, Model } from "@prisma/client";
+import { madein } from "@prisma/client";
 import { useNavigate } from "@remix-run/react";
 
 interface FormFieldProps {
-    madein: Madein
+    madein: madein
 }
 
 export default function ItemMadein({madein}: FormFieldProps) {

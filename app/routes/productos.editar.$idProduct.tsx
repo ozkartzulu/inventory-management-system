@@ -14,7 +14,7 @@ import FieldFile from "~/components/field-file";
 import SelectField from '~/components/select-field';
 import SelectFieldVariant from '~/components/select-field-variant';
 import { getAllCategories } from "~/utils/category.server";
-import { Brand, Category, Madein, Model, Product, Variant } from "@prisma/client";
+import { brand, category, madein, model, product, variant } from "@prisma/client";
 import { getPathRelative, getProduct, registerProduct, updateProduct } from "~/utils/product.server";
 import { getModelsByIdCategory } from "~/utils/model.server";
 import { getVariantsByIdCategory } from "~/utils/variant.server";
@@ -24,9 +24,9 @@ import { getAllMadeins } from "~/utils/madein.server";
 type ActionData = {
     error?: string;
     success?: string;
-    variants: Variant[] | null;
-    models: Model[] | null;
-    brands: Brand[] | null;
+    variants: variant[] | null;
+    models: model[] | null;
+    brands: brand[] | null;
     product: ProductCategory | null;
     fields?: { 
         name: string;
@@ -64,20 +64,20 @@ type ProductCategory = {
         id: number;
         name: string;
         description: string;
-        variant: [Variant];
-        model: [Model];
-        brand: [Brand];
+        variant: [variant];
+        model: [model];
+        brand: [brand];
     };
-    madein: Madein;
+    madein: madein;
 }
 
 type ActionLoader = {
-    product: Product | null;
-    categories: Category[] | null;
-    madeins: Madein[] | null;
-    brands: Brand[] | null;
-    models: Model[] | null;
-    variants: Variant[] | null;
+    product: product | null;
+    categories: category[] | null;
+    madeins: madein[] | null;
+    brands: brand[] | null;
+    models: model[] | null;
+    variants: variant[] | null;
 }
 
 type StateProduct = {

@@ -1,4 +1,3 @@
-import { Category, Madein, Model, Variant } from "@prisma/client";
 import { useState, useEffect } from "react";
 import useCart from "~/hooks/useCart";
   

@@ -1,4 +1,3 @@
-import { Category, Customer, InvoiceOrder, Product, User } from "@prisma/client";
 import { useNavigate, Form } from "@remix-run/react";
 import { useState, useEffect } from "react";
 import useCart from "~/hooks/useCart";

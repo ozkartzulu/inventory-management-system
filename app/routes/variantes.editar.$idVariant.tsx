@@ -6,7 +6,7 @@ import { validateEmail, validatePassword, validateName, validateLastName, valida
 import { getAllCategories, getCategory, registerCategory, updateCategory } from "~/utils/category.server";
 import { getUser } from "~/utils/auth.server";
 import FormField from "~/components/form-field";
-import { Category, Variant } from "@prisma/client";
+import { category } from "@prisma/client";
 import { getModel, updateModel } from "~/utils/model.server";
 import { getVariant, updateVariant } from "~/utils/variant.server";
 import SelectField from "~/components/select-field";
@@ -17,9 +17,9 @@ type dataLoader = {
         categoryId: number; 
         medida: string; 
         unit: number; 
-        category: Category;
+        category: category;
     },
-    categories: Category[]
+    categories: category[]
 }
 
 export const action: ActionFunction = async ({request, params}) => {

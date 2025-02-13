@@ -1,7 +1,7 @@
 
 import { useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { Category, Customer, InvoiceOrder, Product, User } from "@prisma/client";
+import { category, customer} from "@prisma/client";
 import { ActionFunction, ActionFunctionArgs, json, LoaderFunction, redirect } from "@remix-run/node";
 import { getUser, getUserIdName, requireUserId } from "~/utils/auth.server";
 import { getAllProducts } from "~/utils/product.server";
@@ -13,6 +13,7 @@ import { getAllCustomers, getCustomer } from "~/utils/customer.server";
 import { getAllSuppliers } from "~/utils/supplier.server";
 import { getAllUsers } from "~/utils/user.server";
 import { getAllCategories } from "~/utils/category.server";
+import { capitalizeWords } from "~/utils/utils";
 
 type OrderType = {
     id: number;
@@ -21,7 +22,7 @@ type OrderType = {
     date: string;
     productId: number;
     invoiceOrderId: number;
-    product: {id: number, url: string, name: string, categoryId: number, category: Category};
+    product: {id: number, url: string, name: string, categoryId: number, category: category};
     invoiceOrder: {
         id: number;
         date: string;
@@ -36,9 +37,9 @@ type OrderType = {
 }
 type Data = {
     orderList: OrderType[];
-    customers: Customer[];
+    customers: customer[];
     users: {id: number, firstName: string, lastName: string}[];
-    categories: Category[];
+    categories: category[];
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -55,7 +56,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     if(!orders) {
         return null;
     }
-    const orderList = orders.map( order => ({...order, date: order.date.toISOString(), invoiceOrder: {...order.invoiceOrder, date: order.invoiceOrder.date.toISOString()}}))
+    const orderList = orders.map( order => ({...order, date: order.date.toISOString(), invoiceOrder: {...order.invoiceorder, date: order.invoiceorder.date.toISOString()}}))
     return {orderList, customers, users, categories};
 
 }
@@ -81,7 +82,7 @@ export default function ReporteVentas() {
     const [date, setDate] = useState('2');
 
     const [orders, setOrders] = useState( () => {
-        return ordersData.sort((a:OrderType, b:OrderType) => new Date(b.date).getTime() - new Date(a.date).getTime() );
+        return ordersData?.sort((a:OrderType, b:OrderType) => new Date(b.date).getTime() - new Date(a.date).getTime() );
     } );
 
     useEffect( () => {
@@ -89,7 +90,7 @@ export default function ReporteVentas() {
         let ordersFilter:OrderType[] = ordersData;
 
         if(client) {
-            ordersFilter = ordersData.filter( (order) => {
+            ordersFilter = ordersData?.filter( (order) => {
                 if(order.invoiceOrder.customer.id === client) {
                     return order;
                 }
@@ -97,7 +98,7 @@ export default function ReporteVentas() {
         }
 
         if(user) {
-            ordersFilter = ordersFilter.filter( (order) => {
+            ordersFilter = ordersFilter?.filter( (order) => {
                 if(order.invoiceOrder.user.id === user) {
                     return order;
                 }
@@ -105,7 +106,7 @@ export default function ReporteVentas() {
         }
 
         if(category) {
-            ordersFilter = ordersFilter.filter( (order) => {
+            ordersFilter = ordersFilter?.filter( (order) => {
                 if(order.product.categoryId === category) {
                     return order;
                 }
@@ -113,7 +114,7 @@ export default function ReporteVentas() {
         }
 
         if(searchTerm) {
-            ordersFilter = ordersFilter.filter( (order) => {
+            ordersFilter = ordersFilter?.filter( (order) => {
                 if(order.product.name.toLowerCase().includes(searchTerm.toLowerCase()) ) {
                     return order;
                 }
@@ -121,9 +122,9 @@ export default function ReporteVentas() {
         }
 
         if(date == '2') {
-            ordersFilter = ordersFilter.sort((a:OrderType, b:OrderType) => new Date(a.date).getTime() - new Date(b.date).getTime() );
+            ordersFilter = ordersFilter?.sort((a:OrderType, b:OrderType) => new Date(a.date).getTime() - new Date(b.date).getTime() );
         } else {
-            ordersFilter = ordersFilter.sort((a:OrderType, b:OrderType) => new Date(b.date).getTime() - new Date(a.date).getTime() );
+            ordersFilter = ordersFilter?.sort((a:OrderType, b:OrderType) => new Date(b.date).getTime() - new Date(a.date).getTime() );
         }
 
         setOrders(ordersFilter);
@@ -159,19 +160,19 @@ export default function ReporteVentas() {
                 <select  id='select-client' name='select-client' className="p-2 rounded-md w-full md:w-44" onChange={handleClient}>
                     <option  value=''>Todos los Cliente</option>
                     {data?.customers.map( (customer, index) => (
-                        <option value={customer.id} key={customer.id}>{ customer.name}</option>
+                        <option value={customer.id} key={customer.id}>{ capitalizeWords(customer.name)}</option>
                     ) )}
                 </select>
                 <select  id='select-user' name='select-user' className="p-2 rounded-md w-full md:w-44" onChange={handleUser}>
                     <option  value=''>Todos los Usuario</option>
                     {data?.users.map( (user, index) => (
-                        <option value={user.id} key={user.id}>{ user.firstName}</option>
+                        <option value={user.id} key={user.id}>{ capitalizeWords(user.firstName)}</option>
                     ) )}
                 </select>
                 <select  id='select-category' name='select-category' className="p-2 rounded-md w-full md:w-44" onChange={handleCategory}>
                     <option  value=''>Todas las Categoría</option>
                     {data?.categories.map( (category, index) => (
-                        <option value={category.id} key={category.id}>{ category.name}</option>
+                        <option value={category.id} key={category.id}>{ capitalizeWords(category.name)}</option>
                     ) )}
                 </select>
                 <select  id='select-date' name='select-date' className="p-2 rounded-md w-full md:w-44" onChange={handleDate}>

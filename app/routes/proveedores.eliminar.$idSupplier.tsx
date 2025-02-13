@@ -1,4 +1,4 @@
-import { Supplier } from "@prisma/client";
+import { supplier } from "@prisma/client";
 import { ActionFunction, LoaderFunction, redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
@@ -28,7 +28,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 export default function DeleteSupplier() {
 
-    const supplier = useLoaderData<Supplier>();
+    const supplier = useLoaderData<supplier>();
     const resError: string | undefined = useActionData();
     
     const [errorText, setErrorText] = useState(resError);

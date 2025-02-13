@@ -1,8 +1,8 @@
-import { Category, Madein, Model, Variant } from "@prisma/client";
+import { variant } from "@prisma/client";
 import { useState, useEffect } from "react";
 
 interface FormFieldProps {
-  categories: Variant[] | null | undefined
+  categories: variant[] | null | undefined
   htmlFor: string
   label: string
   value?: any

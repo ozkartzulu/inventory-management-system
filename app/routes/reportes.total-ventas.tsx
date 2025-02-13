@@ -1,7 +1,6 @@
 
 import { useActionData, useLoaderData, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { Category, Customer, Inventary, InvoiceOrder, Product, User } from "@prisma/client";
 import { ActionFunction, ActionFunctionArgs, json, LoaderFunction, redirect } from "@remix-run/node";
 import { getUser, getUserIdName, requireUserId } from "~/utils/auth.server";
 import { getAllProducts } from "~/utils/product.server";

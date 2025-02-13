@@ -6,7 +6,7 @@ import { validateEmail, validatePassword, validateName, validateLastName } from 
 import { getCategory, registerCategory, updateCategory } from "~/utils/category.server";
 import { getUser } from "~/utils/auth.server";
 import FormField from "~/components/form-field";
-import { Category } from "@prisma/client";
+import { category } from "@prisma/client";
 
 export const action: ActionFunction = async ({request, params}) => {
 
@@ -49,7 +49,7 @@ export default function CategoryCreate() {
 
     const actionData = useActionData<typeof action>();
 
-    const loader = useLoaderData<Category>();
+    const loader = useLoaderData<category>();
 
     const navigation = useNavigate();
 

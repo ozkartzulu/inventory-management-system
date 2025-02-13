@@ -1,7 +1,7 @@
 
 import { useActionData, useFetcher, useLoaderData, useNavigate, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { Customer, Supplier } from "@prisma/client";
+import { customer, supplier } from "@prisma/client";
 import { ActionFunctionArgs, json, LoaderFunction } from "@remix-run/node";
 
 import { getAllCustomers } from "~/utils/customer.server";
@@ -15,7 +15,7 @@ import { productCart, productProp } from "~/utils/types.server";
 import { getAllSuppliers } from "~/utils/supplier.server";
 
 type ActionLoader = {
-    suppliers: Supplier[] | null;
+    suppliers: supplier[] | null;
 }
 
 type ActionData = {

@@ -1,4 +1,4 @@
-import { Category, Model, Variant } from "@prisma/client";
+import { category } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { getAllCategories } from "~/utils/category.server";
@@ -12,7 +12,7 @@ type VariantCategory = {
     categoryId: number; 
     medida: string; 
     unit: number; 
-    category: Category;
+    category: category;
 }
 
 export const loader: LoaderFunction = async ({ request }) => {

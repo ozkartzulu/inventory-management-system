@@ -1,8 +1,8 @@
-import { Brand, Category, Model } from "@prisma/client";
+import { brand } from "@prisma/client";
 import { useNavigate } from "@remix-run/react";
 
 interface FormFieldProps {
-    brand: Brand
+    brand: brand
 }
 
 export default function ItemCustomer({brand}: FormFieldProps) {

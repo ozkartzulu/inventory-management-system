@@ -1,7 +1,7 @@
 
 import { useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { Category, Customer, InvoiceOrder, Product, Supplier, User } from "@prisma/client";
+import { category, customer, invoiceorder, product, supplier, user } from "@prisma/client";
 import { ActionFunction, ActionFunctionArgs, json, LoaderFunction, redirect } from "@remix-run/node";
 import { getUser, getUserIdName, requireUserId } from "~/utils/auth.server";
 import { getAllProducts } from "~/utils/product.server";
@@ -13,6 +13,7 @@ import { getAllCustomers, getCustomer } from "~/utils/customer.server";
 import { getAllSuppliers } from "~/utils/supplier.server";
 import { getAllUsers } from "~/utils/user.server";
 import { getAllCategories } from "~/utils/category.server";
+import { capitalizeWords } from "~/utils/utils";
 
 type OrderType = {
     id: number;
@@ -21,8 +22,8 @@ type OrderType = {
     date: string;
     productId: number;
     invoiceSalesId: number;
-    product: {id: number, url: string, name: string, categoryId: number, category: Category};
-    invoiceSales: {
+    product: {id: number, url: string, name: string, categoryId: number, category: category};
+    invoicesales: {
         id: number;
         date: string;
         total: number;
@@ -36,9 +37,9 @@ type OrderType = {
 }
 type Data = {
     orderList: OrderType[];
-    suppliers: Supplier[];
+    suppliers: supplier[];
     users: {id: number, firstName: string, lastName: string}[];
-    categories: Category[];
+    categories: category[];
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -54,7 +55,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     if(!orders) {
         return null;
     }
-    const orderList = orders.map( order => ({...order, date: order.date.toISOString(), invoiceSales: {...order.invoiceSales, date: order.invoiceSales.date.toISOString()}}))
+    const orderList = orders.map( order => ({...order, date: order.date.toISOString(), invoicesales: {...order.invoicesales, date: order.invoicesales.date.toISOString()}}))
     return {orderList, suppliers, users, categories};
 
 }
@@ -81,7 +82,7 @@ export default function ReporteCompras() {
 
         if(supplier) {
             ordersFilter = ordersData.filter( (order) => {
-                if(order.invoiceSales.supplier.id === supplier) {
+                if(order.invoicesales.supplier.id === supplier) {
                     return order;
                 }
             } );
@@ -89,7 +90,7 @@ export default function ReporteCompras() {
 
         if(user) {
             ordersFilter = ordersFilter.filter( (order) => {
-                if(order.invoiceSales.user.id === user) {
+                if(order.invoicesales.user.id === user) {
                     return order;
                 }
             } );
@@ -150,19 +151,19 @@ export default function ReporteCompras() {
                 <select  id='select-supplier' name='select-supplier' className="p-2 rounded-md w-full md:w-44" onChange={handleSupplier}>
                     <option  value=''>Todos los Proveedores</option>
                     {data?.suppliers.map( (supplier, index) => (
-                        <option value={supplier.id} key={supplier.id}>{ supplier.name}</option>
+                        <option value={supplier.id} key={supplier.id}>{ capitalizeWords(supplier.name)}</option>
                     ) )}
                 </select>
                 <select  id='select-user' name='select-user' className="p-2 rounded-md w-full md:w-44" onChange={handleUser}>
                     <option  value=''>Todos los Usuario</option>
                     {data?.users.map( (user, index) => (
-                        <option value={user.id} key={user.id}>{ user.firstName}</option>
+                        <option value={user.id} key={user.id}>{ capitalizeWords(user.firstName)}</option>
                     ) )}
                 </select>
                 <select  id='select-category' name='select-category' className="p-2 rounded-md w-full md:w-44" onChange={handleCategory}>
                     <option  value=''>Todas las Categoría</option>
                     {data?.categories.map( (category, index) => (
-                        <option value={category.id} key={category.id}>{ category.name}</option>
+                        <option value={category.id} key={category.id}>{ capitalizeWords(category.name)}</option>
                     ) )}
                 </select>
                 <select  id='select-date' name='select-date' className="p-2 rounded-md w-full md:w-44" onChange={handleDate}>

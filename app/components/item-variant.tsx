@@ -1,4 +1,4 @@
-import { Category, Model, Variant } from "@prisma/client";
+import { category, } from "@prisma/client";
 import { useNavigate } from "@remix-run/react";
 
 interface FormFieldProps {
@@ -7,7 +7,7 @@ interface FormFieldProps {
         categoryId: number 
         medida: string 
         unit: number 
-        category: Category
+        category: category
     }
 }
 

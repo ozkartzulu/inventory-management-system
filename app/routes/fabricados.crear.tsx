@@ -6,7 +6,7 @@ import { validateName, validateNumber } from "~/utils/validators";
 import FormField from "~/components/form-field";
 import SelectField from '~/components/select-field';
 import { getAllCategories } from "~/utils/category.server";
-import { Category } from "@prisma/client";
+import { category } from "@prisma/client";
 import { registerMadeins } from "~/utils/madein.server";
 import { getUser } from "~/utils/auth.server";
 

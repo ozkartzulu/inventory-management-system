@@ -63,7 +63,7 @@ function Navigation({user}) {
                         </ul>
                     </li>
                     <li>
-                        <Link to='/productos'>{user.name}</Link> 
+                        <Link to='/productos'>{capitalizeWords(user.name)}</Link> 
                         <ul>
                             <li>
                                 <Link to='/logout' className={ `${location.pathname === '/categorias' ? 'active' : ''} ` }>Log Out</Link>

@@ -1,4 +1,4 @@
-import { Category } from "@prisma/client";
+import { category } from "@prisma/client";
 import { useNavigate, Form } from "@remix-run/react";
 import { useState, useEffect } from "react";
 import useCart from "~/hooks/useCart";
@@ -12,7 +12,7 @@ interface FormFieldProps {
         url: string;
         madeinId: number;
         categoryId: number;
-        category: Category;
+        category: category;
         stock: number;
     }
 }

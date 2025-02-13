@@ -1,7 +1,7 @@
 
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import { Category, Product } from "@prisma/client";
+import { category, product } from "@prisma/client";
 import { LoaderFunction, redirect } from "@remix-run/node";
 import { getUser, getUserIdName, requireUserId } from "~/utils/auth.server";
 import { getAllProducts } from "~/utils/product.server";
@@ -18,7 +18,7 @@ type ProductCategory = {
     url: string;
     madeinId: number;
     categoryId: number;
-    category: Category;
+    category: category;
     stock: number;
 }
 
