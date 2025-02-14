@@ -163,6 +163,7 @@ export default function ReporteTotalVentas() {
     return (
         <div className="container max-w-screen-xl m-auto px-4">
             <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Total Ventas</h2>
+            <form method="post">
             <div className='flex flex-wrap gap-5 mb-3'>
                 <div className="flex gap-3 md:gap-6 items-center md:mr-7">
                     <label htmlFor="start" className="text-yellow-300 text-lg md:text-lg font-bold w-2/5 ">Seleccionar Fecha Inicio</label>
@@ -173,6 +174,7 @@ export default function ReporteTotalVentas() {
                     <input type="date" id="end" name="end" className="py-2 px-3 rounded-md w-3/5" onChange={handleEnd} />
                 </div>
             </div>
+            </form>
         { orders?.length ? (
             <>
             <div className="list-products overflow-auto">

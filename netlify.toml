@@ -2,7 +2,7 @@
 [build]
   command = "npm run build"
   functions = "netlify/functions"
-  publish = "public"
+  publish = "build/client"
   #publish = "build/client"
 
   ## Uncomment to use this redirect for Single Page Applications like create-react-app.
@@ -20,5 +20,9 @@
   #  command = "yarn start" # Command to start your dev server
   #  port = 3000 # Port that the dev server will be listening on
   #  publish = "dist" # Folder with the static content for _redirect file
+
+  [functions]
+    directory = ".netlify/functions-internal"
+    node_bundler = "esbuild"
 
   ## more info on configuring this file: https://ntl.fyi/file-based-build-config

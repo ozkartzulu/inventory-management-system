@@ -46,12 +46,12 @@ export default function ItemProduct({product}: FormFieldProps) {
     useEffect(() => {
         if (typeof window !== "undefined") {
 
-            let productSell = cartLStorage?.cartItems.sell.find( (item) => item.id === product.id );
+            let productSell = cartLStorage?.cartItems.sell?.find( (item) => item.id === product.id );
             if(productSell) {
                 setActiveSell(true);
             }
 
-            let productBuy = cartLStorage?.cartItems.buy.find( (item) => item.id === product.id );
+            let productBuy = cartLStorage?.cartItems.buy?.find( (item) => item.id === product.id );
             if(productBuy) {
                 setActiveBuy(true);
             }

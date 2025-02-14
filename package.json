@@ -7,9 +7,9 @@
     "build": "remix vite:build",
     "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
-    
-    "start": "remix vite:serve",
-    "typecheck": "tsc"
+    "start": "remix-serve build",
+    "typecheck": "tsc",
+    "deploy": "netlify deploy --prod"
   },
   "dependencies": {
     "@prisma/client": "^5.16.2",
