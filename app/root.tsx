@@ -16,24 +16,12 @@ import { CartProvider } from "./context/CartProvider";
 
 export const loader: LoaderFunction = async ({ request }) => {
   let user = await getUserIdName(request);
-  // console.log(user)
   return user;
 }
-// interface HeaderProps {
-//   id: string | null;
-//   name: string
-// }
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children, user }: { children: React.ReactNode, user: any }) {
 
-  const user = useLoaderData();
-
-//   cuando cargue el componente crear cart en localstorage si no existe
-//   useEffect( () => {
-//     if( !localStorage.getItem('cart') ) {
-//         localStorage.setItem('cart', JSON.stringify([]));
-//     }
-//   }, [] );
+//   const user = useLoaderData();
     
   return (
 	<CartProvider>
@@ -58,5 +46,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+//   return <Outlet />;
+  const user  = useLoaderData(); // ✅ Aquí sí puedes usar useLoaderData()
+  return <Layout user={user}><Outlet /></Layout>;
 }
