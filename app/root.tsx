@@ -19,34 +19,65 @@ export const loader: LoaderFunction = async ({ request }) => {
   return user;
 }
 
-export function Layout({ children, user }: { children: React.ReactNode, user: any }) {
+// export function Layout({ children}: { children: React.ReactNode }) {
 
-//   const user = useLoaderData();
     
-  return (
-	<CartProvider>
-		<html lang="en">
-		<head>
-			<meta charSet="utf-8" />
-			<meta name="viewport" content="width=device-width, initial-scale=1" />
-			<Meta />
-			<Links />
-		</head>
-		<body className={styles.body}>
-			<Header user={user}/>
-			<main>
-			{children}
-			</main>
-			<ScrollRestoration />
-			<Scripts />
-		</body>
-		</html>
-	</CartProvider>
-  );
-}
+//   return (
+// 	<CartProvider>
+// 		<html lang="en">
+// 		<head>
+// 			<meta charSet="utf-8" />
+// 			<meta name="viewport" content="width=device-width, initial-scale=1" />
+// 			<Meta />
+// 			<Links />
+// 		</head>
+// 		{/* <body className={styles.body}> */}
+			
+// 			{/* <main> */}
+// 			{children}
+// 			{/* </main> */}
+// 			<ScrollRestoration />
+// 			<Scripts />
+// 		{/* </body> */}
+// 		</html>
+// 	</CartProvider>
+//   );
+// }
+
+// export default function App() {
+//   const user  = useLoaderData(); // ✅ Aquí sí puedes usar useLoaderData()
+//   return (
+//     <Layout>
+//         <Header user={user}/>
+//         <Outlet />
+//     </Layout>
+//   )
+  
+// }
 
 export default function App() {
-//   return <Outlet />;
-  const user  = useLoaderData(); // ✅ Aquí sí puedes usar useLoaderData()
-  return <Layout user={user}><Outlet /></Layout>;
+
+    const user = useLoaderData();
+
+
+  return (
+    <CartProvider>
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body className={styles.body}>
+        <Header user={user}/>
+        <main>
+            <Outlet />
+        </main>
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
+    </CartProvider>
+  );
 }
