@@ -5,43 +5,53 @@ import { invoiceorder, invoicesales } from "@prisma/client";
 
 export async function registerManyOrders(products: productProp[], invoice: invoiceorder, customerId: number) {
 
-    const orders = products.map(item => {
-        return {
-            quantity: item.quantity,
-            price: parseFloat(item.price),
-            productId: item.id,
-            invoiceOrderId: invoice.id
-        }
-    })
-    const cantOrders = await prisma.order.createMany({
-        data: orders
-    });
+    try {
+        const orders = products.map(item => {
+            return {
+                quantity: item.quantity,
+                price: parseFloat(item.price),
+                productId: item.id,
+                invoiceOrderId: invoice.id
+            }
+        })
+        const cantOrders = await prisma.order.createMany({
+            data: orders
+        });
 
-    if(!cantOrders) {
-        return null;
+        if(!cantOrders) {
+            return json({ success: false, message: "Error al registrar muchas ordenes dentro try" });
+        }
+    } catch (error) {
+        console.log("Error al registrar muchas ordenes");
+        return json({ success: false, message: "Error al registrar muchas ordenes" });
     }
 
     // register inventory
-    products.forEach(async product => {
-        const existProduct = await prisma.inventary.count({ where: { productId: product.id } });
-        if(existProduct) {
-            await prisma.inventary.update({
-                where: {
-                    productId: product.id,
-                },
-                data: {
-                    productsSold: {
-                        increment: product.quantity,
+    try {
+        products.forEach(async product => {
+            const existProduct = await prisma.inventary.count({ where: { productId: product.id } });
+            if(existProduct) {
+                await prisma.inventary.update({
+                    where: {
+                        productId: product.id,
                     },
-                    sales: {
-                        increment: product.quantity * parseFloat(product.price),
+                    data: {
+                        productsSold: {
+                            increment: product.quantity,
+                        },
+                        sales: {
+                            increment: product.quantity * parseFloat(product.price),
+                        }
                     }
-                }
-            })
-        } else {
-            console.log('No existe el producto'+ product.name +' en inventario no se actualizó datos');
-        }
-    })
+                })
+            } else {
+                console.log('No existe el producto'+ product.name +' en inventario no se actualizó datos');
+            }
+        })
+    } catch (error) {
+        console.log("Error al actualizar productos vendidos en inventario");
+        return json({ success: false, message: "Error al actualizar productos vendidos en inventario" });
+    }
 
     // return redirect(`/factura?customer=${customerId}&invoice=${invoice.id}`);
     return json({ success: true, customerId: customerId, invoiceId: invoice.id });
