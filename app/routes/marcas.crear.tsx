@@ -12,17 +12,18 @@ import { registerBrand } from "~/utils/brand.server";
 export const action: ActionFunction = async ({request}) => {
     const form = await request.formData();
     const name = form.get('name');
+    console.log(form.get('categoryId'))
     const categoryId = Number(form.get('categoryId'));
 
     if (typeof name !== 'string' || typeof categoryId !== 'number') {
         return json({ error: `Invalido tipos de datos del formulario`, form: action }, { status: 400 })
     }
-
+    
+    
     const errors = {
         name: validateName(name),
         categoryId: validateNumber(categoryId),
     }
-
     if (Object.values(errors).some(Boolean)) {
         return json({ errors, fields: { name, categoryId}, form: action }, { status: 400 })
     }
@@ -73,6 +74,7 @@ export default function BrandCreate() {
                     categories={categories}
                     htmlFor="categoryId"
                     label="Categoría"
+                    value={formData?.categoryId}
                     optionDefault="Seleccionar Categoría"
                     onChange={e => handleInputChange(e, 'categoryId')}
                     error={errors?.categoryId}

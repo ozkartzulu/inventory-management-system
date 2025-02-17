@@ -1,4 +1,4 @@
-import {Document, Page, Text, View, Image, PDFViewer} from '@react-pdf/renderer';
+import { PDFViewer} from '@react-pdf/renderer';
 import ReactPDF from '@react-pdf/renderer';
 import { ActionFunctionArgs, json, LoaderFunction, redirect } from '@remix-run/node';
 import { useEffect, useState } from 'react';
@@ -9,9 +9,7 @@ import { getCustomer } from '~/utils/customer.server';
 import { getInvoice, setStateInvoice } from '~/utils/invoice.server';
 import { getUser } from '~/utils/auth.server';
 import { formatDateUnSpace, generateRandomDigits, removeSpace } from '~/utils/utils';
-import { customer, invoiceorder } from '@prisma/client';
-import SharePdf from '~/components/share-button';
-import { log } from 'node:console';
+import { customer } from '@prisma/client';
 import { productProp } from '~/utils/types.server';
 
 type LoaderData = {

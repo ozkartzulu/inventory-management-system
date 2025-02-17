@@ -84,6 +84,7 @@ export default function VariantCreate() {
                     categories={categories}
                     htmlFor="categoryId"
                     label="Categoría"
+                    value={formData?.categoryId}
                     optionDefault="Seleccionar Categoría"
                     onChange={e => handleInputChange(e, 'categoryId')}
                     error={errors?.categoryId}
