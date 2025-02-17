@@ -101,8 +101,14 @@ export async function action({ request}: ActionFunctionArgs) {
         let customerName = customer ? removeSpace(customer.name) : ''; 
         let invoiceDate = invoiceNew ? formatDateUnSpace(invoiceNew.date) : ''; 
         let nameFile = customerName +'_factura_'+invoiceDate+generateRandomDigits()+'.pdf';
-        console.log(process.cwd())
-        await ReactPDF.render(<Documento products={dataObj.products} customer={customer} invoice={invoiceNew} user={user} type="sell"/>, process.cwd()+`/public/invoices/${nameFile}`);
+
+        const isVercel = process.env.VERCEL === "1";
+        if (!isVercel) {
+            console.log('En el entorno local se almacena el pdf');
+            await ReactPDF.render(<Documento products={dataObj.products} customer={customer} invoice={invoiceNew} user={user} type="sell"/>, process.cwd()+`/public/invoices/${nameFile}`);
+        } else {
+            console.log('En el entorno Vercel no se puede escribir archivos');
+        }
         
         return null; 
     } catch (error) {
