@@ -26,6 +26,7 @@ type ActionData = {
         customer: string;
     };
     success?: boolean;
+    message?: string;
     customerId: number;
     invoiceId: number;
 };
@@ -122,6 +123,8 @@ export default function Ventas() {
             setTimeout( () => {
                 navigate(`/factura?customer=${fetcher.data?.customerId}&invoice=${fetcher.data?.invoiceId}`);
             }, 1000 );
+        } else {
+            console.log("retorna false del action:  "+fetcher.data?.message);
         }
     }, [fetcher.data]);
 

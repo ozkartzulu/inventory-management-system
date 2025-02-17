@@ -22,77 +22,93 @@ type LoaderData = {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-    const url = new URL(request.url);
-    const customerId = Number(url.searchParams.get('customer'));
-    const invoiceId = Number(url.searchParams.get('invoice'));
-    const user = await getUser(request);
 
-    if(!customerId || !invoiceId || !user) {
-        console.log('No hay datos suficientes para emitir la factura');
+    try {
+        const url = new URL(request.url);
+        const customerId = Number(url.searchParams.get('customer'));
+        const invoiceId = Number(url.searchParams.get('invoice'));
+        const user = await getUser(request);
+
+        if(!customerId || !invoiceId || !user) {
+            console.log('No hay datos suficientes para emitir la factura');
+            return redirect('/productos');
+        }
+
+        const customer = await getCustomer(customerId);
+        const invoice = await getInvoice(invoiceId);
+        if(!customer || !invoice) {
+            return redirect('/productos');
+        }
+
+        if(!invoice.state) {
+            console.log('la factura ya fué emitida');
+            return redirect('/productos');
+        }
+        
+        // change type data of date to string
+        const invoiceNew = invoice ? {...invoice, date: invoice?.date + ''} : null;
+        
+        return json<LoaderData>({customer: customer, invoice: invoiceNew, user: user, sold: true});
+    } catch (error) {
+        console.log('error en el loader'+ error);
         return redirect('/productos');
     }
-
-    const customer = await getCustomer(customerId);
-    const invoice = await getInvoice(invoiceId);
-    if(!customer || !invoice) {
-        return redirect('/productos');
-    }
-
-    if(!invoice.state) {
-        console.log('la factura ya fué emitida');
-        return redirect('/productos');
-    }
-    
-    // change type data of date to string
-    const invoiceNew = invoice ? {...invoice, date: invoice?.date + ''} : null;
-    
-    return json<LoaderData>({customer: customer, invoice: invoiceNew, user: user, sold: true});
 }
 
 export async function action({ request}: ActionFunctionArgs) {
+    try {
+        const url = new URL(request.url);
+        const customerId = Number(url.searchParams.get('customer'));
+        const invoiceId = Number(url.searchParams.get('invoice'));
+        const user = await getUser(request);
 
-    const url = new URL(request.url);
-    const customerId = Number(url.searchParams.get('customer'));
-    const invoiceId = Number(url.searchParams.get('invoice'));
-    const user = await getUser(request);
-
-    if(!customerId || !invoiceId || !user) {
-        console.log('No hay datos suficientes para emitir la factura');
-        return redirect('/productos');
-    }
-
-    const customer = await getCustomer(customerId);
-    const invoice = await getInvoice(invoiceId);
-    // change type data of date to string
-    const invoiceNew = invoice ? {...invoice, date: invoice?.date + ''} : null;
-    
-    const formData = await request.formData();
-    const data = formData.get('data');
-
-    const dataObj = JSON.parse(data as string);
-    
-    if(dataObj.hasOwnProperty('state')) {
-        await setStateInvoice(invoiceId, dataObj.state);
-        console.log('se cambio el state de la factura');
-        return redirect('/productos');
-    } 
-
-    if(dataObj.hasOwnProperty('products')) {
-        if(dataObj.products.length == 0) {
-            console.log('no hay productos para generar la factura')
-            return redirect('/products');
+        if(!customerId || !invoiceId || !user) {
+            console.log('No hay datos suficientes para emitir la factura');
+            return redirect('/productos');
         }
+
+        const customer = await getCustomer(customerId);
+        const invoice = await getInvoice(invoiceId);
+        if(!customer || !invoice) {
+            console.log('No existe la factura o el cliente');
+            return redirect('/productos');
+        }
+        // change type data of date to string
+        const invoiceNew = invoice ? {...invoice, date: invoice?.date + ''} : null;
+        
+        const formData = await request.formData();
+        const data = formData.get('data');
+        if(!data) {
+            console.log('No existe data del formulario');
+            return redirect('/productos');
+        }
+
+        const dataObj = JSON.parse(data as string);
+        
+        if(dataObj.hasOwnProperty('state')) {
+            await setStateInvoice(invoiceId, dataObj.state);
+            console.log('se cambio el state de la factura');
+            return redirect('/productos');
+        } 
+
+        if(dataObj.hasOwnProperty('products')) {
+            if(dataObj.products.length == 0) {
+                console.log('no hay productos para generar la factura')
+                return redirect('/products');
+            }
+        }
+
+        let customerName = customer ? removeSpace(customer.name) : ''; 
+        let invoiceDate = invoiceNew ? formatDateUnSpace(invoiceNew.date) : ''; 
+        let nameFile = customerName +'_factura_'+invoiceDate+generateRandomDigits()+'.pdf';
+
+        await ReactPDF.render(<Documento products={dataObj.products} customer={customer} invoice={invoiceNew} user={user} type="sell"/>, `public/invoices/${nameFile}`);
+        
+        return null; 
+    } catch (error) {
+        console.log('error en el action'+ error);
+        return redirect('/productos');
     }
-    
-
-    let customerName = customer ? removeSpace(customer.name) : ''; 
-    let invoiceDate = invoiceNew ? formatDateUnSpace(invoiceNew.date) : ''; 
-    let nameFile = customerName +'_factura_'+invoiceDate+generateRandomDigits()+'.pdf';
-
-    ReactPDF.render(<Documento products={dataObj.products} customer={customer} invoice={invoiceNew} user={user} type="sell"/>, `public/invoices/${nameFile}`);
-    
-    
-    return null; 
 }
 
 export default function Invoice() {
