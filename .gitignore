@@ -9,8 +9,5 @@ node_modules
 /build
 .env
 
-/public/invoices
-/public/invoicesSupplier
-
 # Local Netlify folder
 .netlify
