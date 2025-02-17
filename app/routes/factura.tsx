@@ -101,8 +101,8 @@ export async function action({ request}: ActionFunctionArgs) {
         let customerName = customer ? removeSpace(customer.name) : ''; 
         let invoiceDate = invoiceNew ? formatDateUnSpace(invoiceNew.date) : ''; 
         let nameFile = customerName +'_factura_'+invoiceDate+generateRandomDigits()+'.pdf';
-
-        await ReactPDF.render(<Documento products={dataObj.products} customer={customer} invoice={invoiceNew} user={user} type="sell"/>, `public/invoices/${nameFile}`);
+        console.log(process.cwd())
+        await ReactPDF.render(<Documento products={dataObj.products} customer={customer} invoice={invoiceNew} user={user} type="sell"/>, process.cwd()+`/public/invoices/${nameFile}`);
         
         return null; 
     } catch (error) {
