@@ -73,7 +73,6 @@ export async function action({ request}: ActionFunctionArgs) {
             
                 if (process.env.VERCEL) {
                     const result:any = await uploadImageToCloudinary(buffer);
-                    result.end(buffer);
                     return result.secure_url;
                 } else {
                     const uploadDir = path.join(process.cwd(), "public/imgs");
