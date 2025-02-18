@@ -28,7 +28,7 @@ export default function SelectField({ categories, htmlFor, label, value = "", op
           onChange(e);
           setErrorText('');
         }} id={htmlFor} name={htmlFor} value={value} className="w-full p-2 rounded-xl my-2" >
-        <option defaultValue={'true'} hidden>{optionDefault}</option>
+        <option value='' hidden>{optionDefault}</option>
         {categories?.map( (category, index) => (
             <option value={category.id} key={category.id}>{ category.name }</option>
           ) )}
