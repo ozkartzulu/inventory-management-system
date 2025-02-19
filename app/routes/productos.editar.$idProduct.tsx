@@ -144,7 +144,7 @@ export async function action({ request, params}: ActionFunctionArgs) {
     const productUrl = formData.get('productUrl') ? String(formData.get('productUrl')) : '';
     const fileUrl: any = formData.get('url');
     let url = typeof fileUrl == 'object' ? fileUrl.name : formData.get('url');
-    url = url ? getPathRelative(url) : productUrl;
+    url = url ? url : productUrl;
 
     if (typeof name !== 'string' || typeof description !== 'string' || typeof number !== 'number' || typeof categoryId !== 'number' || typeof madeinId !== 'number' || typeof url !== 'string') {
         return json({ error: `Tipos de datos en los campos invalidos.`, form: action }, { status: 400 })
