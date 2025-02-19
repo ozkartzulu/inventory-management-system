@@ -142,7 +142,8 @@ export async function action({ request, params}: ActionFunctionArgs) {
     const brandId = Number(formData.get('brandId'));
     const variantId = Number(formData.get('variantId'));
     const productUrl = formData.get('productUrl') ? String(formData.get('productUrl')) : '';
-    let url: string = formData.get('url')?.filepath ?? '';
+    const fileUrl: any = formData.get('url');
+    let url = typeof fileUrl == 'object' ? fileUrl.name : formData.get('url');
     url = url ? getPathRelative(url) : productUrl;
 
     if (typeof name !== 'string' || typeof description !== 'string' || typeof number !== 'number' || typeof categoryId !== 'number' || typeof madeinId !== 'number' || typeof url !== 'string') {
