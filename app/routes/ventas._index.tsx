@@ -160,7 +160,7 @@ export default function Ventas() {
                             <th className='p-2'>Operaciones</th>
                         </tr>
                     </thead>
-                    <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-thin'>
+                    <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-normal'>
                         { products.map( venta => (
                             <ItemVenta venta={venta} key={venta.id} />
                         ) ) }

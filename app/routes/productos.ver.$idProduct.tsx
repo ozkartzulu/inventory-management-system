@@ -51,15 +51,15 @@ export default function VerProducto() {
                 </div>
                 <div className="basis-full sm:basis-full md:basis-3/5 py-4 px-6 bg-gray-300 bg-opacity-40 rounded">
                     <ul>
-                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Nombre: </span><span className="font-thin text-gray-300">{product?.name}</span></li>
-                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Descripción: </span><span className="font-thin text-gray-300">{product?.description}</span></li>
-                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Número de Producto: </span><span className="font-thin text-gray-300">{product?.number}</span></li>
-                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Nombre Categoría: </span><span className="font-thin text-gray-300">{product?.category.name}</span></li>
-                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Descripción Categoría: </span><span className="font-thin text-gray-300">{product?.category.description}</span></li>
-                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Fabricado en: </span><span className="font-thin text-gray-300">{product?.madein.name}</span></li>
-                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Marca: </span><span className="font-thin text-gray-300">{product?.brand.name}</span></li>
-                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Model: </span><span className="font-thin text-gray-300">{product?.model.name}</span></li>
-                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Variante: </span><span className="font-thin text-gray-300">{product?.variant.unit +" - "+ product?.variant.medida}</span></li>
+                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Nombre: </span><span className="font-normal text-gray-300">{product?.name}</span></li>
+                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Descripción: </span><span className="font-normal text-gray-300">{product?.description}</span></li>
+                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Número de Producto: </span><span className="font-normal text-gray-300">{product?.number}</span></li>
+                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Nombre Categoría: </span><span className="font-normal text-gray-300">{product?.category.name}</span></li>
+                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Descripción Categoría: </span><span className="font-normal text-gray-300">{product?.category.description}</span></li>
+                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Fabricado en: </span><span className="font-normal text-gray-300">{product?.madein.name}</span></li>
+                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Marca: </span><span className="font-normal text-gray-300">{product?.brand.name}</span></li>
+                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Model: </span><span className="font-normal text-gray-300">{product?.model.name}</span></li>
+                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Variante: </span><span className="font-normal text-gray-300">{product?.variant.unit +" - "+ product?.variant.medida}</span></li>
                     </ul>
                 </div>
             </div>

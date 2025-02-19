@@ -27,9 +27,9 @@ export default function VerCliente() {
             <div className="container mx-auto">
                 <div className="py-4 px-6 bg-gray-300 bg-opacity-40 rounded">
                     <ul>
-                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Nombre: </span><span className="font-thin text-gray-300">{customer?.name}</span></li>
-                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Dirección: </span><span className="font-thin text-gray-300">{customer?.address}</span></li>
-                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Teléfono: </span><span className="font-thin text-gray-300">{customer?.phone}</span></li>
+                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Nombre: </span><span className="font-normal text-gray-300">{customer?.name}</span></li>
+                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Dirección: </span><span className="font-normal text-gray-300">{customer?.address}</span></li>
+                        <li className="mb-2"><span className="text-indigo-950 font-bold ">Teléfono: </span><span className="font-normal text-gray-300">{customer?.phone}</span></li>
                        
                     </ul>
                 </div>

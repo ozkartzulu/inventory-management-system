@@ -37,7 +37,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }>  = ({children}) => {
     useEffect(() => {
         if (typeof window !== "undefined") {
             const storedCart = localStorage.getItem("cart");
-            setCartItems(storedCart ? JSON.parse(storedCart) : []);
+            setCartItems(storedCart ? JSON.parse(storedCart) : { sell: [], buy: [] });
         }
     }, []);
 

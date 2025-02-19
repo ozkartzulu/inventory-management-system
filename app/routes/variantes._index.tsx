@@ -46,7 +46,7 @@ export default function Index() {
                                 <th className='p-2'>Operaciones</th>
                             </tr>
                         </thead>
-                        <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-thin'>
+                        <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-normal'>
                             { variants?.map( variant => (
                                 <ItemVariant variant={variant} key={variant.id} />
                             ) ) }

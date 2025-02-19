@@ -189,7 +189,7 @@ export default function ReporteTotalVentas() {
                             <th className='p-2'>Monto Vendidas</th>
                         </tr>
                     </thead>
-                    <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-thin'>
+                    <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-normal'>
                         { orders.map( (order, index) => (
                             <ItemTotalVentas order={order} key={index} />
                         ) ) }

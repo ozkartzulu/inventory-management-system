@@ -189,7 +189,7 @@ export default function ReporteCompras() {
                             <th className='p-2'>Proveedor</th>
                         </tr>
                     </thead>
-                    <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-thin'>
+                    <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-normal'>
                         { orders?.map( order => (
                             <ItemBuy order={order} key={order.id} />
                         ) ) }

@@ -198,7 +198,7 @@ export default function ReporteVentas() {
                             <th className='p-2'>Cliente</th>
                         </tr>
                     </thead>
-                    <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-thin'>
+                    <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-normal'>
                         {/* { products?.filter( (product) => {
                             if(searchTerm == ''){
                                 return product
