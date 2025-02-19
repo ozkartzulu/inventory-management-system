@@ -124,10 +124,13 @@ function Navigation({user}) {
                     </li>
                 </ul>
                 { showMenu && (
-                    <div className={`${styles.menuSecond} `}>
+                    <div className={`${styles.menuSecond}`}>
                         <span className='flex justify-end'>
                             <img className='w-6 mr-4 mt-2 cursor-pointer' onClick={changeMenu} src="/icons/xmark.svg" alt="icon show menu" />
                         </span>
+                        <div className='flex justify-center mb-6'>
+                            <img className='logo w-32  m-2' src='/icons/logo-transparent.png' alt="Logo de Factory" />
+                        </div>
                         <ul  >
                             <li>
                                 <a href='#' onClick={changeMenuProducts}>Productos</a>

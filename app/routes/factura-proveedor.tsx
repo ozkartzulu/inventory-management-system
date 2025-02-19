@@ -1,17 +1,14 @@
-import {Document, Page, Text, View, Image, PDFViewer} from '@react-pdf/renderer';
+import { PDFViewer, pdf} from '@react-pdf/renderer';
 import ReactPDF from '@react-pdf/renderer';
 import { ActionFunctionArgs, json, LoaderFunction, redirect } from '@remix-run/node';
 import { useEffect, useState } from 'react';
 import useCart from '~/hooks/useCart';
 import Documento from '~/components/invoice/document';
 import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react';
-import { getCustomer } from '~/utils/customer.server';
-import { getInvoice, getInvoiceBuy, setStateInvoice, setStateInvoiceBuy } from '~/utils/invoice.server';
+import {  getInvoiceBuy, setStateInvoiceBuy } from '~/utils/invoice.server';
 import { getUser } from '~/utils/auth.server';
 import { formatDateUnSpace, generateRandomDigits, removeSpace } from '~/utils/utils';
-import { customer, invoiceorder, supplier } from '@prisma/client';
-import SharePdf from '~/components/share-button';
-import { log } from 'node:console';
+import { supplier } from '@prisma/client';
 import { productProp } from '~/utils/types.server';
 import { getSupplier } from '~/utils/supplier.server';
 
@@ -38,6 +35,7 @@ export const loader: LoaderFunction = async ({ request }) => {
         const supplier = await getSupplier(supplierId);
         const invoice = await getInvoiceBuy(invoiceId);
         if(!supplier || !invoice) {
+            console.log('No hay datos de cliente y factura');
             return redirect('/productos');
         }
 
@@ -134,6 +132,8 @@ export default function InvoiceSupplier() {
 
     const [isClient, setIsClient] = useState(false);
 
+    const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+
     useEffect(() => {
         setIsClient(true);
     }, []);
@@ -170,6 +170,17 @@ export default function InvoiceSupplier() {
         cartLStorage?.resetCart('buy');
     }
 
+    const isMobile = () => {
+        const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+        return regex.test(navigator.userAgent);
+    }
+
+    const handleDownload = async () => {
+        const blob = await pdf(<Documento products={products} supplier={loader.supplier} invoice={loader.invoice} user={loader.user} type="buy"/>).toBlob(); // Genera el PDF como Blob
+        const url = URL.createObjectURL(blob); // Crea una URL para descargar
+        setPdfUrl(url);
+    };
+
     if (!isClient) {
         return <p>Cargando visor de PDF...</p>;
     }
@@ -177,18 +188,37 @@ export default function InvoiceSupplier() {
     return (
         <>
         <div className='container max-w-screen-lg m-auto'>
-        <button
-            type="button" 
-            className="mb-5 rounded-xl mt-3 bg-yellow-300 px-6 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
-            onClick={handleEnd}
-        >Finalizar</button>
-        { loader ? (
-            <PDFViewer style={{ width: "100%", height: "70vh", margin: "0 auto"}}>
-                <Documento products={products} supplier={loader.supplier} invoice={loader.invoice} user={loader.user} type="buy"/>
-            </PDFViewer>
-        ) : (
-            <p>no hay factura</p>
-        )}
+        <div className='px-6 flex flex-col gap-5'>
+            <button
+                type="button" 
+                className="min-w-36 mb-5 font-bold rounded-xl mt-3 bg-yellow-300 px-6 py-3 text-blue-600 transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
+                onClick={handleEnd}
+            >Finalizar</button>
+            { loader && !isMobile() ? (
+                <PDFViewer style={{ width: "100%", height: "70vh", margin: "0 auto"}}>
+                    <Documento products={products} supplier={loader.supplier} invoice={loader.invoice} user={loader.user} type="buy"/>
+                </PDFViewer>
+            ) : (
+                loader ? (
+                    <>
+                        <button
+                            onClick={handleDownload}
+                            className="min-w-36 mb-5 px-4 py-3 bg-blue-600 text-white rounded-xl font-bold"
+                        >
+                            Descargar PDF
+                        </button>
+                        {pdfUrl && (
+                            <a className="min-w-36 mb-5 px-4 py-3 text-center bg-gray-500 text-white rounded-xl font-bold" href={pdfUrl} download={loader.supplier?.name + "_factura_"+loader.invoice?.date+".pdf"}>
+                            Haz clic aquí para descargar
+                            </a>
+                    )}
+                    </>
+                ) : (
+                    <p>no hay factura</p>
+                ) 
+            )}
+
+        </div>
 
         </div>
         </>

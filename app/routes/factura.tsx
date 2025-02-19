@@ -186,35 +186,37 @@ export default function Invoice() {
     return (
         <>
         <div className='container max-w-screen-lg m-auto'>
-        <button
-            type="button" 
-            className="mb-5 rounded-xl mt-3 bg-yellow-300 px-6 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
-            onClick={handleEnd}
-        >Finalizar</button>
-        { loader && !isMobile() ? (
-            <PDFViewer style={{ width: "100%", height: "70vh", margin: "0 auto"}}>
-                <Documento products={products} customer={loader.customer} invoice={loader.invoice} user={loader.user} type="sell"/>
-            </PDFViewer>
-        ) : (
-             loader ? (
-                <>
-                    <button
-                        onClick={handleDownload}
-                        className="px-4 py-2 bg-blue-600 text-white rounded"
-                    >
-                        Descargar PDF
-                    </button>
-                    {pdfUrl && (
-                        <a href={pdfUrl} download={loader.customer?.name + "_factura_"+loader.invoice?.date+".pdf"}>
-                        Haz clic aquí para descargar
-                        </a>
-                )}
-                </>
-             ) : (
-                <p>no hay factura</p>
-            ) 
-        )}
+        <div className='px-6 flex flex-col gap-5'>
+            <button
+                type="button" 
+                className="min-w-36 mb-5 font-bold rounded-xl mt-3 bg-yellow-300 px-6 py-3 text-blue-600 transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
+                onClick={handleEnd}
+            >Finalizar</button>
+            { loader && !isMobile() ? (
+                <PDFViewer style={{ width: "100%", height: "70vh", margin: "0 auto"}}>
+                    <Documento products={products} customer={loader.customer} invoice={loader.invoice} user={loader.user} type="sell"/>
+                </PDFViewer>
+            ) : (
+                loader ? (
+                    <>
+                        <button
+                            onClick={handleDownload}
+                            className="min-w-36 mb-5 px-4 py-3 bg-blue-600 text-white rounded-xl font-bold"
+                        >
+                            Descargar PDF
+                        </button>
+                        {pdfUrl && (
+                            <a className="min-w-36 mb-5 px-4 py-3 text-center bg-gray-500 text-white rounded-xl font-bold" href={pdfUrl} download={loader.customer?.name + "_factura_"+loader.invoice?.date+".pdf"}>
+                            Haz clic aquí para descargar
+                            </a>
+                    )}
+                    </>
+                ) : (
+                    <p>no hay factura</p>
+                ) 
+            )}
 
+        </div>
         </div>
         </>
     )
