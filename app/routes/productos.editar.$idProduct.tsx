@@ -102,7 +102,7 @@ export async function action({ request, params}: ActionFunctionArgs) {
 
     const formData = await unstable_parseMultipartFormData(request, 
         unstable_composeUploadHandlers(async ({name, data, filename})  => {
-            if (name === "file" && filename) {
+            if (name === "url" && filename) {
             
                 const chunks: Uint8Array[] = [];
                 for await (const chunk of data) {
