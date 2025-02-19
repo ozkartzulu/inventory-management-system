@@ -4,6 +4,7 @@ import { useLoaderData } from "@remix-run/react";
 import { getAllCategories } from "~/utils/category.server";
 import ItemCategory from '~/components/item-category';
 import Button from "~/components/button";
+import styles from '../styles.module.css';
 
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -27,7 +28,7 @@ export default function Index() {
             { categories.length ? (
                 <>
                 <div className="list-products overflow-auto">
-                    <table className='w-full'> 
+                    <table className={`${styles.tableZebra} w-full`}> 
                         <thead className='bg-indigo-600 text-white text-left'>
                             <tr>
                                 <th className='p-2'>Nombre</th>

@@ -13,7 +13,7 @@ export default function ItemMadein({madein}: FormFieldProps) {
         <tr className="border-b border-b-pink-200 border-opacity-30">
             <td className="p-2 capitalize">{madein?.name}</td>
             {/* <td className="p-2 capitalize">{madein?.description}</td> */}
-            <td className="">
+            <td className="pr-2">
                 <div className="flex gap-2 items-center">
                     <button 
                         className="bg-yellow-600 text-white px-2 py-1 text-sm rounded"

@@ -8,6 +8,7 @@ import { getAllProducts } from "~/utils/product.server";
 import ItemProduct from "~/components/item-product";
 import Button from "~/components/button";
 import { getAllInventories } from "~/utils/inventory.server";
+import styles from "../styles.module.css"
 
 
 type ProductCategory = {
@@ -65,7 +66,7 @@ export default function Productos() {
         { products.length ? (
             <>
             <div className="list-products overflow-auto">
-                <table className='w-full'> 
+                <table className={`${styles.tableZebra} w-full`}> 
                     <thead className='bg-indigo-600 text-white text-left'>
                         <tr>
                             <th className='p-2'>Nombre</th>
@@ -77,7 +78,7 @@ export default function Productos() {
                             <th className='p-2'>Operaciones</th>
                         </tr>
                     </thead>
-                    <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-thin'>
+                    <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-normal'>
                         { products?.filter( (product) => {
                             if(searchTerm == ''){
                                 return product

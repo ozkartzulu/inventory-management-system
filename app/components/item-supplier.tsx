@@ -14,7 +14,7 @@ export default function ItemSupplier({supplier}: FormFieldProps) {
             <td className="p-2 capitalize">{supplier?.name}</td>
             <td className="p-2 capitalize">{supplier?.phone}</td>
             <td className="p-2 capitalize">{supplier?.address}</td>
-            <td className="">
+            <td className="pr-2">
                 <div className="flex gap-2 items-center">
                     <button 
                         className="bg-green-700 text-white px-2 py-1 text-sm rounded" 

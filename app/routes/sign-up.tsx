@@ -5,6 +5,7 @@ import { useActionData } from "@remix-run/react";
 import { validateEmail, validatePassword, validateName, validateLastName } from "~/utils/validators";
 import { register, getUser } from "~/utils/auth.server";
 import FormField from "~/components/form-field";
+import FieldPassword from "~/components/field-password";
 
 export const action: ActionFunction = async ({request}) => {
     const form = await request.formData();
@@ -69,11 +70,10 @@ export default function Signup() {
                     onChange={e => handleInputChange(e, 'email')}
                     error={errors?.email}
                 />
-                <FormField
+
+                <FieldPassword
                     htmlFor="password"
-                    type="password"
                     label="Contraseña"
-                    value={formData.password}
                     onChange={e => handleInputChange(e, 'password')}
                     error={errors?.password}
                 />

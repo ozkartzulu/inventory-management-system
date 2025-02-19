@@ -7,6 +7,7 @@ import Button from "~/components/button";
 import { getAllModels } from "~/utils/model.server";
 import { getAllBrands } from "~/utils/brand.server";
 import { getAllMadeins } from "~/utils/madein.server";
+import styles from '../styles.module.css';
 
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -30,7 +31,7 @@ export default function Index() {
             { brands.length ? (
                 <>
                 <div className="list-products">
-                    <table className='w-full'> 
+                    <table className={`${styles.tableZebra} w-full`}> 
                         <thead className='bg-indigo-600 text-white text-left'>
                             <tr>
                                 <th className='p-2'>Nombre</th>

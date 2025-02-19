@@ -6,6 +6,7 @@ import ItemVariant from '~/components/item-variant';
 import Button from "~/components/button";
 import { getAllModels } from "~/utils/model.server";
 import { getAllVariants } from "~/utils/variant.server";
+import styles from '../styles.module.css';
 
 type VariantCategory = {
     id: number;
@@ -36,7 +37,7 @@ export default function Index() {
             { variants.length ? (
                 <>
                 <div className="list-products overflow-auto">
-                    <table className='w-full'> 
+                    <table className={`${styles.tableZebra} w-full`}> 
                         <thead className='bg-indigo-600 text-white text-left'>
                             <tr>
                                 <th className='p-2'>Medida</th>

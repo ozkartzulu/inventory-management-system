@@ -13,6 +13,8 @@ import { getUser } from "~/utils/auth.server";
 import { registerInvoice } from "~/utils/invoice.server";
 import { productCart, productProp } from "~/utils/types.server";
 
+import styles from '../styles.module.css';
+
 type ActionLoader = {
     customers: customer[] | null;
 }
@@ -147,7 +149,7 @@ export default function Ventas() {
         { products ? (
             <>
             <div className="list-customers overflow-auto">
-                <table className='w-full'> 
+                <table className={`${styles.tableZebra} w-full`}> 
                     <thead className='bg-indigo-600 text-white text-left'>
                         <tr>
                             <th className='p-2'>Nombre</th>

@@ -20,6 +20,9 @@ import { getModelsByIdCategory } from "~/utils/model.server";
 import { getVariantsByIdCategory } from "~/utils/variant.server";
 import { getBrandsByIdCategory } from "~/utils/brand.server";
 import { getAllMadeins } from "~/utils/madein.server";
+import { uploadImageToCloudinary } from "~/utils/cloudinary.server";
+import path from "path";
+import { writeFile } from "fs/promises";
 
 type ActionData = {
     error?: string;
@@ -97,22 +100,28 @@ export async function action({ request, params}: ActionFunctionArgs) {
 
     let idProduct: number = Number(params.idProduct);
 
-    let formData = await unstable_parseMultipartFormData(
-        request,
-        unstable_composeUploadHandlers(
-            unstable_createFileUploadHandler({
-            filter({ contentType }) {
-                return contentType.includes("image");
-            },
-            directory: "./public/imgs",
-            avoidFileConflicts: false,
-            file({ filename }) {
-                return normalizeImageUrl(filename);
-            },
-            maxPartSize: 10 * 1024 * 1024,
-            }),
-            unstable_createMemoryUploadHandler(),
-        ),
+    const formData = await unstable_parseMultipartFormData(request, 
+        unstable_composeUploadHandlers(async ({name, data, filename})  => {
+            if (name === "file" && filename) {
+            
+                const chunks: Uint8Array[] = [];
+                for await (const chunk of data) {
+                    chunks.push(chunk);
+                }
+                const buffer = Buffer.concat(chunks);
+            
+                if (process.env.VERCEL) {
+                    const result:any = await uploadImageToCloudinary(buffer);
+                    return result.secure_url;
+                } else {
+                    const uploadDir = path.join(process.cwd(), "public/imgs");
+                    const filenameFixed = normalizeImageUrl(filename);
+                    const filePath = path.join(uploadDir, filenameFixed);
+                    await writeFile(filePath, buffer);
+                    return `/imgs/${filenameFixed}`;
+                }
+            }
+        }, unstable_createMemoryUploadHandler())
     );
 
 

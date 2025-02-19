@@ -22,7 +22,7 @@ export default function ItemVariant({variant}: FormFieldProps) {
             <td className="p-2 capitalize">{variant?.medida}</td>
             <td className="p-2 capitalize">{variant?.unit}</td>
             <td className="p-2 capitalize">{variant?.category.name}</td>
-            <td className="">
+            <td className="pr-2">
                 <div className="flex gap-2 items-center">
                     <button 
                         className="bg-yellow-600 text-white px-2 py-1 text-sm rounded"

@@ -5,6 +5,15 @@ main {
     padding-bottom: 50px;
 }
 
+.tableZebra {
+    tbody tr:nth-child(even) {
+        background-color: rgba(246, 246, 246, 0.2);
+    }
+    /* tbody tr:nth-child(odd) {
+        background-color: #ffec20;
+    } */
+}
+
 @media (max-width: 678px) {
     body {
         font-size: 15px;

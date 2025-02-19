@@ -4,6 +4,7 @@ import { ActionFunction, LoaderFunction, json, redirect } from '@remix-run/node'
 import { useActionData } from '@remix-run/react';
 import { login, getUser } from '~/utils/auth.server';
 import FormField from '~/components/form-field';
+import FieldPassword from '~/components/field-password';
 import { validateEmail, validatePassword } from '~/utils/validators';
 
 
@@ -66,11 +67,10 @@ export default function Login() {
                     onChange={e => handleInputChange(e, 'email')}
                     error={errors?.email}
                 />
-                <FormField
+
+                <FieldPassword
                     htmlFor="password"
-                    type="password"
                     label="Contraseña"
-                    value={formData.password}
                     onChange={e => handleInputChange(e, 'password')}
                     error={errors?.password}
                 />

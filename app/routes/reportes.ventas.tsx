@@ -15,6 +15,8 @@ import { getAllUsers } from "~/utils/user.server";
 import { getAllCategories } from "~/utils/category.server";
 import { capitalizeWords } from "~/utils/utils";
 
+import styles from '../styles.module.css';
+
 type OrderType = {
     id: number;
     quantity: number;
@@ -183,7 +185,7 @@ export default function ReporteVentas() {
         { orders?.length ? (
             <>
             <div className="list-products overflow-auto">
-                <table className='w-full'> 
+                <table className={`${styles.tableZebra} w-full`}> 
                     <thead className='bg-indigo-600 text-white text-left'>
                         <tr>
                             <th className='p-2'>Fecha</th>

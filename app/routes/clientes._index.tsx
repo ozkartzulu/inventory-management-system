@@ -8,6 +8,8 @@ import { getAllCustomers } from "~/utils/customer.server";
 import Button from "~/components/button";
 import ItemCustomer from "~/components/item-customer";
 
+import styles from '../styles.module.css';
+
 export const loader: LoaderFunction = async ({ request }) => {
     // let user = await getUserIdName(request);
     // if(!user) {
@@ -40,7 +42,7 @@ export default function Customers() {
         { customers.length ? (
             <>
             <div className="list-customers overflow-auto">
-                <table className='w-full'> 
+                <table className={`${styles.tableZebra} w-full`}> 
                     <thead className='bg-indigo-600 text-white text-left'>
                         <tr>
                             <th className='p-2'>Nombre</th>

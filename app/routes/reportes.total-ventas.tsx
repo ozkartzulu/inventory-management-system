@@ -14,7 +14,7 @@ import { getAllUsers } from "~/utils/user.server";
 import { getAllCategories } from "~/utils/category.server";
 import { buildBuy, buildSell } from "~/utils/utils";
 import { OrderType, TotalVenta } from "~/utils/types.server";
-import { log } from "node:console";
+import styles from '../styles.module.css';
 
 type Data = {
     totalCompras: TotalVenta[];
@@ -165,20 +165,20 @@ export default function ReporteTotalVentas() {
             <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Total Ventas</h2>
             <form method="post">
             <div className='flex flex-wrap gap-5 mb-3'>
-                <div className="flex gap-3 md:gap-6 items-center md:mr-7">
-                    <label htmlFor="start" className="text-yellow-300 text-lg md:text-lg font-bold w-2/5 ">Seleccionar Fecha Inicio</label>
-                    <input type="date" id="start" name="start" className="py-2 px-3 rounded-md w-3/5" onChange={handleStart}/>
+                <div className="flex gap-5 md:gap-6 items-center md:mr-7 w-full md:w-auto">
+                    <label htmlFor="start" className="text-yellow-300 text-lg md:text-lg font-bold w-1/3 ">Seleccionar Fecha Inicio</label>
+                    <input type="date" id="start" name="start" className="py-2 px-3 rounded-md w-2/3" onChange={handleStart}/>
                 </div>
-                <div className="flex gap-3 md:gap-6 items-center">
-                    <label htmlFor="end" className="text-yellow-300 text-lg md:text-lg font-bold w-2/5" >Seleccionar Fecha Fin</label>
-                    <input type="date" id="end" name="end" className="py-2 px-3 rounded-md w-3/5" onChange={handleEnd} />
+                <div className="flex gap-5 md:gap-6 items-center w-full md:w-auto">
+                    <label htmlFor="end" className="text-yellow-300 text-lg md:text-lg font-bold w-1/3" >Seleccionar Fecha Fin</label>
+                    <input type="date" id="end" name="end" className="py-2 px-3 rounded-md w-2/3" onChange={handleEnd} />
                 </div>
             </div>
             </form>
         { orders?.length ? (
             <>
             <div className="list-products overflow-auto">
-                <table className='w-full'> 
+                <table className={`${styles.tableZebra} w-full`}> 
                     <thead className='bg-indigo-600 text-white text-left'>
                         <tr>
                             <th className='p-2'>Nombre</th>

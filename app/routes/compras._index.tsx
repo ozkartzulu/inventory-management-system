@@ -14,6 +14,8 @@ import { registerInvoice, registerInvoiceBuy } from "~/utils/invoice.server";
 import { productCart, productProp } from "~/utils/types.server";
 import { getAllSuppliers } from "~/utils/supplier.server";
 
+import styles from '../styles.module.css';
+
 type ActionLoader = {
     suppliers: supplier[] | null;
 }
@@ -142,7 +144,7 @@ export default function Compras() {
         { products ? (
             <>
             <div className="list-customers overflow-auto">
-                <table className='w-full'> 
+                <table className={`${styles.tableZebra} w-full`}> 
                     <thead className='bg-indigo-600 text-white text-left'>
                         <tr>
                             <th className='p-2 w-28'>Nombre</th>
