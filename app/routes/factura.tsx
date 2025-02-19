@@ -1,4 +1,4 @@
-import { PDFViewer} from '@react-pdf/renderer';
+import { PDFViewer, pdf} from '@react-pdf/renderer';
 import ReactPDF from '@react-pdf/renderer';
 import { ActionFunctionArgs, json, LoaderFunction, redirect } from '@remix-run/node';
 import { useEffect, useState } from 'react';
@@ -35,6 +35,7 @@ export const loader: LoaderFunction = async ({ request }) => {
         const customer = await getCustomer(customerId);
         const invoice = await getInvoice(invoiceId);
         if(!customer || !invoice) {
+            console.log('No hay datos de cliente y factura');
             return redirect('/productos');
         }
 
@@ -129,6 +130,8 @@ export default function Invoice() {
 
     const [isClient, setIsClient] = useState(false);
 
+    const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+
     useEffect(() => {
         setIsClient(true);
     }, []);
@@ -165,6 +168,17 @@ export default function Invoice() {
         cartLStorage?.resetCart('sell');
     }
 
+    const isMobile = () => {
+        const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+        return regex.test(navigator.userAgent);
+    }
+
+    const handleDownload = async () => {
+        const blob = await pdf(<Documento products={products} customer={loader.customer} invoice={loader.invoice} user={loader.user} type="sell"/>).toBlob(); // Genera el PDF como Blob
+        const url = URL.createObjectURL(blob); // Crea una URL para descargar
+        setPdfUrl(url);
+    };
+    
     if (!isClient) {
         return <p>Cargando visor de PDF...</p>;
     }
@@ -177,12 +191,28 @@ export default function Invoice() {
             className="mb-5 rounded-xl mt-3 bg-yellow-300 px-6 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
             onClick={handleEnd}
         >Finalizar</button>
-        { loader ? (
+        { loader && !isMobile() ? (
             <PDFViewer style={{ width: "100%", height: "70vh", margin: "0 auto"}}>
                 <Documento products={products} customer={loader.customer} invoice={loader.invoice} user={loader.user} type="sell"/>
             </PDFViewer>
         ) : (
-            <p>no hay factura</p>
+             loader ? (
+                <>
+                    <button
+                        onClick={handleDownload}
+                        className="px-4 py-2 bg-blue-600 text-white rounded"
+                    >
+                        Descargar PDF
+                    </button>
+                    {pdfUrl && (
+                        <a href={pdfUrl} download={loader.customer?.name + "_factura_"+loader.invoice?.date+".pdf"}>
+                        Haz clic aquí para descargar
+                        </a>
+                )}
+                </>
+             ) : (
+                <p>no hay factura</p>
+            ) 
         )}
 
         </div>
