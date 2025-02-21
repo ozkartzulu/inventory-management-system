@@ -15,7 +15,7 @@ export default function ItemVenta({venta}: productType) {
 
     let [counter, setCounter] = useState(1);
 
-    let [price, setPrice] = useState("50");
+    let [price, setPrice] = useState("0");
 
     useEffect(() => {
         setCounter( prev => {
@@ -31,7 +31,7 @@ export default function ItemVenta({venta}: productType) {
             if(found) {
                 return found.price;
             }
-            return "50";
+            return "0";
         });
         
     }, [])
@@ -51,10 +51,8 @@ export default function ItemVenta({venta}: productType) {
 
     const handlePrice = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newPrice = event.target.value;
-        if(newPrice) {
-            setPrice(newPrice);
-            cartLStorage?.setPrice(venta.id, newPrice, 'sell');
-        }
+        setPrice(newPrice);
+        cartLStorage?.setPrice(venta.id, newPrice, 'sell');
     }
 
     const handleRemove = () => {
@@ -89,6 +87,8 @@ export default function ItemVenta({venta}: productType) {
                 <input 
                     type="number" 
                     value={price} 
+                    placeholder="30"
+                    pattern="^[0-9]*$"
                     className="bg-transparent border rounded-md py-1 pl-2 pr-1 w-20"
                     onChange={handlePrice}
                 />

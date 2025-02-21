@@ -1,12 +1,13 @@
 
-import { useLoaderData } from "@remix-run/react";
-import { useState } from "react";
+import { useLoaderData, useNavigation } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import { category, product } from "@prisma/client";
 import { LoaderFunction, redirect } from "@remix-run/node";
 import { getUser, getUserIdName, requireUserId } from "~/utils/auth.server";
 import { getAllProducts } from "~/utils/product.server";
 import ItemProduct from "~/components/item-product";
 import Button from "~/components/button";
+import Spinner from "~/components/spinner";
 import { getAllInventories } from "~/utils/inventory.server";
 import styles from "../styles.module.css"
 
@@ -48,9 +49,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Productos() {
     const products:[ProductCategory] = useLoaderData();
-    // console.log(products);
     
     const [searchTerm, setSearchTerm] = useState('');
+
+    const [loading, setLoading] = useState(true);
+
+    useEffect( () => {
+        setLoading(false);
+    }, [products] )
     return (
         <div className="container max-w-screen-xl m-auto px-4">
             <h2 className='text-3xl text-yellow-300 font-bold text-center mb-5'>Lista de Productos</h2>
@@ -65,33 +71,37 @@ export default function Productos() {
             </div>
         { products.length ? (
             <>
-            <div className="list-products overflow-auto">
-                <table className={`${styles.tableZebra} w-full`}> 
-                    <thead className='bg-indigo-600 text-white text-left'>
-                        <tr>
-                            <th className='p-2'>Nombre</th>
-                            <th className='p-2'>Descripción</th>
-                            <th className='p-2'>Categoría</th>
-                            <th className='p-2'>Número</th>
-                            <th className='p-2'>Imagen</th>
-                            <th className='p-2'>Stock</th>
-                            <th className='p-2'>Operaciones</th>
-                        </tr>
-                    </thead>
-                    <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-normal'>
-                        { products?.filter( (product) => {
-                            if(searchTerm == ''){
-                                return product
-                            }else if( product.name.toLowerCase().includes( searchTerm.toLowerCase() ) ){
-                                return product
-                            }
-                        } ).map( product => (
-                            <ItemProduct product={product} key={product.id} />
-                        ) ) }
-                    </tbody>
-                </table>
-            </div>
-            </>
+            { loading ? (
+                <Spinner />
+            ): (
+                <div className="list-products overflow-auto">
+                    <table className={`${styles.tableZebra} w-full`}> 
+                        <thead className='bg-indigo-600 text-white text-left'>
+                            <tr>
+                                <th className='p-2'>Nombre</th>
+                                <th className='p-2'>Descripción</th>
+                                <th className='p-2'>Categoría</th>
+                                <th className='p-2'>Número</th>
+                                <th className='p-2'>Imagen</th>
+                                <th className='p-2'>Stock</th>
+                                <th className='p-2'>Operaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-normal'>
+                            { products?.filter( (product) => {
+                                if(searchTerm == ''){
+                                    return product
+                                }else if( product.name.toLowerCase().includes( searchTerm.toLowerCase() ) ){
+                                    return product
+                                }
+                            } ).map( product => (
+                                <ItemProduct product={product} key={product.id} />
+                            ) ) }
+                        </tbody>
+                    </table>
+                </div>
+            )}
+            </>    
             ) : (<p>No hay productos</p>)}
         </div>
     )

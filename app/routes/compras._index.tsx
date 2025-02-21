@@ -13,6 +13,7 @@ import { getUser } from "~/utils/auth.server";
 import { registerInvoice, registerInvoiceBuy } from "~/utils/invoice.server";
 import { productCart, productProp } from "~/utils/types.server";
 import { getAllSuppliers } from "~/utils/supplier.server";
+import LoaderButton from '~/components/loader-button';
 
 import styles from '../styles.module.css';
 
@@ -29,6 +30,7 @@ type ActionData = {
         supplier: string;
     };
     success?: boolean;
+    message?: string;
     supplierId: number;
     invoiceId: number;
 };
@@ -54,11 +56,12 @@ export async function action({ request}: ActionFunctionArgs) {
         return json({ errors, fields: { supplierId }, form: action }, { status: 400 })
     }
 
-    if(user) {
+    const emptyPrice = products.find( (product:productProp) => typeof Number(product.price) !== 'number' || +product.price < 1);
+    if(user && !emptyPrice) {
         return await registerInvoiceBuy(products, supplierId, user.id );
     }
     
-    return json({ success: false, message: "No se pudo crear la factura." }); 
+    return json({ success: false, message: "Ingresar valor válido al campo precio" }); 
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -82,6 +85,8 @@ export default function Compras() {
     const fetcher = useFetcher<ActionData>();
     
     let [total, setTotal] = useState('');
+
+    const [loaderButton, setLoaderButton] = useState(false);
 
     let [supplier, setSupplier] = useState('');
 
@@ -117,6 +122,8 @@ export default function Compras() {
     }, [cartLStorage?.cartItems.buy])
 
     useEffect(() => {
+        setLoaderButton(false);
+
         if (fetcher.data?.success) {
             // navigate(`/factura/${fetcher.data.facturaId}`);
             setTimeout( () => {
@@ -136,6 +143,8 @@ export default function Compras() {
             { data: JSON.stringify(data) },
             { method: "post"}
         );
+
+        setLoaderButton(true);
     }
 
     return (
@@ -170,6 +179,9 @@ export default function Compras() {
                         </tr>
                     </tfoot>
                 </table>
+                <div className="text-base font-semibold text-right tracking-wide text-red-500 w-full">
+                    {fetcher.data?.message}
+                </div>
             </div>
             </>
             ) : (<p>No hay productos seleccionados aún</p>)}
@@ -196,8 +208,9 @@ export default function Compras() {
                 <button 
                     type="button" 
                     onClick={handleSubmit}
-                    className="rounded-xl mt-3 bg-yellow-300 px-6 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1 cursor-pointer" 
-                >Realizar Venta</button>
+                    disabled={loaderButton ? true : false}
+                    className="relative min-w-44 min-h-12 rounded-xl mt-3 bg-yellow-300 px-6 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1 cursor-pointer" 
+                >{ loaderButton ? <LoaderButton/> : 'Realizar Compra'}</button>
             </div>
         </form>
         </div>

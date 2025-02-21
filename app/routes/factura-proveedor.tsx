@@ -11,6 +11,7 @@ import { formatDateUnSpace, generateRandomDigits, removeSpace } from '~/utils/ut
 import { supplier } from '@prisma/client';
 import { productProp } from '~/utils/types.server';
 import { getSupplier } from '~/utils/supplier.server';
+import LoaderButton from '~/components/loader-button';
 
 type LoaderData = {
     supplier: supplier | null, 
@@ -134,6 +135,8 @@ export default function InvoiceSupplier() {
 
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
+    const [loaderButton, setLoaderButton] = useState(false);
+
     useEffect(() => {
         setIsClient(true);
     }, []);
@@ -166,7 +169,7 @@ export default function InvoiceSupplier() {
             { data: JSON.stringify(data) },
             { method: "post"}
         );
-
+        setLoaderButton(true);
         cartLStorage?.resetCart('buy');
     }
 
@@ -191,9 +194,10 @@ export default function InvoiceSupplier() {
         <div className='px-6 flex flex-col gap-5'>
             <button
                 type="button" 
-                className="min-w-36 mb-5 font-bold rounded-xl mt-3 bg-yellow-300 px-6 py-3 text-blue-600 transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
+                disabled={loaderButton ? true : false}
+                className="relative min-w-36 min-h-12 mb-5 font-bold rounded-xl mt-3 bg-yellow-300 px-6 py-3 text-blue-600 transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
                 onClick={handleEnd}
-            >Finalizar</button>
+            >{ loaderButton ? <LoaderButton/> : 'Finalizar'}</button>
             { loader && !isMobile() ? (
                 <PDFViewer style={{ width: "100%", height: "70vh", margin: "0 auto"}}>
                     <Documento products={products} supplier={loader.supplier} invoice={loader.invoice} user={loader.user} type="buy"/>

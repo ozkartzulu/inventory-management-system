@@ -64,13 +64,13 @@ export default function ItemProduct({product}: FormFieldProps) {
     }, [cartLStorage?.cartItems])
 
     const handleClickSell = () => {
-        const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "50", stock: product.stock}
+        const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "", stock: product.stock}
         cartLStorage?.addToCart(productCart, 'sell');
         setActiveSell( prev => !prev);
     }
 
     const handleClickBuy = () => {
-        const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "50", stock: product.stock}
+        const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "", stock: product.stock}
         cartLStorage?.addToCart(productCart, 'buy');
         setActiveBuy( prev => !prev);
     }

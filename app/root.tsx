@@ -4,7 +4,8 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData
+  useLoaderData,
+  useNavigation
 } from "@remix-run/react";
 import "./tailwind.css";
 import { LoaderFunction } from "@remix-run/node";
@@ -13,6 +14,7 @@ import { getUserIdName } from "./utils/auth.server";
 import styles from './styles.module.css';
 import { useEffect } from "react";
 import { CartProvider } from "./context/CartProvider";
+import Spinner from "./components/spinner";
 
 export const loader: LoaderFunction = async ({ request }) => {
   let user = await getUserIdName(request);
@@ -58,8 +60,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function App() {
 
     const user = useLoaderData();
-
-
+    const navigation = useNavigation();
+    const isLoading = navigation.state !== "idle"
+    
   return (
     <CartProvider>
     <html lang="en">
@@ -77,6 +80,7 @@ export default function App() {
         <ScrollRestoration />
         <Scripts />
       </body>
+      { isLoading && <Spinner/>}
     </html>
     </CartProvider>
   );

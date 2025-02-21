@@ -16,6 +16,7 @@ import { getAllCategories } from "~/utils/category.server";
 import { capitalizeWords } from "~/utils/utils";
 
 import styles from '../styles.module.css';
+import Spinner from "~/components/spinner";
 
 type OrderType = {
     id: number;
@@ -82,10 +83,15 @@ export default function ReporteVentas() {
     const [user, setUser] = useState(0);
     const [category, setCategory] = useState(0);
     const [date, setDate] = useState('2');
+    const [loading, setLoading] = useState(true);
 
     const [orders, setOrders] = useState( () => {
         return ordersData?.sort((a:OrderType, b:OrderType) => new Date(b.date).getTime() - new Date(a.date).getTime() );
     } );
+
+    useEffect(() =>{
+        setLoading(false);
+    },[data])
 
     useEffect( () => {
 
@@ -132,6 +138,7 @@ export default function ReporteVentas() {
         setOrders(ordersFilter);
 
     },[client, user, category, searchTerm, date])
+
 
     const handleClient = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setClient(+e.target.value);
@@ -184,36 +191,32 @@ export default function ReporteVentas() {
             </div>
         { orders?.length ? (
             <>
-            <div className="list-products overflow-auto">
-                <table className={`${styles.tableZebra} w-full`}> 
-                    <thead className='bg-indigo-600 text-white text-left'>
-                        <tr>
-                            <th className='p-2'>Fecha</th>
-                            <th className='p-2'>Nombre</th>
-                            <th className='p-2'>Cantidad</th>
-                            <th className='p-2'>Precio</th>
-                            <th className='p-2'>Categoría</th>
-                            <th className='p-2'>Imagen</th>
-                            <th className='p-2'>Usuario</th>
-                            <th className='p-2'>Cliente</th>
-                        </tr>
-                    </thead>
-                    <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-normal'>
-                        {/* { products?.filter( (product) => {
-                            if(searchTerm == ''){
-                                return product
-                            }else if( product.name.toLowerCase().includes( searchTerm.toLowerCase() ) ){
-                                return product
-                            }
-                        } ).map( product => (
-                            <ItemProduct product={product} key={product.id} />
-                        ) ) } */}
-                        { orders?.map( order => (
-                            <ItemSell order={order} key={order.id} />
-                        ) ) }
-                    </tbody>
-                </table>
-            </div>
+            { loading ? (
+                <Spinner />
+            ) : (
+                <div className="list-products overflow-auto">
+                    <table className={`${styles.tableZebra} w-full`}> 
+                        <thead className='bg-indigo-600 text-white text-left'>
+                            <tr>
+                                <th className='p-2'>Fecha</th>
+                                <th className='p-2'>Nombre</th>
+                                <th className='p-2'>Cantidad</th>
+                                <th className='p-2'>Precio</th>
+                                <th className='p-2'>Categoría</th>
+                                <th className='p-2'>Imagen</th>
+                                <th className='p-2'>Usuario</th>
+                                <th className='p-2'>Cliente</th>
+                            </tr>
+                        </thead>
+                        <tbody className='border-l border-r border-pink-200 border-opacity-30 text-white font-normal'>
+                            { orders?.map( order => (
+                                <ItemSell order={order} key={order.id} />
+                            ) ) }
+                        </tbody>
+                    </table>
+                </div>
+            )}
+                
             </>
             ) : (<p>No hay registro de Ventas</p>)}
         </div>
