@@ -14,6 +14,12 @@ export default function ItemCustomer({customer}: FormFieldProps) {
             <td className="p-2 capitalize">{customer?.name}</td>
             <td className="p-2 capitalize">{customer?.phone}</td>
             <td className="p-2 capitalize">{customer?.address}</td>
+            <td className="p-2 capitalize">
+                <img src="/icons/deuda.svg" className="mr-2 w-7 h-auto cursor-pointer inline" alt="icon deuda" 
+                    onClick={ () => navigation(`/deuda/${customer?.id}`) }
+                />
+                <span>{customer?.debt} Bs.</span>
+            </td>
             <td className="">
                 <div className="flex gap-2 items-center">
                     <button 

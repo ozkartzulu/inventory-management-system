@@ -5,17 +5,17 @@ import { createUser } from './user.server';
 import bcrypt from 'bcryptjs';
 
 
-export async function registerBrand(model: registerModel) {
+export async function registerBrand(brand: registerModel) {
 
-    const exists = await prisma.model.count({ where: { name: model.name } });
+    const exists = await prisma.brand.count({ where: { name: brand.name } });
     if (exists) {
       return json({ error: `Ya existe esta marca con este nombre` }, { status: 400 });
     }
 
     const newModel = await prisma.brand.create({
       data: {
-        name: model.name,
-        categoryId: model.categoryId,
+        name: brand.name,
+        categoryId: brand.categoryId,
       },
     });
 
@@ -23,7 +23,7 @@ export async function registerBrand(model: registerModel) {
       return json(
         {
           error: `Error al crear nueva marca`,
-          fields: { name: model.name, categoryId: model.categoryId },
+          fields: { name: brand.name, categoryId: brand.categoryId },
         },
         { status: 400 },
       );

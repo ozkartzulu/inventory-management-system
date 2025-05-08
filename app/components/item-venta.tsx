@@ -4,7 +4,7 @@ import useCart from "~/hooks/useCart";
 import { productProp } from "~/utils/types.server";
 
 type productType = {
-    venta : productProp
+    venta : productProp;
 }
 
 export default function ItemVenta({venta}: productType) {

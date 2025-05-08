@@ -9,10 +9,11 @@ type InvoiceType = {
     supplier?: supplier | null, 
     invoice: {id: number, date: string, total: number, debt: number, userId: number, customerId?: number, supplierId?: number} | null, 
     user: {id: number, firstName: string, lastName: string, email: string} | null,
-    type: string
+    type: string,
+    tipo?: string
 }
 
-function Documento({ products, customer, supplier, invoice, user, type }: InvoiceType){
+function Documento({ products, customer, supplier, invoice, user, type, tipo }: InvoiceType){
 
     const getNameClient = () => {
         if(type === 'sell' && customer) {
@@ -34,6 +35,13 @@ function Documento({ products, customer, supplier, invoice, user, type }: Invoic
             <View >
                 <View style={{}}>
                     <View style={{backgroundColor: "#E5E7EB", border: "1px solid #9CA3AF"}}>
+                        { tipo == 'deuda' ? (
+                            <View style={{display: "flex", flexDirection: "row"}}>
+                            <Text style={{padding: "4px 6px", width: "40%", fontSize: "9px"}}>Nombre</Text>
+                            <Text style={{padding: "4px 6px", width: "30%", fontSize: "9px"}}>Teléfono</Text>
+                            <Text style={{padding: "4px 6px", width: "30%", fontSize: "9px"}}>Deuda</Text>
+                        </View>
+                        ) : (
                         <View style={{display: "flex", flexDirection: "row"}}>
                             <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}>Código</Text>
                             <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}>Cantidad</Text>
@@ -41,50 +49,83 @@ function Documento({ products, customer, supplier, invoice, user, type }: Invoic
                             <Text style={{padding: "4px 6px", width: "20%", fontSize: "9px"}}>Precio Unitario</Text>
                             <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}>Subtotal</Text>
                         </View>
+                        )}
+                        
                     </View>
                     <View style={{borderLeft: "1px solid #9CA3AF", borderRight: "1px solid #9CA3AF"}}>
-                        { products?.map( (row, index) => (
-                            <View key={index} style={{ display: "flex", flexDirection: "row", borderBottom: "1px solid #9CA3AF" }}>
-                                <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}>{invoice?.id}</Text>
-                                <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}>{row.quantity}</Text>
-                                <Text style={{padding: "4px 6px", width: "35%", fontSize: "9px"}}>{row.name}</Text>
-                                <Text style={{padding: "4px 6px", width: "20%", fontSize: "9px"}}>{ row.price } Bs.</Text>
-                                <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}>{ row.quantity * +row.price } Bs.</Text>
+                        { tipo == 'deuda' ? (
+                            <View style={{ display: "flex", flexDirection: "row", borderBottom: "1px solid #9CA3AF" }}>
+                                <Text style={{padding: "4px 6px", width: "40%", fontSize: "9px"}}>{customer?.name}</Text>
+                                <Text style={{padding: "4px 6px", width: "30%", fontSize: "9px"}}>{customer?.phone}</Text>
+                                <Text style={{padding: "4px 6px", width: "30%", fontSize: "9px"}}>{ invoice ? invoice.total + invoice.debt : 0} Bs.</Text>
                             </View>
-                        ) ) }
+                        ) : (
+                             products?.map( (row, index) => (
+                                <View key={index} style={{ display: "flex", flexDirection: "row", borderBottom: "1px solid #9CA3AF" }}>
+                                    <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}>{invoice?.id}</Text>
+                                    <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}>{row.quantity}</Text>
+                                    <Text style={{padding: "4px 6px", width: "35%", fontSize: "9px"}}>{row.name}</Text>
+                                    <Text style={{padding: "4px 6px", width: "20%", fontSize: "9px"}}>{ row.price } Bs.</Text>
+                                    <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}>{ row.quantity * +row.price } Bs.</Text>
+                                </View>
+                            ) ) 
+                        )}
+                        
                     </View>
                 </View>
                 <View>
                     <View style={{}}>
-                        <View style={{display: "flex", flexDirection: "row"}}>
-                            <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}></Text>
-                            <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}></Text>
-                            <Text style={{padding: "4px 6px", width: "35%", fontSize: "9px"}}></Text>
-                            <Text style={{padding: "4px 6px", width: "20%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderLeft: "1px solid #9CA3AF"}}>Subtotal</Text>
-                            <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderRight: "1px solid #9CA3AF"}}>{invoice?.total} Bs.</Text>
-                        </View>
+                        { tipo == 'deuda' ? (
+                            <></>
+                        ) : (
+                            <View style={{display: "flex", flexDirection: "row"}}>
+                                <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}></Text>
+                                <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}></Text>
+                                <Text style={{padding: "4px 6px", width: "35%", fontSize: "9px"}}></Text>
+                                <Text style={{padding: "4px 6px", width: "20%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderLeft: "1px solid #9CA3AF"}}>Subtotal</Text>
+                                <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderRight: "1px solid #9CA3AF"}}>{invoice ? invoice.total + invoice.debt : 0 } Bs.</Text>
+                            </View>
+                        )}
                     </View>
                 </View>
                 <View>
                     <View style={{}}>
-                        <View style={{display: "flex", flexDirection: "row"}}>
-                            <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}></Text>
-                            <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}></Text>
-                            <Text style={{padding: "4px 6px", width: "35%", fontSize: "9px"}}></Text>
-                            <Text style={{padding: "4px 6px", width: "20%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderLeft: "1px solid #9CA3AF"}}>Deuda</Text>
-                            <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderRight: "1px solid #9CA3AF"}}>{invoice?.debt} Bs.</Text>
-                        </View>
+                        { tipo == 'deuda' ? (
+                            <View style={{display: "flex", flexDirection: "row"}}>
+                                <Text style={{padding: "4px 6px", width: "40%", fontSize: "9px"}}></Text>
+                                <Text style={{padding: "4px 6px", width: "30%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderLeft: "1px solid #9CA3AF"}}>Deuda</Text>
+                                <Text style={{padding: "4px 6px", width: "30%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderRight: "1px solid #9CA3AF"}}>{invoice?.debt} Bs.</Text>
+                            </View>
+                        ) : (
+                            <View style={{display: "flex", flexDirection: "row"}}>
+                                <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}></Text>
+                                <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}></Text>
+                                <Text style={{padding: "4px 6px", width: "35%", fontSize: "9px"}}></Text>
+                                <Text style={{padding: "4px 6px", width: "20%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderLeft: "1px solid #9CA3AF"}}>Deuda</Text>
+                                <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderRight: "1px solid #9CA3AF"}}>{invoice?.debt} Bs.</Text>
+                            </View>
+                        )}
+                        
                     </View>
                 </View>
                 <View>
                     <View style={{}}>
-                        <View style={{display: "flex", flexDirection: "row"}}>
-                            <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}></Text>
-                            <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}></Text>
-                            <Text style={{padding: "4px 6px", width: "35%", fontSize: "9px"}}></Text>
-                            <Text style={{padding: "4px 6px", width: "20%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderLeft: "1px solid #9CA3AF"}}>Total</Text>
-                            <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderRight: "1px solid #9CA3AF"}}>{ invoice ? invoice.total - invoice.debt : 0} Bs.</Text>
-                        </View>
+                        { tipo == 'deuda' ? (
+                            <View style={{display: "flex", flexDirection: "row"}}>
+                                <Text style={{padding: "4px 6px", width: "40%", fontSize: "9px"}}></Text>
+                                <Text style={{padding: "4px 6px", width: "30%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderLeft: "1px solid #9CA3AF"}}>Total</Text>
+                                <Text style={{padding: "4px 6px", width: "30%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderRight: "1px solid #9CA3AF"}}>{ invoice ? (invoice.total + invoice.debt) - invoice.debt : 0} Bs.</Text>
+                            </View>
+                        ) : (
+                            <View style={{display: "flex", flexDirection: "row"}}>
+                                <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}></Text>
+                                <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px"}}></Text>
+                                <Text style={{padding: "4px 6px", width: "35%", fontSize: "9px"}}></Text>
+                                <Text style={{padding: "4px 6px", width: "20%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderLeft: "1px solid #9CA3AF"}}>Total</Text>
+                                <Text style={{padding: "4px 6px", width: "15%", fontSize: "9px", backgroundColor: "#E5E7EB", borderBottom: "1px solid #9CA3AF", borderRight: "1px solid #9CA3AF"}}>{ invoice ? (invoice.total + invoice.debt) - invoice.debt : 0} Bs.</Text>
+                            </View>
+                        )}
+                        
                     </View>
                 </View>
             </View>

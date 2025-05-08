@@ -31,6 +31,7 @@ export async function registerManyOrders(products: productProp[], invoice: invoi
         products.forEach(async product => {
             const existProduct = await prisma.inventary.count({ where: { productId: product.id } });
             if(existProduct) {
+                // update invetory for each product
                 await prisma.inventary.update({
                     where: {
                         productId: product.id,
@@ -44,6 +45,19 @@ export async function registerManyOrders(products: productProp[], invoice: invoi
                         }
                     }
                 })
+
+                // if product is service, update date of customer table and change you state to true
+                if(product.type && product.name == 'cambio de aceite motor') {
+                    await prisma.customer.update({
+                        where: {
+                            id: customerId,
+                        },
+                        data: {
+                            dateService: new Date(),
+                            state: true,
+                        }
+                    })
+                }
             } else {
                 console.log('No existe el producto'+ product.name +' en inventario no se actualizó datos');
             }

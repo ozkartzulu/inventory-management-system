@@ -17,7 +17,8 @@ type LoaderData = {
     customer: customer | null, 
     invoice: {id: number, date: string, total: number, debt: number, state: boolean, userId: number, customerId: number} | null, 
     user: {id: number, firstName: string, lastName: string, email: string} | null,
-    sold: boolean
+    sold: boolean,
+    tipo: string,
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -26,6 +27,7 @@ export const loader: LoaderFunction = async ({ request }) => {
         const url = new URL(request.url);
         const customerId = Number(url.searchParams.get('customer'));
         const invoiceId = Number(url.searchParams.get('invoice'));
+        const tipo = String(url.searchParams.get('tipo'));
         const user = await getUser(request);
 
         if(!customerId || !invoiceId || !user) {
@@ -48,7 +50,7 @@ export const loader: LoaderFunction = async ({ request }) => {
         // change type data of date to string
         const invoiceNew = invoice ? {...invoice, date: invoice?.date + ''} : null;
         
-        return json<LoaderData>({customer: customer, invoice: invoiceNew, user: user, sold: true});
+        return json<LoaderData>({customer: customer, invoice: invoiceNew, user: user, sold: true, tipo: tipo});
     } catch (error) {
         console.log('error en el loader'+ error);
         return redirect('/productos');
@@ -60,6 +62,7 @@ export async function action({ request}: ActionFunctionArgs) {
         const url = new URL(request.url);
         const customerId = Number(url.searchParams.get('customer'));
         const invoiceId = Number(url.searchParams.get('invoice'));
+        const tipo = String(url.searchParams.get('tipo'));
         const user = await getUser(request);
 
         if(!customerId || !invoiceId || !user) {
@@ -88,7 +91,9 @@ export async function action({ request}: ActionFunctionArgs) {
         if(dataObj.hasOwnProperty('state')) {
             await setStateInvoice(invoiceId, dataObj.state);
             console.log('se cambio el state de la factura');
-            return redirect('/productos');
+            if(tipo == 'product') {
+                return redirect('/productos');
+            }
         } 
 
         if(dataObj.hasOwnProperty('products')) {
@@ -105,7 +110,7 @@ export async function action({ request}: ActionFunctionArgs) {
         const isVercel = process.env.VERCEL === "1";
         if (!isVercel) {
             console.log('En el entorno local se almacena el pdf');
-            await ReactPDF.render(<Documento products={dataObj.products} customer={customer} invoice={invoiceNew} user={user} type="sell"/>, process.cwd()+`/public/invoices/${nameFile}`);
+            await ReactPDF.render(<Documento products={dataObj.products} customer={customer} invoice={invoiceNew} user={user} type="sell" tipo={tipo}/>, process.cwd()+`/public/invoices/${nameFile}`);
         } else {
             console.log('En el entorno Vercel no se puede escribir archivos');
         }
@@ -177,7 +182,7 @@ export default function Invoice() {
     }
 
     const handleDownload = async () => {
-        const blob = await pdf(<Documento products={products} customer={loader.customer} invoice={loader.invoice} user={loader.user} type="sell"/>).toBlob(); // Genera el PDF como Blob
+        const blob = await pdf(<Documento products={products} customer={loader.customer} invoice={loader.invoice} user={loader.user} type="sell" tipo={loader.tipo}/>).toBlob(); // Genera el PDF como Blob
         const url = URL.createObjectURL(blob); // Crea una URL para descargar
         setPdfUrl(url);
     };
@@ -198,7 +203,7 @@ export default function Invoice() {
             >{ loaderButton ? <LoaderButton/> : 'Finalizar'} </button>
             { loader && !isMobile() ? (
                 <PDFViewer style={{ width: "100%", height: "70vh", margin: "0 auto"}}>
-                    <Documento products={products} customer={loader.customer} invoice={loader.invoice} user={loader.user} type="sell"/>
+                    <Documento products={products} customer={loader.customer} invoice={loader.invoice} user={loader.user} type="sell" tipo={loader.tipo}/>
                 </PDFViewer>
             ) : (
                 loader ? (

@@ -5,12 +5,12 @@ interface FormFieldProps {
     label: string
     accept?: string
     type?: string
-    value: any
+    value?: any
     onChange?: (...args: any) => any
     error?: string
 }
   
-export default function FormField({ htmlFor, label, accept, type = 'text', value, onChange = () => {}, error = "" }: FormFieldProps) {
+export default function FormField({ htmlFor, label, accept='', type = 'text', value, onChange = () => {}, error = "" }: FormFieldProps) {
 
   const [errorText, setErrorText] = useState(error);
 

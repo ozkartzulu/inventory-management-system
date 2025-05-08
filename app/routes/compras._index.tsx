@@ -56,7 +56,14 @@ export async function action({ request}: ActionFunctionArgs) {
         return json({ errors, fields: { supplierId }, form: action }, { status: 400 })
     }
 
-    const emptyPrice = products.find( (product:productProp) => typeof Number(product.price) !== 'number' || +product.price < 1);
+    const emptyPrice = products.find( (product:productProp) => {
+        if(product.type != 1) {
+            if(typeof Number(product.price) !== 'number' || +product.price < 1) {
+                return product;
+            }
+        } 
+    });
+    
     if(user && !emptyPrice) {
         return await registerInvoiceBuy(products, supplierId, user.id );
     }
@@ -190,12 +197,12 @@ export default function Compras() {
         <form action="" className="mt-10">
             <div className="row flex flex-wrap items-center">
                 <label htmlFor='supplier' className="text-xl text-yellow-300 font-bold w-full md:w-1/4">
-                    Seleccionar Cliente:
+                    Seleccionar Proveedor:
                 </label>
                 <select onChange={e => {
                     setSupplier(e.target.value);
                     }} id='supplier' name='supplier' value={supplier} className="w-full md:w-3/4 p-2 rounded-lg my-2" >
-                    <option value={''} hidden>Seleccione Cliente</option>
+                    <option value={''} hidden>Seleccione Proveedor</option>
                     {loader.suppliers?.map( (supplier, index) => (
                         <option value={supplier.id} key={supplier.id}>{ supplier.name }</option>
                     ) )}

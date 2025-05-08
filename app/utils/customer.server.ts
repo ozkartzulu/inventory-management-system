@@ -74,6 +74,41 @@ export async function updateCustomer(user: RegisterCustomer) {
     return { id: newUser.id, name: user.name, phone: user.phone, address: user.address }
 }
 
+export async function registerInvoiceDeuda(idCustomer: number, idUser: number, deuda: number, total: number) {
+
+    // register invoice
+    const invoice = await prisma.invoiceorder.create({
+        data: {
+            total: deuda,
+            debt: total,
+            customerId: idCustomer,
+            userId: idUser
+        },
+    });
+
+    if(!invoice) {
+        return null;
+    }
+
+    // update debt of customer
+	const newUser = await prisma.customer.update({
+        where: {
+            id: idCustomer,
+        },
+        data: {
+            debt: {
+                increment: -deuda,
+            },
+        }
+    });
+
+    if(!newUser) {
+        return null;
+    }
+
+    return json({ success: true, customerId: idCustomer, invoiceId: invoice.id });
+}
+
 export async function deleteCustomer(idCustomer: number) {
 	try {
         const exists = await prisma.customer.count({ where: { id: idCustomer } });

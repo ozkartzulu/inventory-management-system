@@ -14,6 +14,7 @@ interface FormFieldProps {
         categoryId: number;
         category: category;
         stock: number;
+        type: number;
     }
 }
 
@@ -64,13 +65,13 @@ export default function ItemProduct({product}: FormFieldProps) {
     }, [cartLStorage?.cartItems])
 
     const handleClickSell = () => {
-        const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "", stock: product.stock}
+        const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "", stock: product.stock, type: product.type}
         cartLStorage?.addToCart(productCart, 'sell');
         setActiveSell( prev => !prev);
     }
 
     const handleClickBuy = () => {
-        const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "", stock: product.stock}
+        const productCart = {id: product.id, name: product.name, url: product.url, quantity: 1, price: "", stock: product.stock, type: product.type}
         cartLStorage?.addToCart(productCart, 'buy');
         setActiveBuy( prev => !prev);
     }

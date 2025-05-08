@@ -42,7 +42,7 @@ export default function ItemVenta({venta}: productType) {
     }, [])
 
     const handleClickPlus = () => {
-        if(counter < 20) {
+        if(counter < 100) {
             setCounter(++counter);
             cartLStorage?.setQuantity(venta.id, counter, 'buy');
         }

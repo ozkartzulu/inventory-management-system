@@ -5,20 +5,36 @@ import { registerManyOrders, registerManyOrdersBuy } from "./order.server";
 
 
 
-export async function registerInvoice(products: productProp[], customerId: string, userId: number) {
+export async function registerInvoice(products: productProp[], customerId: string, userId: number, deuda: number, total: number) {
     try {
-        const total = products?.reduce( (total, row) => total + ( row.quantity * +row.price) , 0 );
+        // const total = products?.reduce( (total, row) => total + ( row.quantity * +row.price) , 0 );
         const customerNewId = +customerId;
         const invoice = await prisma.invoiceorder.create({
             data: {
                 total: total,
-                debt: 0,
+                debt: deuda,
                 customerId: customerNewId,
                 userId: userId
             },
         });
 
         if(!invoice) {
+            return null;
+        }
+
+        // actualizar la deuda en la tabla customer
+        const newUser = await prisma.customer.update({
+            where: {
+                id: customerNewId,
+            },
+            data: {
+                debt: {
+                    increment: deuda,
+                },
+            }
+        });
+    
+        if(!newUser) {
             return null;
         }
 

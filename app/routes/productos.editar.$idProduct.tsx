@@ -36,6 +36,7 @@ type ActionData = {
         description: string; 
         number: number; 
         url: string; 
+        type: number;
         madeinId: number; 
         categoryId: number; 
         modelId: number; 
@@ -47,6 +48,7 @@ type ActionData = {
         description: string;
         number: string;
         url: string;
+        type: string;
         madeinId: string;
         categoryId: string;
         modelId: string;
@@ -61,6 +63,7 @@ type ProductCategory = {
     description: string;
     number: number;
     url: string;
+    type: number;
     madeinId: number;
     categoryId: number;
     category: {
@@ -88,6 +91,7 @@ type StateProduct = {
     name: string | '';
     number: number | '';
     url: string | '';
+    type: number | '';
     madeinId: number | '';
     categoryId: number | '';
     modelId: number | '';
@@ -136,6 +140,7 @@ export async function action({ request, params}: ActionFunctionArgs) {
     const name = formData.get('name');
     const description = String(formData.get('description'));
     const number = Number(formData.get('number'));
+    const type = Number(formData.get('type'));
     const categoryId = Number(formData.get('categoryId'));
     const madeinId = Number(formData.get('madeinId'));
     const modelId = Number(formData.get('modelId'));
@@ -166,7 +171,7 @@ export async function action({ request, params}: ActionFunctionArgs) {
         return json({ errors, fields: { name, description, number, url, madeinId, categoryId, modelId, brandId, variantId}, form: action }, { status: 400 })
     }
 
-    return await updateProduct({ idProduct, name, description, number, url, madeinId, categoryId, modelId, brandId, variantId});
+    return await updateProduct({ idProduct, name, description, number, url, type, madeinId, categoryId, modelId, brandId, variantId});
     
 }
 
@@ -203,6 +208,7 @@ export default function ProductEdit() {
         description: actionData?.errors?.description || '',
         number: actionData?.errors?.number || '',
         url: actionData?.errors?.url || '',
+        type: actionData?.errors?.type || '',
         madeinId: actionData?.errors?.madeinId || '',
         categoryId: actionData?.errors?.categoryId || '',
         modelId: actionData?.errors?.modelId || '',
@@ -223,6 +229,7 @@ export default function ProductEdit() {
         description: loaders?.product?.description || '',
         number: loaders?.product?.number || '',
         url: loaders?.product?.url || '',
+        type: loaders?.product?.type || '',
         madeinId: loaders?.product?.madeinId || '',
         categoryId: loaders?.product?.categoryId || '',
         modelId: loaders?.product?.modelId || '',
@@ -242,7 +249,7 @@ export default function ProductEdit() {
         }
     }, [actionData])
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    const handleInputChange = (event: any, field: string) => {
         setFormData(form => ({ ...form, [field]: event.target.value }))
     }
 
@@ -281,6 +288,14 @@ export default function ProductEdit() {
                     onChange={e => handleInputChange(e, 'number')}
                     error={errors?.number}
                 />
+
+                <label htmlFor="type" className="text-blue-600 font-semibold">
+                    Tipo
+                </label>
+                <select onChange={e => handleInputChange(e, 'type') } id="type" name="type" value={formData?.type} className="w-full p-2 rounded-xl my-2" >
+                        <option value="0" key="0">Producto</option>
+                        <option value="1" key="1">Servicio</option>
+                </select>
 
                 <FieldFile
                     label="Cargar Imagen"

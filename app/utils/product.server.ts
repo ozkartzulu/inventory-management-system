@@ -18,6 +18,7 @@ export async function registerProduct(product: registerProduct) {
 			description: product.description,
 			number: product.number,
 			url: product.url,
+            type: product.type,
 			madeinId: product.madeinId,
 			categoryId: product.categoryId,
             brandId: product.brandId,
@@ -30,7 +31,7 @@ export async function registerProduct(product: registerProduct) {
 		return json(
 			{
 				error: `Hubo un error al crear producto.`,
-				fields: { name: product.name, description: product.description, number: product.number, file: product.url, madeinId: product.madeinId, categoryId: product.categoryId, brandId: product.brandId, modelId: product.modelId, variantId: product.modelId },
+				fields: { name: product.name, description: product.description, number: product.number, file: product.url, type: product.type, madeinId: product.madeinId, categoryId: product.categoryId, brandId: product.brandId, modelId: product.modelId, variantId: product.modelId },
 			},
 			{ status: 400 },
 		);
@@ -55,6 +56,7 @@ export async function updateProduct(product: registerProduct) {
 			description: product.description,
 			number: product.number,
 			url: product.url,
+			type: product.type,
 			madeinId: product.madeinId,
 			categoryId: product.categoryId,
             brandId: product.brandId,

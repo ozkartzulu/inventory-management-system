@@ -79,6 +79,7 @@ export type registerProduct = {
     description: string
     number: number
     url: string
+    type: number
     categoryId: number
     madeinId: number
     brandId: number
@@ -93,6 +94,7 @@ export type productProp = {
     quantity: number,
     price: string,
     stock: number,
+    type: number,
 }
 
 
@@ -135,6 +137,7 @@ export type productCart = {
         quantity: number;
         price: string;
         stock: number;
+        type: number;
     }[],
     buy: {
         id: number;
@@ -143,5 +146,6 @@ export type productCart = {
         quantity: number;
         price: string;
         stock: number;
+        type: number;
     }[]
 }

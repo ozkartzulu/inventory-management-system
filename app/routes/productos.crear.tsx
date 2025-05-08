@@ -9,6 +9,7 @@ import { validateFile, validatePassword, validateName, validateLastName, validat
 import type { ActionFunctionArgs, TypedResponse } from "@remix-run/node";
 import { getUser } from "~/utils/auth.server";
 import FormField from "~/components/form-field";
+import FieldFile from "~/components/field-file"
 import SelectField from '~/components/select-field';
 import SelectFieldVariant from '~/components/select-field-variant';
 import { getAllCategories } from "~/utils/category.server";
@@ -34,6 +35,7 @@ type ActionData = {
         description: string; 
         number: number; 
         url: string; 
+        type: number; 
         madeinId: number; 
         categoryId: number; 
         modelId: number; 
@@ -45,6 +47,7 @@ type ActionData = {
         description: string;
         number: string;
         url: string;
+        type: string;
         madeinId: string;
         categoryId: string;
         modelId: string;
@@ -97,6 +100,7 @@ export async function action({ request}: ActionFunctionArgs) {
     const name = formData.get('name');
     const description = String(formData.get('description'));
     const number = Number(formData.get('number'));
+    const type = Number(formData.get('type'));
     const categoryId = Number(formData.get('categoryId'));
     const madeinId = Number(formData.get('madeinId'));
     const modelId = Number(formData.get('modelId'));
@@ -125,7 +129,7 @@ export async function action({ request}: ActionFunctionArgs) {
         return json({ errors : {...errors, categoryId: "Por favor llenar todos los campos de categoría"}, fields: { name, description, number, url, madeinId, categoryId : '', modelId, brandId, variantId}, form: action }, { status: 400 })
     }
  
-    return await registerProduct({ name, description, number, url, madeinId, categoryId, brandId, modelId, variantId});
+    return await registerProduct({ name, description, number, url, type, madeinId, categoryId, brandId, modelId, variantId});
 }
 
 /*
@@ -218,6 +222,7 @@ export default function ProductCreate() {
         description: actionData?.fields?.description || '',
         number: actionData?.fields?.number || '',
         url: actionData?.fields?.url || '',
+        type: actionData?.fields?.type || '',
         madeinId: actionData?.fields?.madeinId || '',
         categoryId: actionData?.fields?.categoryId || '',
         modelId: actionData?.fields?.modelId || '',
@@ -237,7 +242,11 @@ export default function ProductCreate() {
         }
     }, [actionData])
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    const handleInputChange = (event: any, field: string) => {
+        if(event.target.files?.[0]) {
+            setFormData(form => ({ ...form, [field]: event.target.files?.[0].name }))
+            return;
+        }
         setFormData(form => ({ ...form, [field]: event.target.value }))
     }
 
@@ -276,12 +285,21 @@ export default function ProductCreate() {
                     onChange={e => handleInputChange(e, 'number')}
                     error={errors?.number}
                 />
+
+                <label htmlFor="type" className="text-blue-600 font-semibold">
+                    Tipo
+                </label>
+                <select onChange={e => handleInputChange(e, 'type') } id="type" name="type" value={formData?.type} className="w-full p-2 rounded-xl my-2" >
+                        <option value="0" key="0">Producto</option>
+                        <option value="1" key="1">Servicio</option>
+                </select>
+
                 <FormField
                     htmlFor="file"
                     label="Cargar Imagen"
                     accept=".jpg, .jpeg, .png"
                     type="file"
-                    value={formData?.url}
+                    // value={formData?.url}
                     onChange={e => handleInputChange(e, 'url')}
                     error={errors?.url}
                 />

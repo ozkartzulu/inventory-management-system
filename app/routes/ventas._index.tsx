@@ -1,5 +1,5 @@
 
-import { useActionData, useFetcher, useLoaderData, useNavigate, useSubmit } from "@remix-run/react";
+import { useActionData, useFetcher, useLoaderData, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { customer } from "@prisma/client";
 import { ActionFunctionArgs, json, LoaderFunction } from "@remix-run/node";
@@ -45,7 +45,7 @@ export async function action({ request}: ActionFunctionArgs) {
         return {error: 'No hay data suficiente'};
     }
     
-    const { products, customerId } = JSON.parse(data as string);
+    const { products, deuda, total, customerId } = JSON.parse(data as string);
 
     const errors = {
         customer: validateName(customerId),
@@ -58,12 +58,13 @@ export async function action({ request}: ActionFunctionArgs) {
     // check if same product there are not stock
     const stockEmpty = products.find( (product:productProp) => product.stock == 0);
     const emptyPrice = products.find( (product:productProp) => typeof Number(product.price) !== 'number' || +product.price < 1);
-    if(user && !stockEmpty && !emptyPrice) {
+    const totalReal = products.reduce( (total:number, product:productProp) => total + ( product.quantity * +product.price) , 0 );
+    if(user && !stockEmpty && !emptyPrice && totalReal >= Number(deuda)) {
         // console.log(products)
-        return await registerInvoice(products, customerId, user.id );
+        return await registerInvoice(products, customerId, user.id, Number(deuda), Number(total) );
     }
 
-    return json({ success: false, message: "Ingresar valor válido al campo precio o no hay stock del producto" }); 
+    return json({ success: false, message: "Revisar campo precio o si hay stock suficiente o Deuda mayor del valor total." }); 
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -81,12 +82,12 @@ export default function Ventas() {
     const cartItems = cartLStorage ? cartLStorage.cartItems : [];
 
     const loader = useLoaderData<ActionLoader>();
-
-    const submit = useSubmit();
     
     const fetcher = useFetcher<ActionData>();
     
     let [total, setTotal] = useState('');
+
+    let [deuda, setDeuda] = useState('0');
 
     const [loaderButton, setLoaderButton] = useState(false);
 
@@ -107,7 +108,8 @@ export default function Ventas() {
         
         setTotal(prev => {
             const total = products.reduce( (total, row) => total + ( row.quantity * +row.price) , 0 );
-            return total+'';
+            let newTotal = total - Number(deuda);
+            return newTotal+'';
         });
     }, [products])
 
@@ -130,7 +132,7 @@ export default function Ventas() {
         if (fetcher.data?.success) {
             // navigate(`/factura/${fetcher.data.facturaId}`);
             setTimeout( () => {
-                navigate(`/factura?customer=${fetcher.data?.customerId}&invoice=${fetcher.data?.invoiceId}`);
+                navigate(`/factura?customer=${fetcher.data?.customerId}&invoice=${fetcher.data?.invoiceId}&tipo=product`);
             }, 1000 );
         } else {
             console.log("retorna false del action:  "+fetcher.data?.message);
@@ -142,7 +144,7 @@ export default function Ventas() {
         let form: any = e.currentTarget.form;
         const customerId = form.customer.value;
 
-        const data = { products: products, customerId }
+        const data = { products: products, deuda: deuda, total: total, customerId }
 
         fetcher.submit(
             { data: JSON.stringify(data) },
@@ -150,6 +152,18 @@ export default function Ventas() {
         );
 
         setLoaderButton(true);
+    }
+
+    const handleDeuda = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const deuda = event.target.value;
+        const newTotal = products.reduce( (total, row) => total + ( row.quantity * +row.price) , 0 );
+        // not to allow input more than total price
+        if(+deuda > newTotal) {
+            return;
+        }
+        setDeuda(deuda);
+        let totales = Number(newTotal) - Number(deuda);
+        setTotal(String(totales)); 
     }
 
     return (
@@ -180,9 +194,27 @@ export default function Ventas() {
                             <td></td>
                             <td></td>
                             <td></td>
-                            <th className='p-2 border border-pink-200 border-opacity-30 text-yellow-300 font-bold text-left'>Total</th>
-                            <td className="p-2 border border-pink-200 border-opacity-30 text-yellow-300 font-bold">{total} Bs.</td>
+                            <th className='p-2 border border-pink-200 border-opacity-30 text-yellow-300 font-bold text-left'>Deuda Bs.</th>
+                            <td className="p-2 border border-pink-200 border-opacity-30 text-yellow-300 font-bold">
+                                <input 
+                                    type="number" 
+                                    value={deuda} 
+                                    placeholder="30"
+                                    pattern="^[0-9]*$"
+                                    className="bg-transparent border rounded-md py-1 pl-2 pr-1 w-20"
+                                    onChange={handleDeuda}
+                                />
+                            </td>
                         </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <th className='p-2 border border-pink-200 border-opacity-30 text-yellow-300 font-bold text-left'>Total Bs.</th>
+                            <td className="p-2 border border-pink-200 border-opacity-30 text-yellow-300 font-bold">{total}</td>
+                        </tr>
+                        
                     </tfoot>
                 </table>
                 <div className="text-base font-semibold text-right tracking-wide text-red-500 w-full">

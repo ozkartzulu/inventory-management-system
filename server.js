@@ -24,7 +24,9 @@ app.all(
   })
 );
 
+
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Servidor escuchando en http://localhost:${port}`);
+const HOST = "0.0.0.0" || "localhost";
+app.listen(port, HOST, () => {
+  console.log(`Servidor escuchando en http://${HOST}:${port}`);
 });

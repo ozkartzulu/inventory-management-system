@@ -22,6 +22,7 @@ type ProductCategory = {
     categoryId: number;
     category: category;
     stock: number;
+    type: number;
 }
 
 export const loader: LoaderFunction = async ({ request }) => {

@@ -33,6 +33,9 @@ model customer {
   name         String
   address      String
   phone        Int
+  dateService  DateTime @default(now())
+  state        Boolean  @default(false)
+  debt         Float    @default(0)        
   invoiceorder invoiceorder[]
 }
 
@@ -129,6 +132,7 @@ model product {
   categoryId  Int
   number      Int
   url         String
+  type        Int   @default(0)
   madeinId    Int
   brandId     Int
   modelId     Int

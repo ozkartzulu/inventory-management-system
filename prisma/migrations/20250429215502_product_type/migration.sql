@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `product` MODIFY `type` INTEGER NOT NULL DEFAULT 0;
