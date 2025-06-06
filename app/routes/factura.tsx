@@ -7,7 +7,7 @@ import Documento from '~/components/invoice/document';
 import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react';
 import { getCustomer } from '~/utils/customer.server';
 import { getInvoice, setStateInvoice } from '~/utils/invoice.server';
-import { getUser } from '~/utils/auth.server';
+import { getUser, getUserIdName } from '~/utils/auth.server';
 import { formatDateUnSpace, generateRandomDigits, removeSpace } from '~/utils/utils';
 import { customer } from '@prisma/client';
 import { productProp } from '~/utils/types.server';
@@ -22,7 +22,10 @@ type LoaderData = {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     try {
         const url = new URL(request.url);
         const customerId = Number(url.searchParams.get('customer'));

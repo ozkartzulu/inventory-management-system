@@ -2,6 +2,7 @@ import { brand, category, madein, model, product, variant } from "@prisma/client
 import { ActionFunction, LoaderFunction, LoaderFunctionArgs, json, redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import { getUserIdName } from "~/utils/auth.server";
 import { deleteProduct, getAllProducts, getProduct } from "~/utils/product.server";
 
 type ActionLoader = {
@@ -36,7 +37,11 @@ export const action: ActionFunction = async ({ request }) => {
     return redirect("/productos");
 };
 
-export const loader: LoaderFunction = async ({ params, }) => {
+export const loader: LoaderFunction = async ({ request, params, }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     let idProduct: number = Number(params.idProduct);
     const product = await getProduct(idProduct);
     if(!product) {

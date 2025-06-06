@@ -1,12 +1,13 @@
 
 import { useState } from "react";
-import { ActionFunction, json, redirect } from "@remix-run/node";
+import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
 import { useActionData, useNavigate } from "@remix-run/react";
 
 import { registerSupplier } from "~/utils/supplier.server";
 
 import { validateName, validatePhone } from "~/utils/validators";
 import FormField from "~/components/form-field";
+import { getUserIdName } from "~/utils/auth.server";
 
 export const action: ActionFunction = async ({request}) => {
     const form = await request.formData();
@@ -33,6 +34,15 @@ export const action: ActionFunction = async ({request}) => {
         return json({ error: `No se pudo completar el registro`, form: action }, { status: 400 })
     }
     return redirect('/proveedores');
+}
+
+export const loader: LoaderFunction = async ({ request }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
+
+    return null;
 }
 
 export default function CrearProveedor() {

@@ -36,14 +36,23 @@ export async function getAllCategories() {
   try {
     const categories = await prisma.category.findMany();
 
-    // if(!categories) {
-    //   return json(
-    //     {
-    //       error: `Ocurrió un error al recuperar todas las categorías.`,
-    //     },
-    //     { status: 400 },
-    //   );
-    // }
+    return categories;
+  } catch (error) {
+    console.log('Ocurrió un error al recuperar todas las categorías');
+    return null;
+  }
+  
+}
+
+export async function getCategoriesMinusCurrent(idCategory: number) {
+  try {
+    const categories = await prisma.category.findMany({
+        where: {
+            NOT: {
+                id: idCategory
+            }
+        }
+    });
 
     return categories;
   } catch (error) {

@@ -8,6 +8,7 @@ import FormField from "~/components/form-field";
 import SelectField from '~/components/select-field';
 import { getAllCategories } from "~/utils/category.server";
 import { category } from "@prisma/client";
+import { getUserIdName } from "~/utils/auth.server";
 
 export const action: ActionFunction = async ({request}) => {
     const form = await request.formData();
@@ -33,6 +34,10 @@ export const action: ActionFunction = async ({request}) => {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     const categories = await getAllCategories();
     return categories;
 }

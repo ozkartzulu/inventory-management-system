@@ -6,7 +6,7 @@ import useCart from '~/hooks/useCart';
 import Documento from '~/components/invoice/document';
 import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react';
 import {  getInvoiceBuy, setStateInvoiceBuy } from '~/utils/invoice.server';
-import { getUser } from '~/utils/auth.server';
+import { getUser, getUserIdName } from '~/utils/auth.server';
 import { formatDateUnSpace, generateRandomDigits, removeSpace } from '~/utils/utils';
 import { supplier } from '@prisma/client';
 import { productProp } from '~/utils/types.server';
@@ -21,7 +21,10 @@ type LoaderData = {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     try {
         const url = new URL(request.url);
         const supplierId = Number(url.searchParams.get('supplier'));

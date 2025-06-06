@@ -8,7 +8,7 @@ import SelectField from '~/components/select-field';
 import { getAllCategories } from "~/utils/category.server";
 import { category } from "@prisma/client";
 import { registerMadeins } from "~/utils/madein.server";
-import { getUser } from "~/utils/auth.server";
+import { getUser, getUserIdName } from "~/utils/auth.server";
 
 export const action: ActionFunction = async ({request}) => {
     const form = await request.formData();
@@ -30,7 +30,7 @@ export const action: ActionFunction = async ({request}) => {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-    const user = await getUser(request);
+    let user = await getUserIdName(request);
     if(!user) {
         return redirect('/login');
     }

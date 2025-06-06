@@ -8,11 +8,11 @@ import SelectField from '~/components/select-field';
 import { getAllCategories } from "~/utils/category.server";
 import { category } from "@prisma/client";
 import { registerBrand } from "~/utils/brand.server";
+import { getUserIdName } from "~/utils/auth.server";
 
 export const action: ActionFunction = async ({request}) => {
     const form = await request.formData();
     const name = form.get('name');
-    console.log(form.get('categoryId'))
     const categoryId = Number(form.get('categoryId'));
 
     if (typeof name !== 'string' || typeof categoryId !== 'number') {
@@ -32,6 +32,10 @@ export const action: ActionFunction = async ({request}) => {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     const categories = await getAllCategories();
     return categories;
 }

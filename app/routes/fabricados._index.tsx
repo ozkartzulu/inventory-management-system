@@ -1,5 +1,5 @@
 import { brand, category, model } from "@prisma/client";
-import { LoaderFunction } from "@remix-run/node";
+import { LoaderFunction, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { getAllCategories } from "~/utils/category.server";
 import ItemMadein from '~/components/item-madein';
@@ -8,9 +8,14 @@ import { getAllModels } from "~/utils/model.server";
 import { getAllBrands } from "~/utils/brand.server";
 import { getAllMadeins } from "~/utils/madein.server";
 import styles from '../styles.module.css';
+import { getUserIdName } from "~/utils/auth.server";
 
 
 export const loader: LoaderFunction = async ({ request }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     const brands = await getAllMadeins();
     if(!brands) {
         return null;

@@ -2,13 +2,23 @@
 import { useState } from "react";
 import { ActionFunction, LoaderFunction, json, redirect } from "@remix-run/node";
 import { useActionData, useLoaderData, useNavigate } from "@remix-run/react";
-import { validateEmail, validatePassword, validateName, validateLastName } from "~/utils/validators";
-import { getCategory, registerCategory, updateCategory } from "~/utils/category.server";
-import { getUser } from "~/utils/auth.server";
+import { validateEmail, validatePassword, validateName, validateLastName, validateNumber } from "~/utils/validators";
+import { getAllCategories, getCategory, registerCategory, updateCategory } from "~/utils/category.server";
+import { getUser, getUserIdName } from "~/utils/auth.server";
 import FormField from "~/components/form-field";
 import { category } from "@prisma/client";
 import { getModel, updateModel } from "~/utils/model.server";
 import { getBrand, updateBrand } from "~/utils/brand.server";
+import SelectField from "~/components/select-field";
+
+type dataLoader = {
+    brand: {
+        id: number;
+        categoryId: number; 
+        name: string;
+    },
+    categories: category[]
+}
 
 export const action: ActionFunction = async ({request, params}) => {
 
@@ -16,40 +26,47 @@ export const action: ActionFunction = async ({request, params}) => {
 
     const form = await request.formData();
     const name = form.get('name');
+    const categoryId = Number(form.get('categoryId'));
 
-    if (typeof name !== 'string') {
-        return json({ error: `Invalid Form Data`, form: action }, { status: 400 })
+    if (typeof name !== 'string' || typeof categoryId !== 'number') {
+        return json({ error: `Tipos de datos inválidos`, form: action }, { status: 400 })
     }
 
     const errors = {
         name: validateName(name),
+        categoryId: validateNumber(categoryId),
     }
 
     if (Object.values(errors).some(Boolean)) {
-        return json({ errors, fields: { name}, form: action }, { status: 400 })
+        return json({ errors, fields: { name, categoryId }, form: action }, { status: 400 })
     }
 
-    const brandUpdated =  await updateBrand({ idBrand, name});
+    const brandUpdated =  await updateBrand({ idBrand, name, categoryId});
 
     if(!brandUpdated) {
-        return json({ error: `No se pudo completar el cambio de cliente`, form: action }, { status: 400 })
+        return json({ error: `La marca con ese nombre y categoría ya existe`, form: action }, { status: 400 })
     }
 
     return redirect('/marcas');
 }
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     let idBrand: number = Number(params.idBrand);
        
     const brand = await getBrand(idBrand);
-    return brand;
+    const categories = await getAllCategories();
+    return {brand, categories};
 }
 
 export default function BrandEdit() {
 
     const actionData = useActionData<typeof action>();
 
-    const loader = useLoaderData<category>();
+    const loader:dataLoader = useLoaderData();
 
     const navigation = useNavigate();
 
@@ -57,7 +74,8 @@ export default function BrandEdit() {
     const [formError, setFormError] = useState(actionData?.error || '');
 
     const [formData, setFormData] = useState({
-        name: loader.name || '',
+        name: loader.brand.name || '',
+        categoryId: loader.brand.categoryId || '',
     });
 
     // Updates the form data when an input changes
@@ -78,6 +96,15 @@ export default function BrandEdit() {
                     error={errors?.name}
                 />
 
+                <SelectField
+                    categories={loader.categories}
+                    htmlFor='categoryId'
+                    label="Categoría"
+                    value={formData.categoryId}
+                    optionDefault="Seleccionar Categoría"
+                    onChange={e => handleInputChange(e, 'categoryId')}
+                    error={errors?.categoryId}
+                />
                 <div className="w-full flex justify-center gap-5">
                     <input
                     type="submit"

@@ -2,7 +2,7 @@
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { customer } from "@prisma/client";
-import { LoaderFunction } from "@remix-run/node";
+import { LoaderFunction, redirect } from "@remix-run/node";
 
 import { getAllCustomers } from "~/utils/customer.server";
 import Button from "~/components/button";
@@ -10,12 +10,13 @@ import ItemCustomer from "~/components/item-customer";
 
 import styles from '../styles.module.css';
 import { sendWhatsAppMessage } from "~/utils/whapi.server";
+import { getUserIdName } from "~/utils/auth.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
-    // let user = await getUserIdName(request);
-    // if(!user) {
-    //     return redirect('/login');
-    // }
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
 
     const customers = await getAllCustomers();
     if(!customers) {

@@ -1,14 +1,24 @@
 import { category, model } from "@prisma/client";
-import { LoaderFunction } from "@remix-run/node";
+import { LoaderFunction, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { getAllCategories } from "~/utils/category.server";
 import ItemModel from '~/components/item-model';
 import Button from "~/components/button";
 import { getAllModels } from "~/utils/model.server";
 import styles from '../styles.module.css';
+import { getUserIdName } from "~/utils/auth.server";
 
+type ModelCategory = {
+    id: number;
+    name: string; 
+    category: category;
+}
 
 export const loader: LoaderFunction = async ({ request }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     const models = await getAllModels();
     if(!models) {
         return null;
@@ -18,7 +28,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Index() {
 
-    const models:[model] = useLoaderData();
+    const models:ModelCategory[] = useLoaderData();
 
     return (
             <div className="container max-w-screen-xl m-auto px-4">
@@ -33,6 +43,7 @@ export default function Index() {
                         <thead className='bg-indigo-600 text-white text-left'>
                             <tr>
                                 <th className='p-2'>Nombre</th>
+                                <th className='p-2'>Categoría</th>
                                 <th className='p-2'>Operaciones</th>
                             </tr>
                         </thead>

@@ -7,7 +7,7 @@ import { ActionFunction, LoaderFunction, json, redirect,
 import { useActionData, useLoaderData, useFetcher, FormEncType, Form, useSubmit, useNavigate } from "@remix-run/react";
 import { validateFile, validatePassword, validateName, validateLastName, validateNumber } from "~/utils/validators";
 import type { ActionFunctionArgs, TypedResponse } from "@remix-run/node";
-import { getUser } from "~/utils/auth.server";
+import { getUser, getUserIdName } from "~/utils/auth.server";
 import FormField from "~/components/form-field";
 import FieldFile from "~/components/field-file"
 import SelectField from '~/components/select-field';
@@ -85,6 +85,7 @@ export async function action({ request}: ActionFunctionArgs) {
                     return `/imgs/${filenameFixed}`;
                 }
             }
+            return undefined;
         }, unstable_createMemoryUploadHandler())
     );
 
@@ -108,6 +109,7 @@ export async function action({ request}: ActionFunctionArgs) {
     const variantId = Number(formData.get('variantId'));
     const fileUrl: any = formData.get('file');
     const url = typeof fileUrl == 'object' ? fileUrl.name : formData.get('file');
+
 
     if (typeof name !== 'string' || typeof description !== 'string' || typeof number !== 'number' || typeof categoryId !== 'number' || typeof madeinId !== 'number' || typeof url !== 'string') {
         return json({ error: `Tipos de datos en los campos invalidos.`, form: action }, { status: 400 })
@@ -179,6 +181,10 @@ export const action: ActionFunction = async ({request}) => {
 */
 
 export const loader: LoaderFunction = async ({ request }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     const categories = await getAllCategories();
     const madeins = await getAllMadeins();
     return json<ActionLoader>({categories, madeins});

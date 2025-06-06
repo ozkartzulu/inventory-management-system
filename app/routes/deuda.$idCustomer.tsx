@@ -2,11 +2,11 @@
 import { useActionData, useFetcher, useLoaderData, useNavigate, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { customer } from "@prisma/client";
-import { ActionFunctionArgs, json, LoaderFunction } from "@remix-run/node";
+import { ActionFunctionArgs, json, LoaderFunction, redirect } from "@remix-run/node";
 
 import { getCustomer, registerInvoiceDeuda } from "~/utils/customer.server";
 import { validateName, validateNumber } from "~/utils/validators";
-import { getUser } from "~/utils/auth.server";
+import { getUser, getUserIdName } from "~/utils/auth.server";
 import { registerInvoice } from "~/utils/invoice.server";
 import { productCart, productProp } from "~/utils/types.server";
 import LoaderButton from '~/components/loader-button';
@@ -56,7 +56,11 @@ export async function action({ request, params}: ActionFunctionArgs) {
     return json({ success: false, message: "Revisar campo precio o si hay stock suficiente o Deuda mayor del valor total." }); 
 }
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     let idCustomer: number = Number(params.idCustomer);     
     const customer = await getCustomer(idCustomer);
     return customer;

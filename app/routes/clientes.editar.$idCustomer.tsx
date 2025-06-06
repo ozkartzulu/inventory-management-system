@@ -8,6 +8,7 @@ import { getCustomer, updateCustomer } from "~/utils/customer.server";
 import { validateName, validatePhone } from "~/utils/validators";
 import FormField from "~/components/form-field";
 import { customer } from "@prisma/client";
+import { getUserIdName } from "~/utils/auth.server";
 
 export const action: ActionFunction = async ({request, params}) => {
 
@@ -39,7 +40,11 @@ export const action: ActionFunction = async ({request, params}) => {
     return redirect('/clientes');
 }
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     let idCustomer: number = Number(params.idCustomer);
    
     const customer = await getCustomer(idCustomer);

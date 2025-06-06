@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 
 export async function registerModel(model: registerModel) {
 
-    const exists = await prisma.model.count({ where: { name: model.name } });
+    const exists = await prisma.model.count({ where: { name: model.name, categoryId: model.categoryId } });
     if (exists) {
       return json({ error: `Ya existe esta categoría con este nombre` }, { status: 400 });
     }
@@ -34,7 +34,11 @@ export async function registerModel(model: registerModel) {
 
 export async function getAllModels() {
   try {
-    const models = await prisma.model.findMany();
+    const models = await prisma.model.findMany({
+        include: {
+            category: true,
+        }
+    });
 
     if(!models) {
       return json(
@@ -97,12 +101,18 @@ export async function getModel(idModel: number) {
 
 export async function updateModel(model: updateModel) {
 
+    const exists = await prisma.model.count({ where: { name: model.name, categoryId: model.categoryId } });
+    if (exists) {
+      return null;
+    }
+
     const newModel = await prisma.model.update({
         where: {
             id: model.idModel,
         },
         data: {
             name: model.name,
+            categoryId: model.categoryId
         },
     });
 

@@ -4,7 +4,7 @@ import { ActionFunction, LoaderFunction, json, redirect } from "@remix-run/node"
 import { useActionData, useNavigate } from "@remix-run/react";
 import { validateEmail, validatePassword, validateName, validateLastName } from "~/utils/validators";
 import { registerCategory } from "~/utils/category.server";
-import { getUser } from "~/utils/auth.server";
+import { getUser, getUserIdName } from "~/utils/auth.server";
 import FormField from "~/components/form-field";
 
 export const action: ActionFunction = async ({request}) => {
@@ -30,7 +30,10 @@ export const action: ActionFunction = async ({request}) => {
 
 export const loader: LoaderFunction = async ({ request }) => {
     // If there's already a user in the session, redirect to the home page
-    let user = await getUser(request);
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     // console.log(request)
     return null;
 }

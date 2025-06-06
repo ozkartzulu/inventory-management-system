@@ -2,19 +2,20 @@
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { supplier } from "@prisma/client";
-import { LoaderFunction } from "@remix-run/node";
+import { LoaderFunction, redirect } from "@remix-run/node";
 
 import { getAllSuppliers } from "~/utils/supplier.server";
 import ItemSupplier from "~/components/item-supplier";
 import Button from "~/components/button";
 
 import styles from '../styles.module.css';
+import { getUserIdName } from "~/utils/auth.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
-    // let user = await getUserIdName(request);
-    // if(!user) {
-    //     return redirect('/login');
-    // }
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     const suppliers = await getAllSuppliers();
     if(!suppliers) {
         return null;

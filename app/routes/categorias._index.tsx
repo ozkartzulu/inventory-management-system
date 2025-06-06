@@ -1,13 +1,18 @@
 import { category } from "@prisma/client";
-import { LoaderFunction } from "@remix-run/node";
+import { LoaderFunction, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { getAllCategories } from "~/utils/category.server";
 import ItemCategory from '~/components/item-category';
 import Button from "~/components/button";
 import styles from '../styles.module.css';
+import { getUserIdName } from "~/utils/auth.server";
 
 
 export const loader: LoaderFunction = async ({ request }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     const categories = await getAllCategories();
     if(!categories) {
         return null;

@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 
 export async function registerVariant(variant: registerVariant) {
 
-		const exists = await prisma.variant.count({ where: { medida: variant.medida, unit: variant.unit } });
+		const exists = await prisma.variant.count({ where: { medida: variant.medida, unit: variant.unit, categoryId: variant.categoryId } });
 		if (exists) {
 			return json({ error: `Ya existe esta variante con este nombre` }, { status: 400 });
 		}
@@ -106,6 +106,10 @@ export async function getVariant(idVariant: number) {
 
 export async function updateVariant(variant: updateVariant) {
 
+    const exists = await prisma.variant.count({ where: { unit: variant.unit, medida: variant.medida, categoryId: variant.categoryId } });
+    if (exists) {
+      return null;
+    }   
     const newVariant = await prisma.variant.update({
         where: {
             id: variant.idVariant,

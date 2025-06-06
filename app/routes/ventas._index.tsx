@@ -2,14 +2,14 @@
 import { useActionData, useFetcher, useLoaderData, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { customer } from "@prisma/client";
-import { ActionFunctionArgs, json, LoaderFunction } from "@remix-run/node";
+import { ActionFunctionArgs, json, LoaderFunction, redirect } from "@remix-run/node";
 
 import { getAllCustomers } from "~/utils/customer.server";
 import Button from "~/components/button";
 import ItemVenta from "~/components/item-venta";
 import useCart from "~/hooks/useCart";
 import { validateName, validateNumber } from "~/utils/validators";
-import { getUser } from "~/utils/auth.server";
+import { getUser, getUserIdName } from "~/utils/auth.server";
 import { registerInvoice } from "~/utils/invoice.server";
 import { productCart, productProp } from "~/utils/types.server";
 import LoaderButton from '~/components/loader-button';
@@ -68,6 +68,10 @@ export async function action({ request}: ActionFunctionArgs) {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     const customers = await getAllCustomers();
     return json<ActionLoader>({customers});
 }

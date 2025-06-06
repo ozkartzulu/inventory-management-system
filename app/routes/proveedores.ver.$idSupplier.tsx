@@ -1,11 +1,16 @@
 import { supplier} from "@prisma/client";
-import { LoaderFunction } from "@remix-run/node";
+import { LoaderFunction, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import Button from "~/components/button";
+import { getUserIdName } from "~/utils/auth.server";
 import { getSupplier } from "~/utils/supplier.server";
 
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     let idSupplier: number = Number(params.idSupplier);
    
     const supplier = await getSupplier(idSupplier);

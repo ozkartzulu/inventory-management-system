@@ -4,7 +4,7 @@ import { ActionFunction, LoaderFunction, json, redirect } from "@remix-run/node"
 import { useActionData, useLoaderData, useNavigate } from "@remix-run/react";
 import { validateEmail, validatePassword, validateName, validateLastName, validateNumber } from "~/utils/validators";
 import { getAllCategories, getCategory, registerCategory, updateCategory } from "~/utils/category.server";
-import { getUser } from "~/utils/auth.server";
+import { getUser, getUserIdName } from "~/utils/auth.server";
 import FormField from "~/components/form-field";
 import { category } from "@prisma/client";
 import { getModel, updateModel } from "~/utils/model.server";
@@ -32,7 +32,7 @@ export const action: ActionFunction = async ({request, params}) => {
     const categoryId = Number(form.get('categoryId'));
 
     if (typeof medida !== 'string' || typeof unit !== 'number' || typeof categoryId !== 'number') {
-        return json({ error: `Invalid Form Data`, form: action }, { status: 400 })
+        return json({ error: `Tipos de datos inválidos`, form: action }, { status: 400 })
     }
 
     const errors = {
@@ -48,13 +48,17 @@ export const action: ActionFunction = async ({request, params}) => {
     const variantUpdated =  await updateVariant({ idVariant, medida, unit, categoryId});
 
     if(!variantUpdated) {
-        return json({ error: `No se pudo completar el cambio de cliente`, form: action }, { status: 400 })
+        return json({ error: `Ya existe la unidad de medida con esa categoría`, form: action }, { status: 400 })
     }
 
     return redirect('/variantes');
 }
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     let idVariant: number = Number(params.idVariant);
        
     const variant = await getVariant(idVariant);

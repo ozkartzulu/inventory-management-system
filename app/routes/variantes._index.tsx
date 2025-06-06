@@ -1,5 +1,5 @@
 import { category } from "@prisma/client";
-import { LoaderFunction } from "@remix-run/node";
+import { LoaderFunction, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { getAllCategories } from "~/utils/category.server";
 import ItemVariant from '~/components/item-variant';
@@ -7,6 +7,7 @@ import Button from "~/components/button";
 import { getAllModels } from "~/utils/model.server";
 import { getAllVariants } from "~/utils/variant.server";
 import styles from '../styles.module.css';
+import { getUserIdName } from "~/utils/auth.server";
 
 type VariantCategory = {
     id: number;
@@ -17,6 +18,10 @@ type VariantCategory = {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     const variants = await getAllVariants();
     if(!variants) {
         return null;

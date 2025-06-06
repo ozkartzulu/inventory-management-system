@@ -4,7 +4,7 @@ import { ActionFunction, LoaderFunction, json, redirect } from "@remix-run/node"
 import { useActionData, useLoaderData, useNavigate } from "@remix-run/react";
 import { validateEmail, validatePassword, validateName, validateLastName } from "~/utils/validators";
 import { getCategory, registerCategory, updateCategory } from "~/utils/category.server";
-import { getUser } from "~/utils/auth.server";
+import { getUser, getUserIdName } from "~/utils/auth.server";
 import FormField from "~/components/form-field";
 import { category } from "@prisma/client";
 import { getModel, updateModel } from "~/utils/model.server";
@@ -39,7 +39,11 @@ export const action: ActionFunction = async ({request, params}) => {
     return redirect('/fabricados');
 }
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({request, params }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     let idMadein: number = Number(params.idMadein);
        
     const brand = await getMadein(idMadein);

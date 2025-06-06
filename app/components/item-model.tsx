@@ -1,8 +1,12 @@
-import { model } from "@prisma/client";
+import { category, model } from "@prisma/client";
 import { useNavigate } from "@remix-run/react";
 
 interface FormFieldProps {
-    model: model
+    model: {
+        id: number
+        name: string
+        category: category
+    }
 }
 
 export default function ItemCustomer({model}: FormFieldProps) {
@@ -12,7 +16,7 @@ export default function ItemCustomer({model}: FormFieldProps) {
     return (
         <tr className="border-b border-b-pink-200 border-opacity-30">
             <td className="p-2 capitalize">{model?.name}</td>
-            {/* <td className="p-2 capitalize">{model?.description}</td> */}
+            <td className="p-2 capitalize">{model?.category.name}</td>
             <td className="pr-2">
                 <div className="flex gap-2 items-center">
                     <button 

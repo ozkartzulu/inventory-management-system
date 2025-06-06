@@ -44,11 +44,13 @@ export type registerModel = {
 export type updateModel = {
     idModel: number
     name: string
+    categoryId: number
 }
 
 export type updateBrand = {
     idBrand: number
     name: string
+    categoryId: number
 }
 
 export type updateMadein = {

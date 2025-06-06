@@ -2,6 +2,7 @@ import { supplier } from "@prisma/client";
 import { ActionFunction, LoaderFunction, redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import { getUserIdName } from "~/utils/auth.server";
 import { deleteSupplier, getSupplier } from "~/utils/supplier.server";
 
 
@@ -18,7 +19,11 @@ export const action: ActionFunction = async ({ request }) => {
     return redirect("/proveedores");
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     let idSupplier: number = Number(params.idSupplier);
    
     const supplier = await getSupplier(idSupplier);

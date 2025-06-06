@@ -8,6 +8,7 @@ import { getSupplier, registerSupplier, updateSupplier } from "~/utils/supplier.
 import { validateName, validatePhone } from "~/utils/validators";
 import FormField from "~/components/form-field";
 import { supplier } from "@prisma/client";
+import { getUserIdName } from "~/utils/auth.server";
 
 export const action: ActionFunction = async ({request, params}) => {
 
@@ -39,7 +40,11 @@ export const action: ActionFunction = async ({request, params}) => {
     return redirect('/proveedores');
 }
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
+    let user = await getUserIdName(request);
+    if(!user) {
+        return redirect('/login');
+    }
     let idSupplier: number = Number(params.idSupplier);
    
     const supplier = await getSupplier(idSupplier);

@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 
 export async function registerBrand(brand: registerModel) {
 
-    const exists = await prisma.brand.count({ where: { name: brand.name } });
+    const exists = await prisma.brand.count({ where: { name: brand.name, categoryId: brand.categoryId } });
     if (exists) {
       return json({ error: `Ya existe esta marca con este nombre` }, { status: 400 });
     }
@@ -34,7 +34,11 @@ export async function registerBrand(brand: registerModel) {
 
 export async function getAllBrands() {
   try {
-    const models = await prisma.brand.findMany();
+    const models = await prisma.brand.findMany({
+        include: {
+            category: true,
+        }
+    });
 
     if(!models) {
       return json(
@@ -78,12 +82,18 @@ export async function getBrandsByIdCategory(idCategory: number | undefined) {
 
 export async function updateBrand(brand: updateBrand) {
 
+    const exists = await prisma.brand.count({ where: { name: brand.name, categoryId: brand.categoryId } });
+    if (exists) {
+      return null;
+    }
+
     const newBrand = await prisma.brand.update({
         where: {
             id: brand.idBrand,
         },
         data: {
             name: brand.name,
+            categoryId: brand.categoryId,
         },
     });
 
